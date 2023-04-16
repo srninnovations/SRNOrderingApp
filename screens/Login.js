@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  SafeAreaView,
 } from 'react-native';
 
 import {REACT_APP_PROD_MODE} from '@env';
@@ -51,10 +52,13 @@ export default function Login({navigation}) {
     const orderTypes = await ApiServiceUtils.getOrderTypes(client);
     const tables = await ApiServiceUtils.getTables(client);
     const menu = await ApiServiceUtils.getMenu(client);
+
     await StorageUtils.saveAsyncStorageData('staff', staff);
     await StorageUtils.saveAsyncStorageData('orderTypes', orderTypes);
     await StorageUtils.saveAsyncStorageData('tables', tables);
-    await StorageUtils.saveAsyncStorageData('menu', menu);
+    await StorageUtils.saveAsyncStorageData('menu', menu.category);
+    await StorageUtils.saveAsyncStorageData('categories', menu.categories);
+    // await StorageUtils.saveAsyncStorageData('customers', menu.customers);
   };
 
   const loginValidate = async () => {
@@ -107,23 +111,28 @@ export default function Login({navigation}) {
             Please sign in to continue
           </Text>
         </View>
-        <View className="bg-clear w-60 h-12 mb-4 items-center align-middle rounded-full">
-          <TextInput
-            className="text-center w-full h-full"
-            placeholder="Email."
-            placeholderTextColor="black"
-            onChangeText={email => setEmail(email)}
-          />
-        </View>
-        <View className="bg-clear w-60 h-12 mb-2 items-center align-middle  rounded-full">
-          <TextInput
-            placeholder="Password."
-            placeholderTextColor="black"
-            className="text-center w-full h-full "
-            secureTextEntry={true}
-            onChangeText={password => setPassword(password)}
-          />
-        </View>
+        <SafeAreaView>
+          <View className="bg-clear w-60 h-12 mb-4 items-center align-middle rounded-full">
+            <TextInput
+              className="text-center w-full h-full"
+              placeholder="Email."
+              placeholderTextColor="black"
+              autoCapitalize="none"
+              onChangeText={email => setEmail(email)}
+            />
+          </View>
+          <View className="bg-clear w-60 h-12 mb-2 items-center align-middle  rounded-full">
+            <TextInput
+              placeholder="Password."
+              placeholderTextColor="black"
+              className="text-center w-full h-full "
+              autoCapitalize="none"
+              secureTextEntry={true}
+              onChangeText={password => setPassword(password)}
+              onSubmitEditing={loginValidate} // Trigger handleLogin when the user presses the enter button
+            />
+          </View>
+        </SafeAreaView>
 
         <TouchableOpacity className="mt-5">
           <Text className="">Forgot Password?</Text>

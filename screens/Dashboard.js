@@ -1,16 +1,19 @@
 import {Text, Button, View, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import Header from '../components/Header';
 import {retrieveKeychainData} from '../utils/StorageUtils';
 import {useNavigation} from '@react-navigation/native';
 import StorageUtils from '../utils/StorageUtils';
 
+import GlobalContext from '../utils/GlobalContext.';
+
 export default function Dashboard() {
   const navigation = useNavigation();
+
+  const {staff, setStaff, setOrderType} = useContext(GlobalContext);
+
   const [staffList, setStaffList] = useState([]);
-  const [staff, setStaff] = useState('');
   const [orderTypesList, setOrderTypesList] = useState([]);
-  const [orderType, setOrderType] = useState('');
 
   useEffect(() => {
     getStaff();
@@ -24,11 +27,14 @@ export default function Dashboard() {
     setOrderTypesList(orderTypes.value);
   };
 
-  const selectStaff = person => {
+  const selectStaff = async person => {
     setStaff(person);
+    await StorageUtils.saveAsyncStorageData('staff', person);
   };
-  const selectOrderType = orderType => {
+  const selectOrderType = async orderType => {
     setOrderType(orderType);
+    await StorageUtils.saveAsyncStorageData('orderType', orderType);
+    navigation.navigate('Menu');
   };
 
   return (
