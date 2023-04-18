@@ -5,13 +5,17 @@ import {
   Button,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
+  TextInput,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import React, {useState, useContext, useEffect, useRef} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
 import Header from '../components/Header';
 import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AddNotesModal from '../components/AddNotesModal';
 
 export default function Menu() {
   const initialHasSubCat = {
@@ -64,6 +68,8 @@ export default function Menu() {
   const [customItem, setCustomItem] = useState('');
   const [customItemQuantity, setCustomItemQuantity] = useState(1);
   const [customItemPrice, setCustomItemPrice] = useState(0);
+
+  const [itemNoteText, setItemNoteText] = useState('');
 
   const [starterItems, setStarterItems] = useState(0);
   const [mainItems, setMainItems] = useState(0);
@@ -158,13 +164,12 @@ export default function Menu() {
     setTotal(prevPrice + item.price);
     console.log('orders', orders);
   };
-
-  const addItemNote = e => {
-    e.preventDefault();
-    const form = e.target;
-    const customItem = {...notedItem, notes: form.itemNote.value};
+  const addItemNote = () => {
+    const customItem = {...notedItem, notes: itemNoteText};
+    console.log(customItem);
     addToOrderWithNotes(customItem);
     setItemNoteShow(false);
+    setItemNoteText('');
   };
 
   const addToOrderWithNotes = item => {
@@ -182,9 +187,10 @@ export default function Menu() {
     setTotal(prevPrice + item.price);
   };
 
-  const removeOrderWithNotes = index => {
+  const removeOrderWithNotes = o => {
     const allorders = [...orders];
-    allorders[index] && setTotal(pre => pre - allorders[index].price);
+    const index = allorders.indexOf(o);
+    index !== -1 && setTotal(pre => pre - allorders[index]?.price);
     if (allorders[index].quantity > 1) allorders[index].quantity -= 1;
     else allorders.splice(index, 1);
     setOrders(allorders);
@@ -256,7 +262,6 @@ export default function Menu() {
       }
     }
   };
-
   const addCustomItem = () => {
     const addItem = {
       name: customItem,
@@ -442,7 +447,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -502,7 +507,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -553,7 +558,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -604,7 +609,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -655,7 +660,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -832,6 +837,12 @@ export default function Menu() {
                         <Text className="text-primary font-bold text-xl mb-6">
                           Total: £{total.toFixed(2)}
                         </Text>
+                        {savedNotes.length > 0 && (
+                          <Text className="text-primary font-bold text-xl mb-6">
+                            Notes:{' '}
+                            <Text className="font-normal">{savedNotes}</Text>
+                          </Text>
+                        )}
                         <Button
                           title="Place order"
                           color="#ffc107"
@@ -840,10 +851,6 @@ export default function Menu() {
                           }
                         />
                       </View>
-                    </View>
-                    <View className="mt-4 flex w-full h-full">
-                      <Text>{savedNotes.length > 0 && 'Notes:'}</Text>
-                      <Text>{savedNotes}</Text>
                     </View>
                   </>
                 ) : (
@@ -858,9 +865,93 @@ export default function Menu() {
             {/* order section start */}
           </View>
         </View>
+        <View>
+          <Modal
+            style={styles.container}
+            hasBackdrop={true}
+            animationType="fade"
+            backdropOpacity={0.5}
+            visible={itemNoteShow}
+            onBackButtonPress={() => {
+              setItemNoteShow(false);
+              setItemNoteText('');
+            }}>
+            {/*All views of Modal*/}
+            <View style={styles.modal}>
+              <Text style={styles.header}>
+                Add notes for {notedItem && notedItem.name}
+              </Text>
+              <SafeAreaView>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={text => setItemNoteText(text)}
+                  placeholder="Hot, medium etc..."
+                  placeholderTextColor={'grey'}
+                />
+              </SafeAreaView>
+              <View style={styles.btnWrapper}>
+                <Button
+                  style={styles.btn}
+                  title="Close"
+                  color="grey"
+                  onPress={() => {
+                    setItemNoteShow(false);
+                    setItemNoteText('');
+                  }}
+                />
+                <Button
+                  style={styles.btn}
+                  title="Add to order"
+                  onPress={addItemNote}
+                />
+              </View>
+            </View>
+          </Modal>
+        </View>
+        <AddNotesModal
+          show={show}
+          handleClose={handleClose}
+          notes={savedNotes}
+          setSavedNotes={setSavedNotes}
+        />
       </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modal: {
+    backgroundColor: '#fff',
+    maxWidth: '80%',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#fff',
+    padding: 20,
+  },
+  header: {
+    fontSize: 42,
+    fontWeight: 500,
+  },
+  input: {
+    borderColor: 'rgb(206, 212, 218)',
+    borderWidth: 0.8,
+    borderRadius: 4,
+    marginVertical: 10,
+  },
+  btnWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'flex-end',
+    marginTop: 28,
+  },
+  btn: {
+    width: '50%',
+    borderRadius: 4,
+  },
+});
