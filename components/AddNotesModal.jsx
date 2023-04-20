@@ -5,10 +5,14 @@ import {
   Button,
   TextInput,
   SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useContext} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
+import {StyledComponent} from 'nativewind';
+import {Stack} from 'native-base';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 export default function AddNotesModal({
   show,
@@ -23,75 +27,66 @@ export default function AddNotesModal({
   };
   return (
     <View>
-      <Modal
-        style={styles.container}
+      <StyledComponent
+        component={Modal}
+        tw="flex-1 justify-center items-center"
         hasBackdrop={true}
         animationType="fade"
         backdropOpacity={0.5}
         visible={show}
         onBackButtonPress={handleClose}>
         {/*All views of Modal*/}
-        <View style={styles.modal}>
-          <Text style={styles.header}>Add notes to order</Text>
+        <StyledComponent
+          component={View}
+          tw="bg-clear w-[500px] rounded-xl border border-border-color p-4">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            paddingBottom={4}>
+            <StyledComponent
+              component={Text}
+              tw="text-2xl font-medium text-grey">
+              Add notes to order
+            </StyledComponent>
+            <TouchableOpacity onPress={handleClose}>
+              <FeatherIcon name="x" size={40} color="#555" />
+            </TouchableOpacity>
+          </Stack>
           <SafeAreaView>
-            <TextInput
+            <StyledComponent
+              component={TextInput}
+              tw="w-full border border-border-color rounded my-3 text-dark"
               multiline={true}
               numberOfLines={5}
-              style={styles.input}
               onChangeText={e => context.setNotes(e)}
               placeholder="Food allergies etc..."
               placeholderTextColor={'grey'}
               defaultValue={notes.length > 0 ? notes : ''}
             />
           </SafeAreaView>
-          <View style={styles.btnWrapper}>
-            <Button
-              style={styles.btn}
+          <Stack
+            direction="row"
+            space={4}
+            alignItems="center"
+            justifyContent="flex-end">
+            <StyledComponent
+              component={Button}
+              tw="w-1/2 rounded"
+              // style={styles.btn}
               title="Close"
               color="grey"
               onPress={handleClose}
             />
-            <Button style={styles.btn} title="Save" onPress={handleSave} />
-          </View>
-        </View>
-      </Modal>
+            <StyledComponent
+              component={Button}
+              tw="w-1/2 rounded"
+              title="Save"
+              onPress={handleSave}
+            />
+          </Stack>
+        </StyledComponent>
+      </StyledComponent>
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  modal: {
-    backgroundColor: '#fff',
-    width: 500,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#fff',
-    padding: 16,
-  },
-  header: {
-    fontSize: 42,
-    fontWeight: 500,
-  },
-  input: {
-    width: '100%',
-    borderColor: 'rgb(206, 212, 218)',
-    borderWidth: 0.8,
-    borderRadius: 4,
-    marginVertical: 10,
-  },
-  btnWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'flex-end',
-    marginTop: 28,
-  },
-  btn: {
-    width: '50%',
-    borderRadius: 4,
-  },
-});

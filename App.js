@@ -2,7 +2,7 @@ import React, {useState, useReducer} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './navigations/AuthNavigator';
 import GlobalContext from './utils/GlobalContext.';
-
+import {NativeBaseProvider} from 'native-base';
 const App = () => {
   const initialCustomer = {
     address1: '',
@@ -41,39 +41,41 @@ const App = () => {
   return (
     <>
       <NavigationContainer>
-        <GlobalContext.Provider
-          value={{
-            staff,
-            setStaff,
-            orderType,
-            setOrderType,
-            tableNo,
-            setTableNo,
-            discount,
-            setDiscount,
-            total,
-            setTotal,
-            orders,
-            setOrders,
-            loggedIn,
-            setLoggedIn,
-            customer,
-            setCustomer,
-            tableNumbers,
-            setTableNumbers,
-            people,
-            setPeople,
-            customerState,
-            orderId,
-            setOrderId,
-            dispatch,
-            notes,
-            setNotes,
-            deliveryNotes,
-            setDeliveryNotes,
-          }}>
-          <AuthNavigator />
-        </GlobalContext.Provider>
+        <NativeBaseProvider>
+          <GlobalContext.Provider
+            value={{
+              staff,
+              setStaff,
+              orderType,
+              setOrderType,
+              tableNo,
+              setTableNo,
+              discount,
+              setDiscount,
+              total,
+              setTotal,
+              orders,
+              setOrders,
+              loggedIn,
+              setLoggedIn,
+              customer,
+              setCustomer,
+              tableNumbers,
+              setTableNumbers,
+              people,
+              setPeople,
+              customerState,
+              orderId,
+              setOrderId,
+              dispatch,
+              notes,
+              setNotes,
+              deliveryNotes,
+              setDeliveryNotes,
+            }}>
+            <AuthNavigator />
+          </GlobalContext.Provider>
+        </NativeBaseProvider>
       </NavigationContainer>
     </>
   );
