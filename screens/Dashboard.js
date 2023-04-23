@@ -75,7 +75,7 @@ export default function Dashboard() {
                     key={index}
                     onPress={() => selectStaff(person)}
                     className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-secondary">
-                    <Text className="text-center text-white text-2xl">
+                    <Text className="text-center text-clear text-2xl">
                       {person}
                     </Text>
                   </TouchableOpacity>
@@ -89,7 +89,7 @@ export default function Dashboard() {
                     key={index}
                     onPress={() => selectOrderType(orderType)}
                     className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-secondary">
-                    <Text className="text-center text-white text-2xl">
+                    <Text className="text-center text-clear text-2xl">
                       {orderType}
                     </Text>
                   </TouchableOpacity>
