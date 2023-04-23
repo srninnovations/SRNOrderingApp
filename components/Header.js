@@ -22,7 +22,7 @@ export default function Header() {
 
   return (
     <>
-      <View className="flex flex-row justify-between w-screen p-1 h-14 bg-primary">
+      <View className="flex flex-row justify-between w-screen p-1 h-14 bg-custom-primary">
         <View className="flex flex-row space-x-1">
           <TouchableOpacity
             className="rounded-sm w-32 h-12 items-center justify-center"

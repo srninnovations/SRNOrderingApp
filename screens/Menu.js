@@ -309,7 +309,7 @@ export default function Menu() {
       <Header />
       <ScrollView ref={scrollViewRef}>
         <View className="flex m-6">
-          <Text className="text-4xl font-semibold text-primary">Menu</Text>
+          <Text className="text-4xl font-semibold text-black">Menu</Text>
           <View className="mt-4 flex flex-row w-full h-full space-x-2">
             {/* categories section start */}
             <View className="w-3/12 mt-1 h-full">
@@ -317,32 +317,32 @@ export default function Menu() {
                 return (
                   <TouchableOpacity
                     key={`${index}-${category.name}`}
-                    className="my-2 h-14 bg-secondary rounded-lg justify-center"
+                    className="my-2 h-14 bg-custom-secondary rounded-lg justify-center"
                     onPress={() => {
                       findMenuItem(category.name);
                       setHasSubCat(initialHasSubCat);
                     }}>
-                    <Text className="text-center text-clear mx-2 font-medium text-xl">
+                    <Text className="text-center text-white mx-2 font-medium text-xl">
                       {category.name}
                     </Text>
                   </TouchableOpacity>
                 );
               })}
               <TouchableOpacity
-                className="my-2 h-14 bg-amber rounded-sm justify-center"
+                className="my-2 h-14 bg-custom-amber rounded-sm justify-center"
                 onPress={() => {
                   handleCustItemShow();
                   setCustomItemType('Food');
                   setCustomItemCategory('STARTERS');
                 }}>
-                <Text className="text-center text-primary m-2 font-medium text-xl">
+                <Text className="text-center text-black m-2 font-medium text-xl">
                   Add Custom Item
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="my-2 h-14 bg-amber rounded-sm justify-center"
+                className="my-2 h-14 bg-custom-amber rounded-sm justify-center"
                 onPress={handleShow}>
-                <Text className="text-center text-primary m-2 font-medium text-xl">
+                <Text className="text-center text-black m-2 font-medium text-xl">
                   Add Notes
                 </Text>
               </TouchableOpacity>
@@ -350,7 +350,7 @@ export default function Menu() {
             {/* categories section end */}
 
             {/* items section start */}
-            <View className="w-5/12 mt-3 p-4 h-full bg-clear rounded-lg">
+            <View className="w-5/12 mt-3 p-4 h-full bg-white rounded-lg">
               {menuItems.map((s, index) => {
                 return (
                   <React.Fragment key={`${index}-${s.name}`}>
@@ -360,12 +360,12 @@ export default function Menu() {
                           <React.Fragment key={`${innerIndex}-${sub}`}>
                             <View className="w-full">
                               <TouchableOpacity
-                                className="my-2 w-48 h-14 bg-secondary rounded-sm justify-center"
+                                className="my-2 w-48 h-14 bg-custom-secondary rounded-sm justify-center"
                                 onPress={() =>
                                   selectedSubCategory(sub, s.subCategoryItems)
                                 }>
                                 <View className="w-full">
-                                  <Text className="text-center text-clear mx-2 font-medium text-xl">
+                                  <Text className="text-center text-white mx-2 font-medium text-xl">
                                     {sub}
                                   </Text>
                                 </View>
@@ -378,12 +378,10 @@ export default function Menu() {
                       <React.Fragment key={`${index}-${s.name}`}>
                         <View className="my-4 flex flex-row w-full ">
                           <View className="w-3/6">
-                            <Text className="text-primary text-xl">
-                              {s.name}
-                            </Text>
+                            <Text className="text-black text-xl">{s.name}</Text>
                           </View>
                           <View className="w-1/6">
-                            <Text className="text-left text-primary text-xl">
+                            <Text className="text-left text-black text-xl">
                               {' £'} {s.price?.toFixed(2)}
                             </Text>
                           </View>
@@ -393,12 +391,12 @@ export default function Menu() {
                               s.category != 'ALCOHOL' && (
                                 <>
                                   <TouchableOpacity
-                                    className="w-10 h-8 bg-primary flex justify-center rounded-md"
+                                    className="w-10 h-8 bg-custom-primary flex justify-center rounded-md"
                                     onPress={() => {
                                       setNotedItem(s);
                                       setItemNoteShow(true);
                                     }}>
-                                    <Text className="text-center text-xl text-clear">
+                                    <Text className="text-center text-xl text-white">
                                       <Icon
                                         name="sticky-note"
                                         size={16}
@@ -409,9 +407,9 @@ export default function Menu() {
                                 </>
                               )}
                             <TouchableOpacity
-                              className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                              className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                               onPress={e => addToOrder(s)}>
-                              <Text className="text-center text-xl text-clear">
+                              <Text className="text-center text-xl text-white">
                                 <Icon name="plus" size={16} color="#fefefe" />
                               </Text>
                             </TouchableOpacity>
@@ -427,11 +425,11 @@ export default function Menu() {
 
             {/* order section start */}
             <View className="w-4/12 mt-3">
-              <View className="w-full p-4 h-auto min-h-10 bg-clear rounded-lg">
+              <View className="w-full p-4 h-auto min-h-10 bg-white rounded-lg">
                 {orders.length > 0 ? (
                   <>
                     <View className="mb-4">
-                      <Text className="text-primary font-medium text-xl">
+                      <Text className="text-black font-medium text-xl">
                         Order:
                       </Text>
                     </View>
@@ -448,7 +446,7 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                     <Text>{o.notes && `- ${o.notes}`}</Text>
@@ -456,13 +454,13 @@ export default function Menu() {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={
                                           o.notes
                                             ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -473,11 +471,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -508,7 +506,7 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                     <Text>{o.notes && `- ${o.notes}`}</Text>
@@ -516,13 +514,13 @@ export default function Menu() {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={
                                           o.notes
                                             ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -533,11 +531,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -559,7 +557,7 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                     <Text>{o.notes && `- ${o.notes}`}</Text>
@@ -567,13 +565,13 @@ export default function Menu() {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={
                                           o.notes
                                             ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -584,11 +582,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -610,7 +608,7 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                     <Text>{o.notes && `- ${o.notes}`}</Text>
@@ -618,13 +616,13 @@ export default function Menu() {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={
                                           o.notes
                                             ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -635,11 +633,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -661,7 +659,7 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                     <Text>{o.notes && `- ${o.notes}`}</Text>
@@ -669,13 +667,13 @@ export default function Menu() {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={
                                           o.notes
                                             ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -686,11 +684,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -712,16 +710,16 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                   </View>
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={() => removeItem(o)}>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -732,11 +730,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -758,16 +756,16 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                   </View>
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={() => removeItem(o)}>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -778,11 +776,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -804,16 +802,16 @@ export default function Menu() {
                               {
                                 <View className="flex flex-row w-full">
                                   <View className="flex w-2/3">
-                                    <Text className="text-xl text-primary">
+                                    <Text className="text-xl text-black">
                                       {o.quantity} x {o.name}
                                     </Text>
                                   </View>
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
                                         onPress={() => removeItem(o)}>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="minus"
                                             size={16}
@@ -824,11 +822,11 @@ export default function Menu() {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-secondary flex justify-center rounded-md"
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
-                                        <Text className="text-center text-xl text-clear">
+                                        <Text className="text-center text-xl text-white">
                                           <Icon
                                             name="plus"
                                             size={16}
@@ -846,26 +844,28 @@ export default function Menu() {
                     </View>
                     <View className="mt-4 flex w-full h-full">
                       <View className="flex w-full h-full">
-                        <Text className="text-primary font-bold text-xl mb-6">
+                        <Text className="text-black font-bold text-xl mb-6">
                           Total: £{total.toFixed(2)}
                         </Text>
                         {savedNotes.length > 0 && (
-                          <Text className="text-primary font-bold text-xl mb-6">
+                          <Text className="text-black font-bold text-xl mb-6">
                             Notes:{' '}
                             <Text className="font-normal">{savedNotes}</Text>
                           </Text>
                         )}
-                        <Button
-                          title="Place order"
-                          color="#ffc107"
-                          onPress={() => placeOrder()}
-                        />
+                        <TouchableOpacity
+                          className="bg-custom-amber py-2 px-4 rounded my-4"
+                          onPress={() => placeOrder()}>
+                          <Text className="text-black text-center font-bold text-lg">
+                            Place Order
+                          </Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </>
                 ) : (
                   <View className="w-full justify-center items-center flex">
-                    <Text className="text-center text-primary text-lg">
+                    <Text className="text-center text-black text-lg">
                       Empty plate 🙁
                     </Text>
                   </View>
@@ -887,17 +887,17 @@ export default function Menu() {
             <View>
               <StyledComponent
                 component={View}
-                tw="bg-clear w-[500px] max-w-[80%] rounded-lg shadow-lg border border-border-color">
+                tw="bg-white w-[500px] max-w-[80%] rounded-lg shadow-lg">
                 <Stack
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
-                  borderBottomWidth={1}
-                  borderBottomColor="rgb(206, 212, 218)"
+                  // borderBottomWidth={1}
+                  // borderBottomColor="rgb(206, 212, 218)"
                   padding={4}>
                   <StyledComponent
                     component={Text}
-                    tw="text-2xl font-medium text-grey">
+                    tw="text-2xl font-medium text-black">
                     Add notes for {notedItem && notedItem.name}
                   </StyledComponent>
                   <TouchableOpacity
@@ -911,7 +911,7 @@ export default function Menu() {
                 <SafeAreaView>
                   <StyledComponent
                     component={TextInput}
-                    tw="border-border-color border-[0.8px] m-4 text-grey rounded"
+                    tw=" border-[0.8px] m-4 rounded"
                     onChangeText={text => setItemNoteText(text)}
                     placeholder="Hot, medium etc..."
                     placeholderTextColor={'grey'}
@@ -959,7 +959,7 @@ export default function Menu() {
 
             <StyledComponent
               component={View}
-              tw="bg-clear  min-w-[500px] max-w-[80%] rounded-lg shadow-lg border border-border-color">
+              tw="bg-white  min-w-[500px] max-w-[80%] rounded-lg shadow-lg border border-gray-400">
               <ScrollView>
                 <Stack
                   direction="row"
@@ -970,7 +970,7 @@ export default function Menu() {
                   padding={4}>
                   <StyledComponent
                     component={Text}
-                    tw="text-2xl font-medium text-grey">
+                    tw="text-2xl font-medium text-black">
                     Add custom item - {customItemType}
                   </StyledComponent>
                   <TouchableOpacity onPress={handleCustItemClose}>
@@ -980,7 +980,7 @@ export default function Menu() {
                 <StyledComponent component={View} tw="p-4">
                   <StyledComponent
                     text-xl
-                    tw="my-2 text-dark text-xl"
+                    tw="my-2 text-custom-dark text-xl"
                     component={Text}>
                     Type
                   </StyledComponent>
@@ -1004,7 +1004,7 @@ export default function Menu() {
                     <>
                       <StyledComponent
                         text-xl
-                        tw="my-2 text-dark text-xl"
+                        tw="my-2 text-custom-dark text-xl"
                         component={Text}>
                         Category
                       </StyledComponent>
@@ -1031,7 +1031,7 @@ export default function Menu() {
                   )}
                   <StyledComponent
                     text-xl
-                    tw="my-2 text-dark text-xl"
+                    tw="my-2 text-black text-xl"
                     component={Text}>
                     Item
                   </StyledComponent>
@@ -1040,14 +1040,14 @@ export default function Menu() {
                     multiline={true}
                     numberOfLines={2}
                     onChangeText={t => setCustomItem(t)}
-                    tw="border border-border-color rounded-md text-grey w-full"
+                    tw="border border-gray-300 p-3 rounded-md w-full"
                     defaultValue={customItem.toString()}
                     placeholder="Add Details"
                     placeholderTextColor="grey"
                   />
                   <StyledComponent
                     text-xl
-                    tw="my-2 text-dark text-xl"
+                    tw="my-2 text-black text-xl"
                     component={Text}>
                     Quantity
                   </StyledComponent>
@@ -1056,21 +1056,21 @@ export default function Menu() {
                     keyboardType="numeric"
                     maxLength={2}
                     onChangeText={t => setCustomItemQuantity(t)}
-                    tw="border border-border-color rounded-md text-grey"
+                    tw="border border-gray-300 p-3 rounded-md"
                     placeholder="1,2,3 etc..."
                     defaultValue={customItemQuantity.toString()}
                     placeholderTextColor="grey"
                   />
                   <StyledComponent
                     text-xl
-                    tw="my-2 text-dark text-xl"
+                    tw="my-2 text-black text-xl"
                     component={Text}>
                     Price
                   </StyledComponent>
                   <StyledComponent
                     component={TextInput}
                     keyboardType="numeric"
-                    tw="border border-border-color rounded-md text-grey"
+                    tw="border border-gray-300 p-3 rounded-md"
                     placeholder="Item Price"
                     defaultValue={customItemPrice.toString()}
                     onChangeText={t => setCustomItemPrice(t)}
@@ -1096,6 +1096,7 @@ export default function Menu() {
                     onPress={() => {
                       setShowCustModal(false);
                       addCustomItem();
+                      scrollToTop();
                     }}
                     component={Button}
                     tw="rounded capitalize"

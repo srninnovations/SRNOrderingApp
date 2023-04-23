@@ -38,7 +38,7 @@ export default function AddNotesModal({
         {/*All views of Modal*/}
         <StyledComponent
           component={View}
-          tw="bg-clear w-[500px] rounded-xl border border-border-color p-4">
+          tw="bg-white w-[500px] rounded-xl border border-border-color p-4">
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -46,7 +46,7 @@ export default function AddNotesModal({
             paddingBottom={4}>
             <StyledComponent
               component={Text}
-              tw="text-2xl font-medium text-grey">
+              tw="text-2xl font-medium text-black">
               Add notes to order
             </StyledComponent>
             <TouchableOpacity onPress={handleClose}>
@@ -56,7 +56,7 @@ export default function AddNotesModal({
           <SafeAreaView>
             <StyledComponent
               component={TextInput}
-              tw="w-full border border-border-color rounded my-3 text-dark"
+              tw="w-full border border-gray-300 rounded my-6 text-custom-dark"
               multiline={true}
               numberOfLines={5}
               onChangeText={e => context.setNotes(e)}

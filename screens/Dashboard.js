@@ -44,15 +44,15 @@ export default function Dashboard() {
 
         <View className="flex-1 justify-center items-center w-screen">
           {!staff && (
-            <Text className="text-primary text-4xl font-bold mb-14">STAFF</Text>
+            <Text className="text-black text-4xl font-bold mb-14">STAFF</Text>
           )}
 
           {staff && (
             <>
               <TouchableOpacity
-                className="mb-10 bg-primary rounded"
+                className="mb-10 bg-custom-primary rounded"
                 onPress={() => setStaff('')}>
-                <Text className="text-clear text-3xl font-semibold w-full p-3 text-center">
+                <Text className="text-white text-3xl font-semibold w-full p-3 text-center">
                   {staff}
                 </Text>
               </TouchableOpacity>
@@ -61,21 +61,21 @@ export default function Dashboard() {
           )}
           {staff && (
             <View className="w-full mb-14">
-              <Text className="text-primary text-center text-4xl font-bold">
+              <Text className="text-black text-center text-4xl font-bold">
                 ORDER TYPE
               </Text>
             </View>
           )}
           <View className="flex flex-row justify-center flex-wrap border-1 border-black border-solid">
-            {!staff &&
+            {staff == '' &&
               staffList &&
               staffList.map((person, index) => {
                 return (
                   <TouchableOpacity
                     key={index}
                     onPress={() => selectStaff(person)}
-                    className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-secondary">
-                    <Text className="text-center text-clear text-2xl">
+                    className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-custom-secondary">
+                    <Text className="text-center text-white text-2xl">
                       {person}
                     </Text>
                   </TouchableOpacity>
@@ -88,8 +88,8 @@ export default function Dashboard() {
                   <TouchableOpacity
                     key={index}
                     onPress={() => selectOrderType(orderType)}
-                    className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-secondary">
-                    <Text className="text-center text-clear text-2xl">
+                    className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-custom-secondary">
+                    <Text className="text-center text-white text-2xl">
                       {orderType}
                     </Text>
                   </TouchableOpacity>

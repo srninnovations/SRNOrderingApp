@@ -24,14 +24,14 @@ export default function Print() {
 
       <View className="flex justify-center h-auto w-full mt-6 items-center align-middle">
         <Text
-          className={`text-lg w-[350px] h-auto p-6 mx-auto text-clear font-normal uppercase text-center  rounded-lg ${
+          className={`text-lg w-[350px] h-auto p-6 mx-auto text-white font-normal uppercase text-center  rounded-lg ${
             (printer && printer.status == 'Not connected') || !printer
-              ? 'bg-amber'
-              : 'bg-secondary'
+              ? 'bg-custom-amber'
+              : 'bg-custom-secondary'
           }`}>
           {(printer && printer.status == 'Not connected') || !printer ? (
             <>
-              <Text className="text-clear font-bold">
+              <Text className="text-white font-bold">
                 Printer not connected
               </Text>
             </>
@@ -43,9 +43,9 @@ export default function Print() {
 
       <View className="flex mt-24 justify-center items-center w-screen">
         <TouchableOpacity
-          className="mb-10 bg-secondary rounded p-6"
+          className="mb-10 bg-custom-secondary rounded p-6"
           onPress={() => printReceipt()}>
-          <Text className="text-clear text-3xl font-semibold w-full text-center">
+          <Text className="text-white text-3xl font-semibold w-full text-center">
             Print Receipt
           </Text>
         </TouchableOpacity>

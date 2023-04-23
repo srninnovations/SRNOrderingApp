@@ -107,12 +107,12 @@ export default function Login({navigation}) {
     <>
       <View className="flex-1 justify-center items-center bg-light">
         <View className="mb-24">
-          <Text className="text-2xl font-medium text-primary">
+          <Text className="text-2xl font-medium text-black">
             Please sign in to continue
           </Text>
         </View>
         <SafeAreaView>
-          <View className="bg-clear w-60 h-12 mb-4 items-center align-middle rounded-full">
+          <View className="bg-white w-60 h-12 mb-4 items-center align-middle rounded-full">
             <TextInput
               className="text-center w-full h-full"
               placeholder="Email."
@@ -121,7 +121,7 @@ export default function Login({navigation}) {
               onChangeText={email => setEmail(email)}
             />
           </View>
-          <View className="bg-clear w-60 h-12 mb-2 items-center align-middle  rounded-full">
+          <View className="bg-white w-60 h-12 mb-2 items-center align-middle  rounded-full">
             <TextInput
               placeholder="Password."
               placeholderTextColor="black"
@@ -135,7 +135,7 @@ export default function Login({navigation}) {
         </SafeAreaView>
 
         <TouchableOpacity className="mt-5">
-          <Text className="">Forgot Password?</Text>
+          <Text className="text-custom-grey">Forgot Password?</Text>
         </TouchableOpacity>
 
         <View className="mt-10">
@@ -144,7 +144,7 @@ export default function Login({navigation}) {
 
         {!loading && (
           <TouchableOpacity
-            className="bg-secondary rounded-full w-80 h-12 items-center justify-center mt-32"
+            className="bg-custom-secondary rounded-full w-80 h-12 items-center justify-center mt-32"
             onPress={() => {
               setError('');
               loginValidate();

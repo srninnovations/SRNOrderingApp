@@ -8,18 +8,20 @@ module.exports = {
     './components/*.{js,jsx,ts,tsx}',
   ],
   theme: {
-    extend: {},
-    colors: {
-      primary: '#0B3954',
-      secondary: '#087E8B',
-      light: '#BFD7EA',
-      warning: '#FF5A5F',
-      warningDark: '#C81D25',
-      amber: '#ffc107',
-      clear: '#fefefe',
-      grey: '#666',
-      dark: '#000',
-      'border-color': 'rgb(206, 212, 218)',
+    extend: {
+      colors: {
+        custom: {
+          primary: '#1C77C3',
+          secondary: '#39A9DB',
+          light: '#40BCD8',
+          warning: '#F39237',
+          danger: '#D63230',
+          amber: '#ffc107',
+          grey: '#666',
+          dark: '#000',
+          'border-color': 'rgb(206, 212, 218)',
+        },
+      },
     },
   },
   plugins: [nativewind()],
