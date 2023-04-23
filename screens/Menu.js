@@ -866,74 +866,73 @@ export default function Menu() {
           </View>
         </View>
         <View>
-          <StyledComponent
-            component={Modal}
-            tw="flex-1 justify-center items-center"
-            hasBackdrop={true}
+          <Modal
+            isVisible={itemNoteShow}
             animationType="fade"
-            backdropOpacity={0.5}
-            visible={itemNoteShow}
+            className="flex-1 justify-center items-center"
             onBackButtonPress={() => {
               setItemNoteShow(false);
               setItemNoteText('');
             }}>
-            {/*All views of Modal*/}
-            <StyledComponent
-              component={View}
-              tw="bg-clear w-[500px] max-w-[80%] rounded-lg shadow-lg border border-border-color">
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                borderBottomWidth={1}
-                borderBottomColor="rgb(206, 212, 218)"
-                padding={4}>
-                <StyledComponent
-                  component={Text}
-                  tw="text-4xl font-medium text-grey">
-                  Add notes for {notedItem && notedItem.name}
-                </StyledComponent>
-                <TouchableOpacity
-                  onPress={() => {
-                    setItemNoteShow(false);
-                    setItemNoteText('');
-                  }}>
-                  <FeatherIcon name="x" size={35} color="#555" />
-                </TouchableOpacity>
-              </Stack>
-              <SafeAreaView>
-                <StyledComponent
-                  component={TextInput}
-                  tw="border-border-color border-[0.8px] m-4 text-grey rounded"
-                  onChangeText={text => setItemNoteText(text)}
-                  placeholder="Hot, medium etc..."
-                  placeholderTextColor={'grey'}
-                />
-              </SafeAreaView>
-              <Stack
-                space={4}
-                justifyContent="flex-end"
-                direction="row"
-                padding={4}>
-                <StyledComponent
-                  component={Button}
-                  tw="w-1/2 rounded capitalize"
-                  title="Close"
-                  color="grey"
-                  onPress={() => {
-                    setItemNoteShow(false);
-                    setItemNoteText('');
-                  }}
-                />
-                <StyledComponent
-                  component={Button}
-                  tw="w-1/2 rounded capitalize m-2"
-                  title="Add to order"
-                  onPress={addItemNote}
-                />
-              </Stack>
-            </StyledComponent>
-          </StyledComponent>
+            <View>
+              <StyledComponent
+                component={View}
+                tw="bg-clear w-[500px] max-w-[80%] rounded-lg shadow-lg border border-border-color">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderBottomWidth={1}
+                  borderBottomColor="rgb(206, 212, 218)"
+                  padding={4}>
+                  <StyledComponent
+                    component={Text}
+                    tw="text-2xl font-medium text-grey">
+                    Add notes for {notedItem && notedItem.name}
+                  </StyledComponent>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setItemNoteShow(false);
+                      setItemNoteText('');
+                    }}>
+                    <FeatherIcon name="x" size={35} color="#555" />
+                  </TouchableOpacity>
+                </Stack>
+                <SafeAreaView>
+                  <StyledComponent
+                    component={TextInput}
+                    tw="border-border-color border-[0.8px] m-4 text-grey rounded"
+                    onChangeText={text => setItemNoteText(text)}
+                    placeholder="Hot, medium etc..."
+                    placeholderTextColor={'grey'}
+                    onSubmitEditing={addItemNote}
+                  />
+                </SafeAreaView>
+                <Stack
+                  space={4}
+                  justifyContent="flex-end"
+                  direction="row"
+                  padding={4}>
+                  <StyledComponent
+                    component={Button}
+                    tw="w-1/2 rounded capitalize"
+                    title="Close"
+                    color="grey"
+                    onPress={() => {
+                      setItemNoteShow(false);
+                      setItemNoteText('');
+                    }}
+                  />
+                  <StyledComponent
+                    component={Button}
+                    tw="w-1/2 rounded capitalize m-2"
+                    title="Add to order"
+                    onPress={addItemNote}
+                  />
+                </Stack>
+              </StyledComponent>
+            </View>
+          </Modal>
         </View>
         <View>
           <StyledComponent

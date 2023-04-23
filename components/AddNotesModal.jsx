@@ -63,6 +63,7 @@ export default function AddNotesModal({
               placeholder="Food allergies etc..."
               placeholderTextColor={'grey'}
               defaultValue={notes.length > 0 ? notes : ''}
+              onSubmitEditing={handleSave}
             />
           </SafeAreaView>
           <Stack
