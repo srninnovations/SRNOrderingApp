@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-
 const nativewind = require('nativewind/tailwind/native');
 
 module.exports = {
@@ -18,6 +17,9 @@ module.exports = {
       warningDark: '#C81D25',
       amber: '#ffc107',
       clear: '#fefefe',
+      grey: '#666',
+      dark: '#000',
+      'border-color': 'rgb(206, 212, 218)',
     },
   },
   plugins: [nativewind()],

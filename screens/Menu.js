@@ -5,13 +5,24 @@ import {
   Button,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
+  TextInput,
 } from 'react-native';
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import {StyledComponent} from 'nativewind';
+import Modal from 'react-native-modal';
+import React, {useState, useContext, useEffect, useRef, useMemo} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
 import Header from '../components/Header';
 import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
+import {useNavigation} from '@react-navigation/native';
+
+import {getPrinter, printReceipt} from '../utils/PrinterService';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import AddNotesModal from '../components/AddNotesModal';
+import {Radio, Stack} from 'native-base';
 
 export default function Menu() {
   const initialHasSubCat = {
@@ -63,7 +74,9 @@ export default function Menu() {
   const [customItemCategory, setCustomItemCategory] = useState('STARTERS');
   const [customItem, setCustomItem] = useState('');
   const [customItemQuantity, setCustomItemQuantity] = useState(1);
-  const [customItemPrice, setCustomItemPrice] = useState(0);
+  const [customItemPrice, setCustomItemPrice] = useState('0.00');
+
+  const [itemNoteText, setItemNoteText] = useState('');
 
   const [starterItems, setStarterItems] = useState(0);
   const [mainItems, setMainItems] = useState(0);
@@ -76,15 +89,39 @@ export default function Menu() {
 
   const scrollViewRef = useRef();
 
+  const [menuItemsByCategory, setMenuItemsByCategory] = useState(() => {
+    const initialMenuItemsByCategory = {};
+    menu.forEach(item => {
+      initialMenuItemsByCategory[item.category] = item.items;
+    });
+    return initialMenuItemsByCategory;
+  });
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleCustItemClose = () => setShowCustModal(false);
+  const handleCustItemClose = () => {
+    setCustomItem('');
+    setCustomItemQuantity(0);
+    setCustomItemPrice(0.0);
+    setShowCustModal(false);
+  };
   const handleCustItemShow = () => setShowCustModal(true);
 
   useEffect(() => {
     getDetails();
   }, []);
+
+  // When the menu updates, recalculate the memoized menuItemsByCategory
+  useMemo(() => {
+    const newMenuItemsByCategory = {};
+    menu.forEach(item => {
+      newMenuItemsByCategory[item.category] = item.items;
+    });
+    setMenuItemsByCategory(newMenuItemsByCategory);
+  }, [menu]);
+
+  const navigation = useNavigation();
 
   const getDetails = async () => {
     const menuResult = await StorageUtils.getAsyncStorageData('menu');
@@ -114,9 +151,9 @@ export default function Menu() {
   const findMenuItem = category => {
     scrollToTop();
     setSelectedMenu(category);
-    const result = _.filter(menu, el => el.category == category);
-    if (result != undefined) {
-      setMenuItems(result[0].items);
+    const result = menuItemsByCategory[category];
+    if (result) {
+      setMenuItems(result);
     }
   };
 
@@ -156,15 +193,12 @@ export default function Menu() {
     let prevPrice = total;
 
     setTotal(prevPrice + item.price);
-    console.log('orders', orders);
   };
-
-  const addItemNote = e => {
-    e.preventDefault();
-    const form = e.target;
-    const customItem = {...notedItem, notes: form.itemNote.value};
+  const addItemNote = () => {
+    const customItem = {...notedItem, notes: itemNoteText};
     addToOrderWithNotes(customItem);
     setItemNoteShow(false);
+    setItemNoteText('');
   };
 
   const addToOrderWithNotes = item => {
@@ -182,92 +216,72 @@ export default function Menu() {
     setTotal(prevPrice + item.price);
   };
 
-  const removeOrderWithNotes = index => {
+  const removeOrderWithNotes = o => {
     const allorders = [...orders];
-    allorders[index] && setTotal(pre => pre - allorders[index].price);
+    const index = allorders.indexOf(o);
+    index !== -1 && setTotal(pre => pre - allorders[index]?.price);
     if (allorders[index].quantity > 1) allorders[index].quantity -= 1;
     else allorders.splice(index, 1);
     setOrders(allorders);
   };
 
   const increaseQuantity = (item, index) => {
-    const newOrders = [...orders];
-
     let prevPrice = total;
 
-    if (item.category == 'Custom') {
-      const price = newOrders[index].price / newOrders[index].quantity;
+    if (item.category === 'Custom') {
+      const price = orders[index].price / orders[index].quantity;
 
-      newOrders[index].quantity++;
-
-      newOrders[index].price += price;
+      orders[index].quantity++;
+      orders[index].price += price;
       setTotal(prevPrice + price);
     } else {
-      newOrders[index].quantity++;
-      setTotal(prevPrice + newOrders[index].price);
+      orders[index].quantity++;
+      setTotal(prevPrice + orders[index].price);
     }
 
-    setOrders(newOrders);
+    setOrders([...orders]);
   };
 
   const removeItem = item => {
-    const result = _.filter(
-      orders,
-      orderItem =>
-        orderItem.name == item.name &&
-        orderItem.category == item.category &&
-        !orderItem.notes,
-    );
-    if (result.length > 0) {
-      const prevOrders = [...orders];
-      const newOrders = prevOrders.find(
-        orderItem => orderItem.name == item.name && !orderItem.notes,
-      );
-      if (newOrders != undefined) {
-        if (newOrders.quantity > 0) {
-          let prevPrice = total;
+    let itemIndex = -1;
+    let totalDecrease = 0;
 
-          let price = 0;
-
-          if (item.category == 'Custom') {
-            price = newOrders.price / newOrders.quantity;
-            newOrders.price = newOrders.price - price;
-          }
-
-          newOrders.quantity = newOrders.quantity - 1;
-
-          if (newOrders.quantity == 0) {
-            const removedItem = orders.filter(
-              orderItem => orderItem.name != item.name,
-            );
-
-            const filteredOrders = [...removedItem];
-            setOrders(filteredOrders);
-          } else {
-            setOrders(prevOrders);
-          }
-
-          if (item.category == 'Custom') {
-            setTotal(prevPrice - price);
-          } else {
-            setTotal(prevPrice - item.price);
-          }
+    for (let i = 0; i < orders.length; i++) {
+      const orderItem = orders[i];
+      if (
+        orderItem.name === item.name &&
+        orderItem.category === item.category &&
+        !orderItem.notes
+      ) {
+        itemIndex = i;
+        if (item.category === 'Custom') {
+          const price = orderItem.price / orderItem.quantity;
+          orderItem.price -= price;
+          totalDecrease = price;
+        } else {
+          totalDecrease = item.price;
         }
+        orderItem.quantity -= 1;
+        break;
       }
     }
-  };
 
+    if (itemIndex !== -1) {
+      if (orders[itemIndex].quantity === 0) {
+        orders.splice(itemIndex, 1);
+        setOrders([...orders]);
+      } else {
+        setOrders([...orders]);
+      }
+      setTotal(prevTotal => prevTotal - totalDecrease);
+    }
+  };
   const addCustomItem = () => {
     const addItem = {
       name: customItem,
-      price: customItemPrice,
+      price: Number(parseFloat(customItemPrice).toFixed(2)),
       quantity: customItemQuantity,
       category: customItemType == 'Food' ? customItemCategory : 'ALCOHOL',
-      // price:
-      //   customItemType == "Food"
-      //     ? customItemPrice * customItemQuantity
-      //     : customItemPrice,
-      // category: customItemType == "Food" ? "Custom" : "ALCOHOL",
     };
     setOrders(oldState => [...oldState, addItem]);
 
@@ -281,7 +295,10 @@ export default function Menu() {
     setTotal(prevPrice + price);
   };
 
-  const placeOrder = () => {};
+  const placeOrder = () => {
+    printReceipt(orders);
+    // navigation.navigate('Print');
+  };
 
   const scrollToTop = () => {
     scrollViewRef.current.scrollTo({y: 0, animated: true});
@@ -442,7 +459,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -502,7 +519,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -553,7 +570,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -604,7 +621,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -655,7 +672,7 @@ export default function Menu() {
                                         className="w-10 h-8 bg-warningDark flex justify-center rounded-md"
                                         onPress={
                                           o.notes
-                                            ? () => removeOrderWithNotes(index)
+                                            ? () => removeOrderWithNotes(o)
                                             : () => removeItem(o)
                                         }>
                                         <Text className="text-center text-xl text-clear">
@@ -832,18 +849,18 @@ export default function Menu() {
                         <Text className="text-primary font-bold text-xl mb-6">
                           Total: £{total.toFixed(2)}
                         </Text>
+                        {savedNotes.length > 0 && (
+                          <Text className="text-primary font-bold text-xl mb-6">
+                            Notes:{' '}
+                            <Text className="font-normal">{savedNotes}</Text>
+                          </Text>
+                        )}
                         <Button
                           title="Place order"
                           color="#ffc107"
-                          onPress={() =>
-                            Alert.alert('Button with adjusted color pressed')
-                          }
+                          onPress={() => placeOrder()}
                         />
                       </View>
-                    </View>
-                    <View className="mt-4 flex w-full h-full">
-                      <Text>{savedNotes.length > 0 && 'Notes:'}</Text>
-                      <Text>{savedNotes}</Text>
                     </View>
                   </>
                 ) : (
@@ -858,9 +875,244 @@ export default function Menu() {
             {/* order section start */}
           </View>
         </View>
+        <View>
+          <Modal
+            isVisible={itemNoteShow}
+            animationType="fade"
+            className="flex-1 justify-center items-center"
+            onBackButtonPress={() => {
+              setItemNoteShow(false);
+              setItemNoteText('');
+            }}>
+            <View>
+              <StyledComponent
+                component={View}
+                tw="bg-clear w-[500px] max-w-[80%] rounded-lg shadow-lg border border-border-color">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderBottomWidth={1}
+                  borderBottomColor="rgb(206, 212, 218)"
+                  padding={4}>
+                  <StyledComponent
+                    component={Text}
+                    tw="text-2xl font-medium text-grey">
+                    Add notes for {notedItem && notedItem.name}
+                  </StyledComponent>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setItemNoteShow(false);
+                      setItemNoteText('');
+                    }}>
+                    <FeatherIcon name="x" size={35} color="#555" />
+                  </TouchableOpacity>
+                </Stack>
+                <SafeAreaView>
+                  <StyledComponent
+                    component={TextInput}
+                    tw="border-border-color border-[0.8px] m-4 text-grey rounded"
+                    onChangeText={text => setItemNoteText(text)}
+                    placeholder="Hot, medium etc..."
+                    placeholderTextColor={'grey'}
+                    onSubmitEditing={addItemNote}
+                  />
+                </SafeAreaView>
+                <Stack
+                  space={4}
+                  justifyContent="flex-end"
+                  direction="row"
+                  padding={4}>
+                  <StyledComponent
+                    component={Button}
+                    tw="w-1/2 rounded capitalize"
+                    title="Close"
+                    color="grey"
+                    onPress={() => {
+                      setItemNoteShow(false);
+                      setItemNoteText('');
+                    }}
+                  />
+                  <StyledComponent
+                    component={Button}
+                    tw="w-1/2 rounded capitalize m-2"
+                    title="Add to order"
+                    onPress={addItemNote}
+                  />
+                </Stack>
+              </StyledComponent>
+            </View>
+          </Modal>
+        </View>
+        <View>
+          <StyledComponent
+            component={Modal}
+            visible={showCustModal}
+            scrollOffset={1}
+            hasBackdrop={true}
+            animationType="fade"
+            backdropOpacity={0.5}
+            onBackButtonPress={handleCustItemClose}
+            propagateSwipe={true}
+            tw="flex-1 justify-center items-center shadow-xl">
+            {/*All views of Modal*/}
+
+            <StyledComponent
+              component={View}
+              tw="bg-clear  min-w-[500px] max-w-[80%] rounded-lg shadow-lg border border-border-color">
+              <ScrollView>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderBottomWidth={1}
+                  borderBottomColor="rgb(206, 212, 218)"
+                  padding={4}>
+                  <StyledComponent
+                    component={Text}
+                    tw="text-2xl font-medium text-grey">
+                    Add custom item - {customItemType}
+                  </StyledComponent>
+                  <TouchableOpacity onPress={handleCustItemClose}>
+                    <FeatherIcon name="x" size={40} color="#555" />
+                  </TouchableOpacity>
+                </Stack>
+                <StyledComponent component={View} tw="p-4">
+                  <StyledComponent
+                    text-xl
+                    tw="my-2 text-dark text-xl"
+                    component={Text}>
+                    Type
+                  </StyledComponent>
+                  <Radio.Group
+                    name="FoodType"
+                    accessibilityLabel="Select type"
+                    value={customItemType}
+                    onChange={nextValue => {
+                      setCustomItemType(nextValue);
+                    }}>
+                    <Stack direction="row" alignItems="center" space={4}>
+                      <Radio value="Food" my={1}>
+                        Food
+                      </Radio>
+                      <Radio value="Drink" my={1}>
+                        Drink
+                      </Radio>
+                    </Stack>
+                  </Radio.Group>
+                  {customItemType == 'Food' && (
+                    <>
+                      <StyledComponent
+                        text-xl
+                        tw="my-2 text-dark text-xl"
+                        component={Text}>
+                        Category
+                      </StyledComponent>
+                      <Radio.Group
+                        name="FoodCategory"
+                        accessibilityLabel="Select category"
+                        value={customItemCategory}
+                        onChange={nextValue => {
+                          setCustomItemCategory(nextValue);
+                        }}>
+                        <Stack direction="row" alignItems="center" space={4}>
+                          <Radio value="STARTERS" my={1}>
+                            Starter
+                          </Radio>
+                          <Radio value="ENGLISH DISHES" my={1}>
+                            Main
+                          </Radio>
+                          <Radio value="SUNDRIES" my={1}>
+                            Sundry
+                          </Radio>
+                        </Stack>
+                      </Radio.Group>
+                    </>
+                  )}
+                  <StyledComponent
+                    text-xl
+                    tw="my-2 text-dark text-xl"
+                    component={Text}>
+                    Item
+                  </StyledComponent>
+                  <StyledComponent
+                    component={TextInput}
+                    multiline={true}
+                    numberOfLines={2}
+                    onChangeText={t => setCustomItem(t)}
+                    tw="border border-border-color rounded-md text-grey w-full"
+                    defaultValue={customItem.toString()}
+                    placeholder="Add Details"
+                    placeholderTextColor="grey"
+                  />
+                  <StyledComponent
+                    text-xl
+                    tw="my-2 text-dark text-xl"
+                    component={Text}>
+                    Quantity
+                  </StyledComponent>
+                  <StyledComponent
+                    component={TextInput}
+                    keyboardType="numeric"
+                    maxLength={2}
+                    onChangeText={t => setCustomItemQuantity(t)}
+                    tw="border border-border-color rounded-md text-grey"
+                    placeholder="1,2,3 etc..."
+                    defaultValue={customItemQuantity.toString()}
+                    placeholderTextColor="grey"
+                  />
+                  <StyledComponent
+                    text-xl
+                    tw="my-2 text-dark text-xl"
+                    component={Text}>
+                    Price
+                  </StyledComponent>
+                  <StyledComponent
+                    component={TextInput}
+                    keyboardType="numeric"
+                    tw="border border-border-color rounded-md text-grey"
+                    placeholder="Item Price"
+                    defaultValue={customItemPrice.toString()}
+                    onChangeText={t => setCustomItemPrice(t)}
+                    placeholderTextColor="grey"
+                  />
+                </StyledComponent>
+                <Stack
+                  marginY={4}
+                  marginRight={4}
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  space={4}>
+                  <StyledComponent
+                    component={Button}
+                    tw="w-1/2 rounded capitalize"
+                    title="Close"
+                    color="grey"
+                    onPress={handleCustItemClose}
+                  />
+                  <StyledComponent
+                    disabled={customItemQuantity == 0 || customItem == ''}
+                    onPress={() => {
+                      setShowCustModal(false);
+                      addCustomItem();
+                    }}
+                    component={Button}
+                    tw="rounded capitalize"
+                    title="Add to order"
+                  />
+                </Stack>
+              </ScrollView>
+            </StyledComponent>
+          </StyledComponent>
+        </View>
+        <AddNotesModal
+          show={show}
+          handleClose={handleClose}
+          notes={savedNotes}
+          setSavedNotes={setSavedNotes}
+        />
       </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({});
