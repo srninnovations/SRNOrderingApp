@@ -106,7 +106,15 @@ export default function Menu() {
     setCustomItemPrice(0.0);
     setShowCustModal(false);
   };
+
   const handleCustItemShow = () => setShowCustModal(true);
+
+  const styles = StyleSheet.create({
+    elevation: {
+      shadowColor: '#666',
+      elevation: 5,
+    },
+  });
 
   useEffect(() => {
     getDetails();
@@ -350,7 +358,9 @@ export default function Menu() {
             {/* categories section end */}
 
             {/* items section start */}
-            <View className="w-5/12 mt-3 p-4 h-full bg-white rounded-lg">
+            <View
+              className="w-5/12 mt-3 p-4 h-full bg-white rounded-lg"
+              style={[styles.elevation]}>
               {menuItems.map((s, index) => {
                 return (
                   <React.Fragment key={`${index}-${s.name}`}>
@@ -425,7 +435,9 @@ export default function Menu() {
 
             {/* order section start */}
             <View className="w-4/12 mt-3">
-              <View className="w-full p-4 h-auto min-h-10 bg-white rounded-lg">
+              <View
+                className="w-full p-4 h-auto min-h-10 bg-white rounded-lg"
+                style={[styles.elevation]}>
                 {orders.length > 0 ? (
                   <>
                     <View className="mb-4">
