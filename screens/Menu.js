@@ -10,11 +10,15 @@ import {
 } from 'react-native';
 import {StyledComponent} from 'nativewind';
 import Modal from 'react-native-modal';
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, {useState, useContext, useEffect, useRef, useMemo} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
 import Header from '../components/Header';
 import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
+import {useNavigation} from '@react-navigation/native';
+
+import {getPrinter, printReceipt} from '../utils/PrinterService';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
@@ -85,6 +89,14 @@ export default function Menu() {
 
   const scrollViewRef = useRef();
 
+  const [menuItemsByCategory, setMenuItemsByCategory] = useState(() => {
+    const initialMenuItemsByCategory = {};
+    menu.forEach(item => {
+      initialMenuItemsByCategory[item.category] = item.items;
+    });
+    return initialMenuItemsByCategory;
+  });
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -99,6 +111,18 @@ export default function Menu() {
   useEffect(() => {
     getDetails();
   }, []);
+
+  // When the menu updates, recalculate the memoized menuItemsByCategory
+  useMemo(() => {
+    const newMenuItemsByCategory = {};
+    menu.forEach(item => {
+      newMenuItemsByCategory[item.category] = item.items;
+    });
+    setMenuItemsByCategory(newMenuItemsByCategory);
+  }, [menu]);
+
+  const navigation = useNavigation();
+
   const getDetails = async () => {
     const menuResult = await StorageUtils.getAsyncStorageData('menu');
     if (menuResult) {
@@ -127,9 +151,9 @@ export default function Menu() {
   const findMenuItem = category => {
     scrollToTop();
     setSelectedMenu(category);
-    const result = _.filter(menu, el => el.category == category);
-    if (result != undefined) {
-      setMenuItems(result[0].items);
+    const result = menuItemsByCategory[category];
+    if (result) {
+      setMenuItems(result);
     }
   };
 
@@ -202,69 +226,54 @@ export default function Menu() {
   };
 
   const increaseQuantity = (item, index) => {
-    const newOrders = [...orders];
-
     let prevPrice = total;
 
-    if (item.category == 'Custom') {
-      const price = newOrders[index].price / newOrders[index].quantity;
+    if (item.category === 'Custom') {
+      const price = orders[index].price / orders[index].quantity;
 
-      newOrders[index].quantity++;
-
-      newOrders[index].price += price;
+      orders[index].quantity++;
+      orders[index].price += price;
       setTotal(prevPrice + price);
     } else {
-      newOrders[index].quantity++;
-      setTotal(prevPrice + newOrders[index].price);
+      orders[index].quantity++;
+      setTotal(prevPrice + orders[index].price);
     }
 
-    setOrders(newOrders);
+    setOrders([...orders]);
   };
 
   const removeItem = item => {
-    const result = _.filter(
-      orders,
-      orderItem =>
-        orderItem.name == item.name &&
-        orderItem.category == item.category &&
-        !orderItem.notes,
-    );
-    if (result.length > 0) {
-      const prevOrders = [...orders];
-      const newOrders = prevOrders.find(
-        orderItem => orderItem.name == item.name && !orderItem.notes,
-      );
-      if (newOrders != undefined) {
-        if (newOrders.quantity > 0) {
-          let prevPrice = total;
+    let itemIndex = -1;
+    let totalDecrease = 0;
 
-          let price = 0;
-
-          if (item.category == 'Custom') {
-            price = newOrders.price / newOrders.quantity;
-            newOrders.price = newOrders.price - price;
-          }
-
-          newOrders.quantity = newOrders.quantity - 1;
-
-          if (newOrders.quantity == 0) {
-            const removedItem = orders.filter(
-              orderItem => orderItem.name != item.name,
-            );
-
-            const filteredOrders = [...removedItem];
-            setOrders(filteredOrders);
-          } else {
-            setOrders(prevOrders);
-          }
-
-          if (item.category == 'Custom') {
-            setTotal(prevPrice - price);
-          } else {
-            setTotal(prevPrice - item.price);
-          }
+    for (let i = 0; i < orders.length; i++) {
+      const orderItem = orders[i];
+      if (
+        orderItem.name === item.name &&
+        orderItem.category === item.category &&
+        !orderItem.notes
+      ) {
+        itemIndex = i;
+        if (item.category === 'Custom') {
+          const price = orderItem.price / orderItem.quantity;
+          orderItem.price -= price;
+          totalDecrease = price;
+        } else {
+          totalDecrease = item.price;
         }
+        orderItem.quantity -= 1;
+        break;
       }
+    }
+
+    if (itemIndex !== -1) {
+      if (orders[itemIndex].quantity === 0) {
+        orders.splice(itemIndex, 1);
+        setOrders([...orders]);
+      } else {
+        setOrders([...orders]);
+      }
+      setTotal(prevTotal => prevTotal - totalDecrease);
     }
   };
   const addCustomItem = () => {
@@ -286,7 +295,10 @@ export default function Menu() {
     setTotal(prevPrice + price);
   };
 
-  const placeOrder = () => {};
+  const placeOrder = () => {
+    printReceipt(orders);
+    // navigation.navigate('Print');
+  };
 
   const scrollToTop = () => {
     scrollViewRef.current.scrollTo({y: 0, animated: true});
@@ -846,9 +858,7 @@ export default function Menu() {
                         <Button
                           title="Place order"
                           color="#ffc107"
-                          onPress={() =>
-                            Alert.alert('Button with adjusted color pressed')
-                          }
+                          onPress={() => placeOrder()}
                         />
                       </View>
                     </View>
@@ -1106,5 +1116,3 @@ export default function Menu() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({});
