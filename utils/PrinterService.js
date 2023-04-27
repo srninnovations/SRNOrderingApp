@@ -6,14 +6,13 @@ export const getPrinter = async () => {
   try {
     const printers = await EscPosPrinter.discover();
     const printer = printers[0];
-    console.log('printer', printers);
+
     if (printer) {
       return {status: 'Connected', printer: printer};
     } else {
       return {status: 'Not connected', printer: null};
     }
   } catch (error) {
-    console.log('Error', error);
     return {status: 'Not connected', error: error};
   }
 };
@@ -56,7 +55,7 @@ export const printReceipt = async orders => {
             right: '£' + o.price.toFixed(2),
           })
           .newline();
-        if (o.notes) {
+        if (o.notes && o.notes.length > 0) {
           printing.textLine(32, {left: '- ' + o.notes}).newline();
         }
       }
@@ -79,7 +78,7 @@ export const printReceipt = async orders => {
             right: '£' + o.price.toFixed(2),
           })
           .newline();
-        if (o.notes) {
+        if (o.notes && o.notes.length > 0) {
           printing.textLine(32, {left: '- ' + o.notes}).newline();
         }
       }
@@ -94,7 +93,7 @@ export const printReceipt = async orders => {
             right: '£' + o.price.toFixed(2),
           })
           .newline();
-        if (o.notes) {
+        if (o.notes && o.notes.length > 0) {
           printing.textLine(32, {left: '- ' + o.notes}).newline();
         }
       }
@@ -109,7 +108,7 @@ export const printReceipt = async orders => {
             right: '£' + o.price.toFixed(2),
           })
           .newline();
-        if (o.notes) {
+        if (o.notes && o.notes.length > 0) {
           printing.textLine(32, {left: '- ' + o.notes}).newline();
         }
       }
@@ -124,7 +123,7 @@ export const printReceipt = async orders => {
             right: '£' + o.price.toFixed(2),
           })
           .newline();
-        if (o.notes) {
+        if (o.notes && o.notes.length > 0) {
           printing.textLine(32, {left: '- ' + o.notes}).newline();
         }
       }
@@ -139,7 +138,7 @@ export const printReceipt = async orders => {
             right: '£' + o.price.toFixed(2),
           })
           .newline();
-        if (o.notes) {
+        if (o.notes && o.notes.length > 0) {
           printing.textLine(32, {left: '- ' + o.notes}).newline();
         }
       }
@@ -154,7 +153,7 @@ export const printReceipt = async orders => {
             right: '£' + o.price.toFixed(2),
           })
           .newline();
-        if (o.notes) {
+        if (o.notes && o.notes.length > 0) {
           printing.textLine(32, {left: '- ' + o.notes}).newline();
         }
       }

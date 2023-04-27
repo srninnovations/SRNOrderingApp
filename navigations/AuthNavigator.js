@@ -5,7 +5,6 @@ import Login from '../screens/Login';
 import Dashboard from '../screens/Dashboard';
 import Selection from '../screens/Selection';
 import History from '../screens/History';
-import Print from '../screens/Print';
 import Home from '../screens/Home';
 import Menu from '../screens/Menu';
 
@@ -22,7 +21,6 @@ export default function AuthNavigator() {
       <Stack.Screen name="Dashboard" component={Dashboard} />
       <Stack.Screen name="Selection" component={Selection} />
       <Stack.Screen name="Menu" component={Menu} />
-      <Stack.Screen name="Print" component={Print} />
     </Stack.Navigator>
   );
 }

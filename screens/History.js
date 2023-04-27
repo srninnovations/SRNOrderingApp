@@ -68,7 +68,7 @@ export default function History() {
     setLoading(true);
     getHistoryData();
   }, []);
-  // console.log({allOrders});
+
   useEffect(() => {
     const filterOrders = [...allOrders];
 
@@ -133,75 +133,80 @@ export default function History() {
   };
 
   const confirmDelete = async order => {
-    deleteHistory({
+    const res = await ApiServiceUtils.deleteHistory({
       client,
       client_id: clientId,
       order_id: order.order_id,
-    }).then(res => {
-      if (res.data === 'Delete successfull.') {
-        const filteredHistory = orders.filter(
-          o => o.order_id !== order.order_id,
-        );
-        setOrders(filteredHistory);
-        setAllOrders(filteredHistory);
-        hideModal();
-        if (!toast.isActive('delete'))
-          toast.show({
-            id: 'delete',
-            title: 'Deleted Successfully!',
-          });
-      }
     });
+
+    if (res === 200) {
+      const filteredHistory = orders.filter(o => o.order_id !== order.order_id);
+      setOrders(filteredHistory);
+      setAllOrders(filteredHistory);
+      hideModal();
+      if (!toast.isActive('delete'))
+        toast.show({
+          id: 'delete',
+          title: 'Deleted Successfully!',
+        });
+    }
   };
 
   return (
     <>
       <Header />
-      <View className="px-20 bg-white">
+      <View className="px-20 bg-white h-screen">
         <Text className="text-2xl font-medium text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
           History
         </Text>
-        <HStack justifyContent="space-between" space={10} className="px-3 mt-5">
-          <Checkbox.Group accessibilityLabel="Filter history">
-            <Heading className="text-custom-dark text-base">Filter by:</Heading>
-            <VStack space={1} my={2}>
-              <Checkbox
-                onChange={isChecked => setFilterCollection(isChecked)}
-                value="Collection">
-                Collection
-              </Checkbox>
-              <Checkbox
-                onChange={isChecked => setFilterDelivery(isChecked)}
-                value="Delivery">
-                Delivery
-              </Checkbox>
-              <Checkbox
-                onChange={isChecked => setFilterDineIn(isChecked)}
-                value="Dine In">
-                Dine In
-              </Checkbox>
+        {allOrders.length > 0 && (
+          <HStack
+            justifyContent="space-between"
+            space={10}
+            className="px-3 mt-5">
+            <Checkbox.Group accessibilityLabel="Filter history">
+              <Heading className="text-custom-dark text-base">
+                Filter by:
+              </Heading>
+              <VStack space={1} my={2}>
+                <Checkbox
+                  onChange={isChecked => setFilterCollection(isChecked)}
+                  value="Collection">
+                  Collection
+                </Checkbox>
+                <Checkbox
+                  onChange={isChecked => setFilterDelivery(isChecked)}
+                  value="Delivery">
+                  Delivery
+                </Checkbox>
+                <Checkbox
+                  onChange={isChecked => setFilterDineIn(isChecked)}
+                  value="Dine In">
+                  Dine In
+                </Checkbox>
+              </VStack>
+            </Checkbox.Group>
+            <VStack>
+              <Heading className="text-custom-dark text-base mb-2">
+                Find by:
+              </Heading>
+              <Input
+                keyboardType="numeric"
+                size="md"
+                placeholder="Order ID"
+                w="2xs"
+                h="10"
+                focusOutlineColor={'darkBlue.400'}
+                className="bg-gray-100"
+                onChangeText={text => filterByOrderId(parseInt(text))}
+              />
             </VStack>
-          </Checkbox.Group>
-          <VStack>
-            <Heading className="text-custom-dark text-base mb-2">
-              Find by:
-            </Heading>
-            <Input
-              keyboardType="numeric"
-              size="md"
-              placeholder="Order ID"
-              w="2xs"
-              h="10"
-              focusOutlineColor={'darkBlue.400'}
-              className="bg-gray-100"
-              onChangeText={text => filterByOrderId(parseInt(text))}
-            />
-          </VStack>
-          {orders.length > 0 && (
-            <Button className="bg-custom-danger h-10">Delete All</Button>
-          )}
-        </HStack>
-        {orders.length > 0 && (
+            {orders.length > 0 && (
+              <Button className="bg-custom-danger h-10">Delete All</Button>
+            )}
+          </HStack>
+        )}
+        {orders.length > 0 ? (
           <>
             {filterByIdFound ? (
               <Text className="m-2 text-green-400">Found order</Text>
@@ -341,6 +346,10 @@ export default function History() {
               ))}
             </VStack>
           </>
+        ) : (
+          <View className="h-screen w-full bg-white flex-1 justify-center items-center">
+            <Text className="text-4xl text-center">No orders Found!</Text>
+          </View>
         )}
       </View>
     </>

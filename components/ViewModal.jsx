@@ -65,8 +65,7 @@ export default function ViewModal({order}) {
   }, [order]);
 
   const placeOrder = () => {
-    console.log(order.items);
-    // printReceipt(order.items);
+    printReceipt(order.items);
   };
 
   return (

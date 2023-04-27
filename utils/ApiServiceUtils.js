@@ -121,7 +121,25 @@ const deleteHistory = async client => {
       },
     },
   );
-  return response.json();
+
+  return response.status;
+};
+
+export const updateHistory = async history => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+
+  const response = await fetch(apiUrl + '/updateOrders', {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'auth-token': token,
+    },
+    body: JSON.stringify(history),
+  });
+
+  return await response.json();
 };
 
 export default {
@@ -131,4 +149,5 @@ export default {
   getMenu,
   getOrders,
   deleteHistory,
+  updateHistory,
 };

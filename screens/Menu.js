@@ -24,6 +24,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
 import {Radio, Stack, TextArea} from 'native-base';
 import uniqueID from '../utils/uniqueId';
+import ApiServiceUtils from '../utils/ApiServiceUtils';
 
 export default function Menu() {
   const initialHasSubCat = {
@@ -135,7 +136,7 @@ export default function Menu() {
   }, []);
 
   useEffect(() => {
-    // setOrderId(orderId ? orderId : uniqueID());
+    setOrderId(orderId ? orderId : uniqueID());
     let subTotal = 0;
 
     let totalsByCategory = {};
@@ -408,28 +409,28 @@ export default function Menu() {
       },
       client: {
         order_id: orderId,
-        client_id: clientId,
+        client_id: clientId.value,
       },
     };
 
-    updateHistory(params);
+    ApiServiceUtils.updateHistory(params);
 
     const body = {
       table: customerState.name,
       updateTable: true,
       client: {
         client,
-        client_id: clientId,
+        client_id: clientId.value,
       },
     };
 
-    updateActiveTables(body);
-    context.setOrderId(0);
+    // updateActiveTables(body);
+    setOrderId(0);
   };
 
   const placeOrder = () => {
-    printReceipt(orders);
-    // navigation.navigate('Print');
+    // printReceipt(orders);
+    updateInDB();
   };
 
   const scrollToTop = () => {
