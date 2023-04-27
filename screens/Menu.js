@@ -22,7 +22,9 @@ import {getPrinter, printReceipt} from '../utils/PrinterService';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
-import {Radio, Stack} from 'native-base';
+import {Radio, Stack, TextArea} from 'native-base';
+import uniqueID from '../utils/uniqueId';
+import ApiServiceUtils from '../utils/ApiServiceUtils';
 
 export default function Menu() {
   const initialHasSubCat = {
@@ -44,7 +46,17 @@ export default function Menu() {
     },
   ];
 
-  const {staff, orderType} = useContext(GlobalContext);
+  const {
+    staff,
+    orderType,
+    customerState,
+    people,
+    notes,
+    deliveryNotes,
+    discount,
+    orderId,
+    setOrderId,
+  } = useContext(GlobalContext);
 
   const [menu, setMenu] = useState([]);
 
@@ -63,6 +75,10 @@ export default function Menu() {
   const [orders, setOrders] = useState([]);
 
   const [total, setTotal] = useState(0);
+
+  const [subTotal, setSubTotal] = useState(0);
+
+  const [totalsByCategory, setTotalsByCategory] = useState();
 
   const [show, setShow] = useState(false);
 
@@ -106,7 +122,6 @@ export default function Menu() {
     setCustomItemPrice(0.0);
     setShowCustModal(false);
   };
-
   const handleCustItemShow = () => setShowCustModal(true);
 
   const styles = StyleSheet.create({
@@ -119,6 +134,71 @@ export default function Menu() {
   useEffect(() => {
     getDetails();
   }, []);
+
+  useEffect(() => {
+    setOrderId(orderId ? orderId : uniqueID());
+    let subTotal = 0;
+
+    let totalsByCategory = {};
+    for (let item of orders) {
+      if (item.category == 'Custom') {
+        const price = item.price / item.quantity;
+        subTotal = subTotal + price * item.quantity;
+      } else {
+        subTotal = subTotal + item.price * item.quantity;
+        if (totalsByCategory[item.category]) {
+          // if the category already exists in the object, add the item's price times quantity to the existing total
+          totalsByCategory[item.category] += item.price * item.quantity;
+        } else {
+          // if the category doesn't exist in the object yet, initialize the total to the item's price times quantity
+          totalsByCategory[item.category] = item.price * item.quantity;
+        }
+      }
+    }
+
+    setTotalsByCategory(totalsByCategory);
+
+    const starters = orders.filter(
+      order =>
+        order.category == 'STARTERS' || order.category == 'SIGNATURE STARTERS',
+    );
+    setStarterItems(starters.length);
+
+    const mains = orders.filter(
+      order =>
+        order.category != 'STARTERS' &&
+        order.category != 'SIGNATURE STARTERS' &&
+        order.category != 'VEGETABLE SIDE DISHES' &&
+        order.category != 'SUNDAY MENU' &&
+        order.category != 'SUNDRIES' &&
+        order.category != 'DESSERTS' &&
+        order.category != 'BEVERAGES' &&
+        order.category != 'ALCOHOL',
+    );
+    setMainItems(mains.length);
+
+    const sideDishes = orders.filter(
+      order => order.category == 'VEGETABLE SIDE DISHES',
+    );
+    setSideDishesItems(sideDishes.length);
+
+    const sundries = orders.filter(order => order.category == 'SUNDRIES');
+    setSundriesItems(sundries.length);
+
+    const desserts = orders.filter(order => order.category == 'DESSERTS');
+    setDessertItems(desserts.length);
+
+    const beverages = orders.filter(order => order.category == 'BEVERAGES');
+    setBeverageItems(beverages.length);
+
+    const alcohol = orders.filter(order => order.category == 'ALCOHOL');
+    setAlcoholItems(alcohol.length);
+
+    const sundayItems = orders.filter(o => o.category == 'SUNDAY MENU');
+    setSundayItems(sundayItems.length);
+
+    setSubTotal(subTotal);
+  }, [orders]);
 
   // When the menu updates, recalculate the memoized menuItemsByCategory
   useMemo(() => {
@@ -303,9 +383,54 @@ export default function Menu() {
     setTotal(prevPrice + price);
   };
 
+  const updateInDB = async () => {
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    const client = await StorageUtils.getAsyncStorageData('client');
+    const params = {
+      history: {
+        staff,
+        customer: customerState,
+        people,
+        items: orders,
+        orderDate: Date.now(),
+        orderType,
+        subTotal,
+        notes,
+        deliveryNotes,
+        drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
+        hotDrinks: totalsByCategory['BEVERAGES']
+          ? totalsByCategory['BEVERAGES']
+          : 0,
+        desserts: totalsByCategory['DESSERTS']
+          ? totalsByCategory['DESSERTS']
+          : 0,
+        discount,
+        total,
+      },
+      client: {
+        order_id: orderId,
+        client_id: clientId.value,
+      },
+    };
+
+    ApiServiceUtils.updateHistory(params);
+
+    const body = {
+      table: customerState.name,
+      updateTable: true,
+      client: {
+        client,
+        client_id: clientId.value,
+      },
+    };
+
+    // updateActiveTables(body);
+    setOrderId(0);
+  };
+
   const placeOrder = () => {
-    printReceipt(orders);
-    // navigation.navigate('Print');
+    // printReceipt(orders);
+    updateInDB();
   };
 
   const scrollToTop = () => {
@@ -867,7 +992,7 @@ export default function Menu() {
                         )}
                         <TouchableOpacity
                           className="bg-custom-amber py-2 px-4 rounded my-4"
-                          onPress={() => placeOrder()}>
+                          onPress={placeOrder}>
                           <Text className="text-black text-center font-bold text-lg">
                             Place Order
                           </Text>
@@ -904,8 +1029,6 @@ export default function Menu() {
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
-                  // borderBottomWidth={1}
-                  // borderBottomColor="rgb(206, 212, 218)"
                   padding={4}>
                   <StyledComponent
                     component={Text}
@@ -923,7 +1046,7 @@ export default function Menu() {
                 <SafeAreaView>
                   <StyledComponent
                     component={TextInput}
-                    tw=" border-[0.8px] m-4 rounded"
+                    tw="border-[0.8px] border-custom-border-color m-4 pl-4 rounded"
                     onChangeText={text => setItemNoteText(text)}
                     placeholder="Hot, medium etc..."
                     placeholderTextColor={'grey'}
@@ -957,21 +1080,14 @@ export default function Menu() {
           </Modal>
         </View>
         <View>
-          <StyledComponent
-            component={Modal}
-            visible={showCustModal}
-            scrollOffset={1}
-            hasBackdrop={true}
+          <Modal
+            isVisible={showCustModal}
             animationType="fade"
-            backdropOpacity={0.5}
-            onBackButtonPress={handleCustItemClose}
-            propagateSwipe={true}
-            tw="flex-1 justify-center items-center shadow-xl">
-            {/*All views of Modal*/}
-
+            className="flex-1 justify-center items-center"
+            onBackButtonPress={handleCustItemClose}>
             <StyledComponent
               component={View}
-              tw="bg-white  min-w-[500px] max-w-[80%] rounded-lg shadow-lg border border-gray-400">
+              tw="bg-white min-w-[500px] max-w-[80%] rounded-lg shadow-lg">
               <ScrollView>
                 <Stack
                   direction="row"
@@ -1117,7 +1233,9 @@ export default function Menu() {
                 </Stack>
               </ScrollView>
             </StyledComponent>
-          </StyledComponent>
+
+            {/* </StyledComponent> */}
+          </Modal>
         </View>
         <AddNotesModal
           show={show}
