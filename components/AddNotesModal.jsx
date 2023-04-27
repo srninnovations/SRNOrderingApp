@@ -11,7 +11,7 @@ import Modal from 'react-native-modal';
 import React, {useContext} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
 import {StyledComponent} from 'nativewind';
-import {Stack} from 'native-base';
+import {Stack, TextArea} from 'native-base';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 export default function AddNotesModal({
@@ -27,23 +27,18 @@ export default function AddNotesModal({
   };
   return (
     <View>
-      <StyledComponent
-        component={Modal}
-        tw="flex-1 justify-center items-center"
-        hasBackdrop={true}
+      <Modal
+        isVisible={show}
         animationType="fade"
-        backdropOpacity={0.5}
-        visible={show}
+        className="flex-1 justify-center items-center"
         onBackButtonPress={handleClose}>
-        {/*All views of Modal*/}
         <StyledComponent
           component={View}
-          tw="bg-white w-[500px] rounded-xl border border-border-color p-4">
+          tw="bg-white w-[500px] rounded-xl p-4">
           <Stack
             direction="row"
             justifyContent="space-between"
-            alignItems="center"
-            paddingBottom={4}>
+            alignItems="center">
             <StyledComponent
               component={Text}
               tw="text-2xl font-medium text-black">
@@ -54,15 +49,16 @@ export default function AddNotesModal({
             </TouchableOpacity>
           </Stack>
           <SafeAreaView>
-            <StyledComponent
-              component={TextInput}
-              tw="w-full border border-gray-300 rounded my-6 text-custom-dark"
-              multiline={true}
-              numberOfLines={5}
-              onChangeText={e => context.setNotes(e)}
+            <TextArea
+              h={24}
               placeholder="Food allergies etc..."
-              placeholderTextColor={'grey'}
+              w="full"
+              my={6}
+              color="trueGray.500"
+              bgColor="trueGray.50"
+              focusOutlineColor="blueGray.400"
               defaultValue={notes.length > 0 ? notes : ''}
+              onChangeText={e => context.setNotes(e)}
               onSubmitEditing={handleSave}
             />
           </SafeAreaView>
@@ -74,7 +70,6 @@ export default function AddNotesModal({
             <StyledComponent
               component={Button}
               tw="w-1/2 rounded"
-              // style={styles.btn}
               title="Close"
               color="grey"
               onPress={handleClose}
@@ -87,7 +82,7 @@ export default function AddNotesModal({
             />
           </Stack>
         </StyledComponent>
-      </StyledComponent>
+      </Modal>
     </View>
   );
 }
