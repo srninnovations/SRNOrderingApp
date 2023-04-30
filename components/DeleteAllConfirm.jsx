@@ -12,15 +12,13 @@ import {
 } from 'native-base';
 import {useState} from 'react';
 import Modal from 'react-native-modal';
-import AntIcon from 'react-native-vector-icons/AntDesign';
 
-export const DeleteConfirmation = ({
+export default function DeleteAllConfirm({
   confirmDelete,
   show,
   showModal,
   hideModal,
-  order,
-}) => {
+}) {
   const [validPin, setValidPin] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
   const [code, setCode] = useState();
@@ -38,8 +36,8 @@ export const DeleteConfirmation = ({
   };
   return (
     <>
-      <Button onPress={showModal} size="sm" colorScheme={'danger'}>
-        <AntIcon name="delete" size={16} color="white" />
+      <Button colorScheme={'danger'} onPress={showModal} className="h-10">
+        Delete All
       </Button>
       <Modal
         isVisible={show}
@@ -64,14 +62,11 @@ export const DeleteConfirmation = ({
                   <HStack alignItems="center" space={1}>
                     <Alert.Icon />
                     <Text className="text-gray-800 font-medium">
-                      Are you sure you want to delete this order,
+                      Are you sure you want to delete all orders?
                     </Text>
                   </HStack>
-                  <Text className="pl-4">
-                    Order Type: {order ? order.orderType : ''}
-                  </Text>
-                  <Text className="pl-4">
-                    Order ID: {order ? order.order_id : ''}
+                  <Text className="text-gray-800  font-medium">
+                    This will delete all order types and clear all tables.
                   </Text>
                 </VStack>
               </HStack>
@@ -122,4 +117,4 @@ export const DeleteConfirmation = ({
       </Modal>
     </>
   );
-};
+}

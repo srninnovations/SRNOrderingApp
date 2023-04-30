@@ -9,6 +9,7 @@ import {
   HStack,
   Heading,
   Input,
+  Spinner,
   Stack,
   VStack,
   useToast,
@@ -21,6 +22,7 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 import Ignore from '../utils/Ignore';
 import {DeleteConfirmation} from '../components/DeleteConfirmation';
 import ViewModal from '../components/ViewModal';
+import DeleteAllConfirm from '../components/DeleteAllConfirm';
 
 export default function History() {
   Ignore();
@@ -92,14 +94,16 @@ export default function History() {
   const getHistoryData = async () => {
     const history = await ApiServiceUtils.getOrders(client);
 
-    const sorted = history.sort(
-      (a, b) =>
-        new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
-    );
+    if (history) {
+      const sorted = history.sort(
+        (a, b) =>
+          new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
+      );
 
-    setOrders(sorted);
-    setAllOrders(sorted);
-    await StorageUtils.saveAsyncStorageData('history', sorted);
+      setOrders(sorted);
+      setAllOrders(sorted);
+      await StorageUtils.saveAsyncStorageData('history', sorted);
+    }
     setLoading(false);
   };
 
@@ -123,6 +127,10 @@ export default function History() {
   const hideModal = () => {
     clearTimeout(setTimeout(() => setDeleteOrder({}), 500));
     setShow(false);
+  };
+
+  const hideDeleteAllModal = () => {
+    setShowAll(false);
   };
 
   const convertMillisToTime = millis => {
@@ -152,6 +160,29 @@ export default function History() {
     }
   };
 
+  const confirmDeleteAll = async () => {
+    const res = await ApiServiceUtils.deleteAllHistory({
+      client,
+      client_id: clientId,
+    });
+
+    if (res === 200) {
+      setOrders([]);
+      setAllOrders([]);
+      hideDeleteAllModal();
+      if (!toast.isActive('delete-all'))
+        toast.show({
+          id: 'delete-all',
+          title: 'Cleared all orders!',
+        });
+    }
+  };
+  if (loading)
+    return (
+      <View className="h-screen w-full flex-1 justify-center items-center">
+        <Spinner size="lg" />
+      </View>
+    );
   return (
     <>
       <Header />
@@ -202,11 +233,17 @@ export default function History() {
               />
             </VStack>
             {orders.length > 0 && (
-              <Button className="bg-custom-danger h-10">Delete All</Button>
+              <DeleteAllConfirm
+                order={deleteOrder}
+                show={showAll}
+                showModal={() => setShowAll(true)}
+                hideModal={hideDeleteAllModal}
+                confirmDelete={confirmDeleteAll}
+              />
             )}
           </HStack>
         )}
-        {orders.length > 0 ? (
+        {orders.length > 0 && !loading ? (
           <>
             {filterByIdFound ? (
               <Text className="m-2 text-green-400">Found order</Text>
@@ -347,8 +384,10 @@ export default function History() {
             </VStack>
           </>
         ) : (
-          <View className="h-screen w-full bg-white flex-1 justify-center items-center">
-            <Text className="text-4xl text-center">No orders Found!</Text>
+          <View className="h-[30vh] w-full flex-1 justify-center items-center">
+            <Text className="text-4xl text-center text-gray-500">
+              No orders Found!
+            </Text>
           </View>
         )}
       </View>

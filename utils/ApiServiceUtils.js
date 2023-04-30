@@ -141,6 +141,27 @@ export const updateHistory = async history => {
 
   return await response.json();
 };
+const deleteAllHistory = async client => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+  const response = await fetch(
+    apiUrl +
+      '/deleteAllOrders?client=' +
+      client.client +
+      '&client_id=' +
+      client.client_id,
+    {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'auth-token': token,
+      },
+    },
+  );
+
+  return response.status;
+};
 
 export default {
   getStaff,
@@ -150,4 +171,5 @@ export default {
   getOrders,
   deleteHistory,
   updateHistory,
+  deleteAllHistory,
 };

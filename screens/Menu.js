@@ -22,7 +22,7 @@ import {getPrinter, printReceipt} from '../utils/PrinterService';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
-import {Radio, Stack, TextArea} from 'native-base';
+import {Radio, Stack, TextArea, useToast} from 'native-base';
 import uniqueID from '../utils/uniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 
@@ -45,6 +45,8 @@ export default function Menu() {
       category: 'STARTERS',
     },
   ];
+
+  const toast = useToast();
 
   const {
     staff,
@@ -413,7 +415,13 @@ export default function Menu() {
       },
     };
 
-    ApiServiceUtils.updateHistory(params);
+    const res = await ApiServiceUtils.updateHistory(params);
+    if (res.acknowledged) {
+      toast.show({
+        id: 'order-added',
+        title: 'Order added successfully',
+      });
+    }
 
     const body = {
       table: customerState.name,
