@@ -142,6 +142,23 @@ export const updateHistory = async history => {
   return await response.json();
 };
 
+export const updateActiveTables = async body => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+
+  const response = await fetch(apiUrl + '/activeTables', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'auth-token': token,
+    },
+    body: JSON.stringify(body),
+  });
+
+  return await response.json();
+};
+
 export default {
   getStaff,
   getOrderTypes,
@@ -150,4 +167,5 @@ export default {
   getOrders,
   deleteHistory,
   updateHistory,
+  updateActiveTables,
 };

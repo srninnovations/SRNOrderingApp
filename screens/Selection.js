@@ -3,6 +3,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import StorageUtils from '../utils/StorageUtils';
 import Header from '../components/Header';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
+import {SelectionConfirmation} from '../components/SelectionConfirmation';
 
 import {
   Spinner,
@@ -19,11 +20,15 @@ import {
 export default function Selection({navigation}) {
   const [loading, setLoading] = useState(false);
   const [client, setClient] = useState('');
+  const [selectedTable, setSelectedTable] = useState(0);
   const [tables, setTables] = useState(0);
   const [activeTables, setActiveTables] = useState([]);
   const [orderType, setOrderType] = useState('');
 
+  const [show, setShow] = useState(false);
+
   const [customerState, setCustomerState] = useState({
+    name: '',
     address1: '',
     address2: '',
     postcode: '',
@@ -33,6 +38,7 @@ export default function Selection({navigation}) {
 
   const scrollViewRef = useRef();
 
+  const nameRef = useRef(null);
   const address1Ref = useRef(null);
   const address2Ref = useRef(null);
   const postcodeRef = useRef(null);
@@ -44,9 +50,17 @@ export default function Selection({navigation}) {
     getDetails();
   }, []);
 
-  const active = tableNo => {
+  const showModal = () => {
+    setShow(true);
+  };
+
+  const hideModal = () => {
+    setShow(false);
+  };
+
+  const active = table => {
     if (activeTables) {
-      const activeTb = activeTables.find(tb => tb === tableNo);
+      const activeTb = activeTables.find(tb => tb === table);
       if (activeTb) {
         return true;
       }
@@ -72,34 +86,36 @@ export default function Selection({navigation}) {
         setLoading(false);
       }
     }
-
-    // const menuResult = await StorageUtils.getAsyncStorageData('tables');
-    // if (menuResult) {
-    //   const menuObject = menuResult.value;
-    //   const categories = Object.keys(menuObject);
-    //   setMenu([]);
-    //   for (let category of categories) {
-    //     const categoryObj = {
-    //       category: category,
-    //       items: menuObject[category],
-    //     };
-    //     setMenu(oldArray => [...oldArray, categoryObj]);
-    //   }
-    // }
-
-    // const categoriesResult = await StorageUtils.getAsyncStorageData(
-    //   'categories',
-    // );
-    // if (categoriesResult) {
-    //   const categoryObj = categoriesResult.value;
-    //   const sortedCategories = categoryObj.sort((a, b) => a.order - b.order);
-    //   setCategories(sortedCategories);
-    // }
   };
 
   const selectTable = async table => {
-    await StorageUtils.saveAsyncStorageData('table', table);
-    navigation.navigate('Menu');
+    setSelectedTable(table);
+
+    const isActive = active(table);
+    setCustomerState({
+      name: table,
+      address1: '',
+      address2: '',
+      postcode: '',
+      contact: '',
+      deliveryNotes: '',
+    });
+
+    if (!isActive) {
+      await StorageUtils.saveAsyncStorageData('table', table);
+      await StorageUtils.saveAsyncStorageData('customerState', {
+        name: table,
+        address1: '',
+        address2: '',
+        postcode: '',
+        contact: '',
+        deliveryNotes: '',
+      });
+
+      navigation.navigate('Menu');
+    } else {
+      showModal(true);
+    }
   };
 
   const updateCustomerState = event => {
@@ -111,25 +127,43 @@ export default function Selection({navigation}) {
   };
 
   const isFormValid = () => {
-    const {address1, postcode, contact} = customerState;
-    return (
-      address1.trim() !== '' && postcode.trim() !== '' && contact.trim() !== ''
-    );
+    if (orderType == 'Delivery') {
+      const {address1, postcode, contact} = customerState;
+
+      return (
+        address1.trim() !== '' &&
+        postcode.trim() !== '' &&
+        contact.trim() !== ''
+      );
+    }
+    if (orderType == 'Collection') {
+      const {name, contact} = customerState;
+      return name.trim() !== '' && contact.trim() !== '';
+    }
+    return false;
   };
 
-  const takeOrder = () => {
+  const takeOrder = async () => {
     if (isFormValid()) {
       // Proceed with the next steps of taking the order
+      await StorageUtils.saveAsyncStorageData('customerState', customerState);
+      navigation.navigate('Menu');
     } else {
       // Show an error message or handle the invalid form submission
-      alert(
-        `Please fill out all required fields:\n\nAddress 1, Postcode, Contact Number`,
-      );
+      if (orderType == 'Delivery') {
+        alert(
+          `Please fill out all required fields:\n\nAddress 1, Postcode, Contact Number`,
+        );
+      }
+      if (orderType == 'Collection') {
+        alert(`Please fill out all required fields:\n\nName, Contact Number`);
+      }
     }
   };
 
   const clear = () => {
     setCustomerState({
+      name: '',
       address1: '',
       address2: '',
       postcode: '',
@@ -140,9 +174,53 @@ export default function Selection({navigation}) {
     // setDeliveryNotes('');
   };
 
+  const editOrder = async () => {
+    setShow(false); // close modal
+
+    await StorageUtils.saveAsyncStorageData('table', selectedTable);
+    await StorageUtils.saveAsyncStorageData('customerState', {
+      name: selectedTable,
+      address1: '',
+      address2: '',
+      postcode: '',
+      contact: '',
+      deliveryNotes: '',
+    });
+
+    navigation.navigate('Menu');
+  };
+
+  const clearTable = async () => {
+    setShow(false); // close modal
+    setLoading(true);
+
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    const client = await StorageUtils.getAsyncStorageData('client');
+
+    const body = {
+      table: customerState.name,
+      updateTable: false,
+      client: {
+        client: client.value,
+        client_id: clientId.value,
+      },
+    };
+    await ApiServiceUtils.updateActiveTables(body);
+
+    await getDetails();
+  };
+
   return (
     <View className="bg-light h-full">
       <Header />
+
+      <SelectionConfirmation
+        clear={clearTable}
+        show={show}
+        edit={editOrder}
+        hideModal={hideModal}
+      />
+
       <ScrollView ref={scrollViewRef} className="mt-10">
         {loading ? (
           <HStack space={8} justifyContent="center" alignItems="center">
@@ -150,37 +228,39 @@ export default function Selection({navigation}) {
           </HStack>
         ) : (
           <>
-            <View className="flex flex-row flex-wrap gap-2 justify-center align-middle w-full m-2">
-              {[...Array(tables)].map((x, i) => (
-                <TouchableOpacity onPress={() => selectTable(i + 1)} key={i}>
-                  <Box
-                    alignItems="center"
-                    className={`w-64 border-1 p-5 bg-custom-light rounded-md ${
-                      active(i + 1) ? 'bg-custom-danger' : 'bg-custom-light'
-                    }`}>
-                    <Box>
-                      <Text className="text-3xl text-center text-white mb-4">
-                        Table {i + 1}
-                      </Text>
+            {orderType == 'Dine In' && (
+              <View className="flex flex-row flex-wrap gap-2 justify-center align-middle w-full m-2">
+                {[...Array(tables)].map((x, i) => (
+                  <TouchableOpacity onPress={() => selectTable(i + 1)} key={i}>
+                    <Box
+                      alignItems="center"
+                      className={`w-64 border-1 p-5 bg-custom-light rounded-md ${
+                        active(i + 1) ? 'bg-custom-danger' : 'bg-custom-light'
+                      }`}>
+                      <Box>
+                        <Text className="text-3xl text-center text-white mb-4">
+                          Table {i + 1}
+                        </Text>
 
-                      {active(i + 1) ? (
-                        <Box className="bg-custom-amber flex rounded-md p-2">
-                          <Text className="text-black font-bold text-center">
-                            Clear
-                          </Text>
-                        </Box>
-                      ) : (
-                        <Box className="bg-custom-primary flex rounded-md p-2">
-                          <Text className="text-white font-bold text-center">
-                            Available
-                          </Text>
-                        </Box>
-                      )}
+                        {active(i + 1) ? (
+                          <Box className="bg-custom-amber flex rounded-md p-2">
+                            <Text className="text-black font-bold text-center">
+                              Active
+                            </Text>
+                          </Box>
+                        ) : (
+                          <Box className="bg-custom-primary flex rounded-md p-2">
+                            <Text className="text-white font-bold text-center">
+                              Available
+                            </Text>
+                          </Box>
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
-                </TouchableOpacity>
-              ))}
-            </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
             {orderType == 'Delivery' && (
               <View className="flex justify-center w-full m-2 align-middle items-center mb-10">
                 <View className="text-center">
@@ -293,6 +373,61 @@ export default function Selection({navigation}) {
                     </Button>
                   </HStack>
                 </VStack>
+              </View>
+            )}
+
+            {orderType == 'Collection' && (
+              <View className="flex flex-row flex-wrap gap-2 justify-center align-middle w-full m-2">
+                <View className="text-center">
+                  <Text className="text-3xl font-semibold mb-8">
+                    Collection Order
+                  </Text>
+                  <FormControl className="w-96">
+                    <Text className="text-xl mb-3">Name</Text>
+                    <Input
+                      ref={nameRef}
+                      size="lg"
+                      className="bg-white"
+                      name="name"
+                      value={customerState.name}
+                      onChangeText={value =>
+                        updateCustomerState({target: {name: 'name', value}})
+                      }
+                      onSubmitEditing={() => contactRef.current?.focus()}
+                      returnKeyType="next"
+                    />
+                  </FormControl>
+                  <FormControl className="w-96">
+                    <Text className="text-xl mb-3">Contact number</Text>
+                    <Input
+                      ref={contactRef}
+                      size="lg"
+                      className="bg-white"
+                      keyboardType="number-pad"
+                      name="contact"
+                      value={customerState.contact}
+                      onChangeText={value =>
+                        updateCustomerState({target: {name: 'contact', value}})
+                      }
+                      onSubmitEditing={() => takeOrder()}
+                      returnKeyType="next"
+                    />
+                  </FormControl>
+                  <HStack mt={6} space={4}>
+                    <Button
+                      // variant="outline"
+                      // colorScheme="yellow"
+                      className="bg-custom-amber w-32"
+                      onPress={() => clear()}>
+                      <Text className=" text-black">Clear</Text>
+                    </Button>
+                    <Button
+                      className="bg-custom-primary w-32"
+                      onPress={() => takeOrder()}>
+                      Next
+                    </Button>
+                  </HStack>
+                </View>
               </View>
             )}
           </>
