@@ -437,7 +437,7 @@ export default function Menu() {
   };
 
   const placeOrder = () => {
-    // printReceipt(orders);
+    printReceipt(orders);
     updateInDB();
   };
 
