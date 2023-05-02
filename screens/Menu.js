@@ -52,7 +52,6 @@ export default function Menu() {
   const {
     staff,
     orderType,
-    people,
     notes,
     deliveryNotes,
     discount,
@@ -106,6 +105,9 @@ export default function Menu() {
   const [alcoholItems, setAlcoholItems] = useState(0);
   const [sundriesItems, setSundriesItems] = useState(0);
   const [sundayItems, setSundayItems] = useState(0);
+
+  const [table, setTable] = useState('');
+  const [people, setPeople] = useState('');
 
   const scrollViewRef = useRef();
 
@@ -222,6 +224,18 @@ export default function Menu() {
       'customerState',
     );
     setCustomerState(customerStateResult.value);
+
+    const peopleResult = await StorageUtils.getAsyncStorageData('people');
+    if (peopleResult) {
+      const peopleObject = peopleResult.value;
+
+      setPeople(peopleObject);
+    }
+    const tableResult = await StorageUtils.getAsyncStorageData('table');
+    if (tableResult) {
+      const tableObject = tableResult.value;
+      setTable(tableObject);
+    }
 
     const menuResult = await StorageUtils.getAsyncStorageData('menu');
     if (menuResult) {
@@ -480,7 +494,30 @@ export default function Menu() {
           }}
         />
         <View className="flex m-6">
-          <Text className="text-4xl font-semibold text-black">Menu</Text>
+          <View className="flex flex-row w-full">
+            <View className="w-8/12">
+              <Text className="text-4xl font-semibold text-gray-800">Menu</Text>
+            </View>
+            <View className="flex w-4/12 justify-center items-center">
+              {orderType == 'Dine In' && (
+                <Text className="text-xl font-semibold text-gray-700">
+                  {`Dine In - Table ${table} (${people} people)`}
+                </Text>
+              )}
+
+              {orderType == 'Collection' && (
+                <Text className="text-xl font-semibold text-gray-700">
+                  Collection order - {customerState && customerState.name}
+                </Text>
+              )}
+
+              {orderType == 'Delivery' && (
+                <Text className="text-xl font-semibold text-gray-700">
+                  Delivery order - {customerState && customerState.address1}
+                </Text>
+              )}
+            </View>
+          </View>
           <View className="mt-4 flex flex-row w-full h-full space-x-2">
             {/* categories section start */}
             <View className="w-3/12 mt-1 h-full">
