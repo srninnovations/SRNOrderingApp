@@ -34,7 +34,7 @@ export default function Dashboard() {
   const selectOrderType = async orderType => {
     setOrderType(orderType);
     await StorageUtils.saveAsyncStorageData('orderType', orderType);
-    navigation.navigate('Menu');
+    navigation.navigate('Selection');
   };
 
   return (

@@ -114,7 +114,7 @@ export default function Login({navigation}) {
         <SafeAreaView>
           <View className="bg-white w-60 h-12 mb-4 items-center align-middle rounded-full">
             <TextInput
-              className="text-center w-full h-full"
+              className="text-center w-full h-full text-black"
               placeholder="Email."
               placeholderTextColor="black"
               autoCapitalize="none"
@@ -125,7 +125,7 @@ export default function Login({navigation}) {
             <TextInput
               placeholder="Password."
               placeholderTextColor="black"
-              className="text-center w-full h-full "
+              className="text-center w-full h-full text-black"
               autoCapitalize="none"
               secureTextEntry={true}
               onChangeText={password => setPassword(password)}
