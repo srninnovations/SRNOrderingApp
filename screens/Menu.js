@@ -448,7 +448,7 @@ export default function Menu() {
   };
 
   const placeOrder = async () => {
-    // printReceipt(orders);
+    // await printReceipt(orders);
     await updateInDB();
     setOrderPlaced(true);
   };

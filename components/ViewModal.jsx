@@ -276,10 +276,16 @@ export default function ViewModal({order}) {
             </Text>
           </HStack>
           <HStack space="2" justifyContent="flex-end" mr="5" mb="4">
-            <Button colorScheme="gray" onPress={() => setModalShow(false)}>
+            <Button
+              size="lg"
+              colorScheme="gray"
+              onPress={() => setModalShow(false)}>
               Close
             </Button>
-            <Button onPress={placeOrder} colorScheme="lightBlue">
+            <Button
+              size="lg"
+              onPress={placeOrder}
+              className="bg-custom-primary">
               Print
             </Button>
           </HStack>
