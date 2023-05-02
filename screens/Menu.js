@@ -22,6 +22,7 @@ import {getPrinter, printReceipt} from '../utils/PrinterService';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
+import {OrderPlacedComfirmation} from '../components/OrderPlacedConfirmation';
 import {Radio, Stack, TextArea, useToast} from 'native-base';
 import uniqueID from '../utils/uniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
@@ -51,7 +52,6 @@ export default function Menu() {
   const {
     staff,
     orderType,
-    customerState,
     people,
     notes,
     deliveryNotes,
@@ -94,6 +94,8 @@ export default function Menu() {
   const [customItemQuantity, setCustomItemQuantity] = useState(1);
   const [customItemPrice, setCustomItemPrice] = useState('0.00');
 
+  const [customerState, setCustomerState] = useState(null);
+
   const [itemNoteText, setItemNoteText] = useState('');
 
   const [starterItems, setStarterItems] = useState(0);
@@ -117,6 +119,8 @@ export default function Menu() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const [orderPlaced, setOrderPlaced] = useState(false);
 
   const handleCustItemClose = () => {
     setCustomItem('');
@@ -214,6 +218,11 @@ export default function Menu() {
   const navigation = useNavigation();
 
   const getDetails = async () => {
+    const customerStateResult = await StorageUtils.getAsyncStorageData(
+      'customerState',
+    );
+    setCustomerState(customerStateResult.value);
+
     const menuResult = await StorageUtils.getAsyncStorageData('menu');
     if (menuResult) {
       const menuObject = menuResult.value;
@@ -366,6 +375,7 @@ export default function Menu() {
       setTotal(prevTotal => prevTotal - totalDecrease);
     }
   };
+
   const addCustomItem = () => {
     const addItem = {
       name: customItem,
@@ -415,30 +425,43 @@ export default function Menu() {
       },
     };
 
-    const res = await ApiServiceUtils.updateHistory(params);
-    if (res.acknowledged) {
-      toast.show({
-        id: 'order-added',
-        title: 'Order added successfully',
-      });
-    }
+    // const res = await ApiServiceUtils.updateHistory(params);
+    // if (res.acknowledged) {
+    //   toast.show({
+    //     id: 'order-added',
+    //     title: 'Order added successfully',
+    //   });
+    // }
+    await ApiServiceUtils.updateHistory(params);
 
     const body = {
       table: customerState.name,
       updateTable: true,
       client: {
-        client,
+        client: client.value,
         client_id: clientId.value,
       },
     };
 
-    // updateActiveTables(body);
+    await ApiServiceUtils.updateActiveTables(body);
     setOrderId(0);
   };
 
-  const placeOrder = () => {
-    printReceipt(orders);
-    updateInDB();
+  const placeOrder = async () => {
+    // printReceipt(orders);
+    await updateInDB();
+    setOrderPlaced(true);
+  };
+
+  const editOrder = () => {
+    console.log('Edit order');
+  };
+
+  const newOrder = () => {
+    StorageUtils.removeAsyncStorageData('customerState');
+    StorageUtils.removeAsyncStorageData('table');
+    StorageUtils.removeAsyncStorageData('orderType');
+    navigation.navigate('Dashboard');
   };
 
   const scrollToTop = () => {
@@ -449,6 +472,13 @@ export default function Menu() {
     <View className="bg-light h-full">
       <Header />
       <ScrollView ref={scrollViewRef}>
+        <OrderPlacedComfirmation
+          newOrder={newOrder}
+          show={orderPlaced}
+          edit={() => {
+            setOrderPlaced(false), editOrder();
+          }}
+        />
         <View className="flex m-6">
           <Text className="text-4xl font-semibold text-black">Menu</Text>
           <View className="mt-4 flex flex-row w-full h-full space-x-2">
@@ -1002,7 +1032,7 @@ export default function Menu() {
                           className="bg-custom-amber py-2 px-4 rounded my-4"
                           onPress={placeOrder}>
                           <Text className="text-black text-center font-bold text-lg">
-                            Place Order
+                            PLACE ORDER
                           </Text>
                         </TouchableOpacity>
                       </View>

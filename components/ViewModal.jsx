@@ -172,17 +172,6 @@ export default function ViewModal({order}) {
                 </Box>
               ))}
               {orderState.alcoholItems > 0 && <Divider my="3" />}
-              {order.items.map((o, idx) => (
-                <Box key={idx}>
-                  {o.category === 'ALCOHOL' && (
-                    <Text className="text-black">
-                      {o.quantity} x {o.name}
-                      {o.notes && `- ${o.notes}`}
-                    </Text>
-                  )}
-                </Box>
-              ))}
-              {orderState.alcoholItems > 0 && <Divider my="3" />}
             </ScrollView>
           </VStack>
 
