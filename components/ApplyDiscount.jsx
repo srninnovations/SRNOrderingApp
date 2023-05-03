@@ -8,31 +8,40 @@ import {
   Divider,
 } from 'native-base';
 import {useEffect, useState} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import Modal from 'react-native-modal';
 
 export const ApplyDiscount = ({total, discount, show, hide}) => {
+  const [validPin] = useState(123456);
+  const [discountPin, setDiscountPin] = useState('');
+  const [pinIsValid, setPinIsValid] = useState(false);
+
   const [amount, setAmount] = useState(0);
   const [value, setValue] = useState('fixed');
   const [discountAmount, setDiscountAmount] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setError(null);
-  }, []);
+    if (discountPin.length === 6) {
+      setPinIsValid(discountPin == validPin);
+      if (discountPin != validPin) {
+        setError('Invalid pin');
+      } else {
+        setError(null);
+      }
+    }
+  }, [discountPin]);
 
   useEffect(() => {
     if (value == 'percentage') {
-      const discountAmount = (total * amount) / 100;
-      setDiscountAmount(discountAmount);
+      const calculatedDiscountAmount = (total * amount) / 100;
+      setDiscountAmount(calculatedDiscountAmount);
     }
   }, [amount]);
 
   const validateInput = inputValue => {
     const parsedValue = Number(inputValue);
-    console.log('parsedValue', parsedValue);
     if (value === 'fixed' && parsedValue > total) {
-      console.log('inputValue', inputValue);
       setError('Discount cannot exceed total amount');
       return false;
     }
@@ -40,12 +49,8 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
       setError('Percentage cannot be more than 100');
       return false;
     }
-    if (value === 'fixed' && parsedValue < 0) {
+    if (parsedValue < 0) {
       setError('Amount cannot be less than 0');
-      return false;
-    }
-    if (value === 'percentage' && parsedValue < 0) {
-      setError('Percentage cannot be less than 0');
       return false;
     }
     setError(null);
@@ -70,75 +75,96 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
             Apply discount
           </Heading>
 
-          <View className="flex m-6 justify-center items-center">
-            <Text className="text-2xl">Select fixed amount or percentage</Text>
-            <Radio.Group
-              className="my-4"
-              name="myRadioGroup"
-              accessibilityLabel="favorite number"
-              value={value}
-              onChange={nextValue => {
-                setValue(nextValue);
-              }}>
-              <Radio value="fixed" my={1}>
-                <Text className="text-xl">Fixed</Text>
-              </Radio>
-              <Radio value="percentage" my={1}>
-                <Text className="text-xl">Percentage</Text>
-              </Radio>
-            </Radio.Group>
+          {!pinIsValid && (
+            <View className="flex m-6 justify-center items-center">
+              <Text className="text-2xl">Enter pin</Text>
+              <FormControl className="w-32">
+                <Input
+                  size="lg"
+                  className="bg-white text-center text-xl"
+                  keyboardType="number-pad"
+                  onChangeText={text => setDiscountPin(text)}
+                  value={discountPin}
+                  maxLength={6}
+                />
+              </FormControl>
+              <Text className="text-custom-danger">{error}</Text>
+            </View>
+          )}
+          {pinIsValid && (
+            <View className="flex m-6 justify-center items-center">
+              <Text className="text-2xl">
+                Select fixed amount or percentage
+              </Text>
+              <Radio.Group
+                className="my-4"
+                value={value}
+                onChange={nextValue => {
+                  setValue(nextValue);
+                }}>
+                <Radio value="fixed" my={1}>
+                  <Text className="text-xl">Fixed</Text>
+                </Radio>
+                <Radio value="percentage" my={1}>
+                  <Text className="text-xl">Percentage</Text>
+                </Radio>
+              </Radio.Group>
 
-            <Divider my="3" />
+              <Divider my="3" />
 
-            {value == 'fixed' && (
-              <>
-                <Text className="text-2xl mb-4">Enter amount (£)</Text>
-                <FormControl className="w-32">
-                  <Input
-                    //   ref={contactRef}
-                    size="lg"
-                    className="bg-white text-center"
-                    keyboardType="number-pad"
-                    // onChangeText={value => setAmount(value)}
-                    onChangeText={value => {
-                      if (validateInput(value)) setAmount(value);
-                    }}
-                    onSubmitEditing={() => {
-                      if (error == null) {
-                        discount(Number(amount)), hide();
-                      }
-                    }}
-                    returnKeyType="next"
-                  />
-                </FormControl>
-                <Text className="text-custom-danger">{error}</Text>
-              </>
-            )}
-            {value == 'percentage' && (
-              <>
-                <Text className="text-2xl mb-4">Enter percentage (%)</Text>
-                <FormControl className="w-32">
-                  <Input
-                    //   ref={contactRef}
-                    size="lg"
-                    className="bg-white text-center"
-                    keyboardType="number-pad"
-                    onChangeText={value => {
-                      if (validateInput(value)) setAmount(value);
-                    }}
-                    onSubmitEditing={() => {
-                      if (error == null) {
-                        discount(Number(discountAmount)), hide();
-                      }
-                    }}
-                    returnKeyType="next"
-                  />
-                </FormControl>
-                <Text className="text-custom-danger">{error}</Text>
-              </>
-            )}
-          </View>
-
+              {value == 'fixed' && (
+                <>
+                  <Text className="text-2xl mb-4">Enter amount (£)</Text>
+                  <FormControl className="w-32">
+                    <Input
+                      size="lg"
+                      className="bg-white text-center text-xl"
+                      keyboardType="number-pad"
+                      onChangeText={value => {
+                        if (validateInput(value)) setAmount(value);
+                      }}
+                      onSubmitEditing={() => {
+                        if (error == null) {
+                          discount(Number(amount)), hide();
+                        }
+                      }}
+                      returnKeyType="next"
+                    />
+                  </FormControl>
+                  <Text className="text-custom-danger m-1 text-lg">
+                    {error}
+                  </Text>
+                </>
+              )}
+              {value == 'percentage' && (
+                <>
+                  <Text className="text-2xl mb-4">Enter percentage (%)</Text>
+                  <FormControl className="w-32">
+                    <Input
+                      size="lg"
+                      className="bg-white text-center text-xl"
+                      keyboardType="number-pad"
+                      onChangeText={value => {
+                        if (validateInput(value)) setAmount(value);
+                      }}
+                      onSubmitEditing={() => {
+                        if (error == null) {
+                          discount(Number(discountAmount));
+                          setDiscountPin('');
+                          setPinIsValid(false);
+                          hide();
+                        }
+                      }}
+                      returnKeyType="next"
+                    />
+                  </FormControl>
+                  <Text className="text-custom-danger m-1 text-lg">
+                    {error}
+                  </Text>
+                </>
+              )}
+            </View>
+          )}
           <HStack
             justifyContent="flex-end"
             space="3"
@@ -152,12 +178,19 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
               <Text className="text-white text-center text-xl">Close</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={error != null}
+              disabled={error != null || pinIsValid == false}
               onPress={() => {
-                discount(Number(discountAmount)), hide();
+                if (value === 'fixed') {
+                  discount(Number(amount));
+                } else if (value === 'percentage') {
+                  discount(Number(discountAmount));
+                }
+                setDiscountPin('');
+                setPinIsValid(false);
+                hide();
               }}
               className={`bg-custom-primary w-32 h-10 flex justify-center rounded ${
-                error != null && 'opacity-60'
+                error != null || pinIsValid == false ? 'opacity-60' : ''
               }`}>
               <Text className="text-white text-center text-xl">Apply</Text>
             </TouchableOpacity>
