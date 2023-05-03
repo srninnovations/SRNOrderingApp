@@ -4,6 +4,7 @@
 #History page - Edit button to navigate to editable menu
 #History page - Scrollable area for list of order
 #Menu page - Add discount functionality
+#Menu page - Recipt divider by main, starters, etc categories
 #Menu page - After placing order, modal for Edit option functionality
 #Menu page - Add Total, drinks, hot drinks etc to receipt
 #Selection page - Delivery address search functionality

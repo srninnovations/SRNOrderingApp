@@ -483,7 +483,6 @@ export default function Menu({route, navigation}) {
     };
 
     await ApiServiceUtils.updateActiveTables(body);
-    context.setOrderId(0);
   };
 
   const placeOrder = async () => {
@@ -497,9 +496,11 @@ export default function Menu({route, navigation}) {
   };
 
   const newOrder = () => {
+    context.setOrderId(0);
     StorageUtils.removeAsyncStorageData('customerState');
     StorageUtils.removeAsyncStorageData('table');
     StorageUtils.removeAsyncStorageData('orderType');
+    StorageUtils.removeAsyncStorageData('people');
     navigation.navigate('Dashboard');
   };
 
@@ -529,19 +530,19 @@ export default function Menu({route, navigation}) {
               <Text className="text-4xl font-semibold text-gray-800">Menu</Text>
             </View>
             <View className="flex w-4/12 justify-center items-center">
-              {orderType == 'Dine In' && (
+              {context.orderType == 'Dine In' && (
                 <Text className="text-xl font-semibold text-gray-700">
                   {`Dine In - Table ${table} (${people} people)`}
                 </Text>
               )}
 
-              {orderType == 'Collection' && (
+              {context.orderType == 'Collection' && (
                 <Text className="text-xl font-semibold text-gray-700">
                   Collection order - {customerState && customerState.name}
                 </Text>
               )}
 
-              {orderType == 'Delivery' && (
+              {context.orderType == 'Delivery' && (
                 <Text className="text-xl font-semibold text-gray-700">
                   Delivery order - {customerState && customerState.address1}
                 </Text>
