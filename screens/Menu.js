@@ -15,18 +15,19 @@ import GlobalContext from '../utils/GlobalContext.';
 import Header from '../components/Header';
 import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 
 import {getPrinter, printReceipt} from '../utils/PrinterService';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
-import {Radio, Stack, TextArea, useToast} from 'native-base';
+import {Radio, Spinner, Stack, TextArea, useToast} from 'native-base';
 import uniqueID from '../utils/uniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 
-export default function Menu() {
+export default function Menu({route, navigation}) {
+  const params = route.params;
   const initialHasSubCat = {
     isSubCategory: false,
     subCategories: [],
@@ -48,21 +49,13 @@ export default function Menu() {
 
   const toast = useToast();
 
-  const {
-    staff,
-    orderType,
-    customerState,
-    people,
-    notes,
-    deliveryNotes,
-    discount,
-    orderId,
-    setOrderId,
-  } = useContext(GlobalContext);
+  const context = useContext(GlobalContext);
 
   const [menu, setMenu] = useState([]);
 
   const [itemNoteShow, setItemNoteShow] = useState(false);
+
+  const [loading, setLoading] = useState(true);
 
   const [notedItem, setNotedItem] = useState();
 
@@ -134,11 +127,6 @@ export default function Menu() {
   });
 
   useEffect(() => {
-    getDetails();
-  }, []);
-
-  useEffect(() => {
-    setOrderId(orderId ? orderId : uniqueID());
     let subTotal = 0;
 
     let totalsByCategory = {};
@@ -202,6 +190,12 @@ export default function Menu() {
     setSubTotal(subTotal);
   }, [orders]);
 
+  useEffect(() => {
+    getDetails();
+    // params && params.order_id && console.log(params.order_id);
+    params && params.order_id ? getOrder() : context.setOrderId(uniqueID());
+  }, [params]);
+
   // When the menu updates, recalculate the memoized menuItemsByCategory
   useMemo(() => {
     const newMenuItemsByCategory = {};
@@ -211,9 +205,34 @@ export default function Menu() {
     setMenuItemsByCategory(newMenuItemsByCategory);
   }, [menu]);
 
-  const navigation = useNavigation();
-
+  const getOrder = async () => {
+    setLoading(true);
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    const client = await StorageUtils.getAsyncStorageData('client');
+    const order = await ApiServiceUtils.getSpecificOrder({
+      client_id: clientId.value,
+      order_id: params.order_id,
+    });
+    setOrders(order.items);
+    context.setOrderId(order.order_id);
+    order.notes && setSavedNotes(order.notes);
+    Object.keys(order.customer).forEach(info => {
+      context.dispatch({
+        type: 'UPDATE_CUSTOMER',
+        field: info,
+        payload: order.customer[info],
+      });
+    });
+    order.deliveryNotes && context.setDeliveryNotes(order.deliveryNotes);
+    order.discount && context.setDiscount(order.discount);
+    order.orderType && context.setOrderType(order.orderType);
+    order.people && context.setPeople(order.people);
+    setTotal(order.total);
+    setLoading(false);
+  };
+  console.log(context.orderId);
   const getDetails = async () => {
+    setLoading(true);
     const menuResult = await StorageUtils.getAsyncStorageData('menu');
     if (menuResult) {
       const menuObject = menuResult.value;
@@ -236,6 +255,7 @@ export default function Menu() {
       const sortedCategories = categoryObj.sort((a, b) => a.order - b.order);
       setCategories(sortedCategories);
     }
+    setLoading(false);
   };
 
   const findMenuItem = category => {
@@ -390,15 +410,15 @@ export default function Menu() {
     const client = await StorageUtils.getAsyncStorageData('client');
     const params = {
       history: {
-        staff,
-        customer: customerState,
-        people,
+        staff: context.staff,
+        customer: context.customerState,
+        people: context.people,
         items: orders,
         orderDate: Date.now(),
-        orderType,
+        orderType: context.orderType,
         subTotal,
-        notes,
-        deliveryNotes,
+        notes: context.notes,
+        deliveryNotes: context.deliveryNotes,
         drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
         hotDrinks: totalsByCategory['BEVERAGES']
           ? totalsByCategory['BEVERAGES']
@@ -406,25 +426,28 @@ export default function Menu() {
         desserts: totalsByCategory['DESSERTS']
           ? totalsByCategory['DESSERTS']
           : 0,
-        discount,
+        discount: context.discount,
         total,
       },
       client: {
-        order_id: orderId,
+        order_id: context.orderId,
         client_id: clientId.value,
       },
     };
 
     const res = await ApiServiceUtils.updateHistory(params);
-    if (res.acknowledged) {
+    if (res.acknowledged)
       toast.show({
         id: 'order-added',
         title: 'Order added successfully',
       });
-    }
-
+    if (res.modified)
+      toast.show({
+        id: 'order-updated',
+        title: 'Order updated successfully',
+      });
     const body = {
-      table: customerState.name,
+      table: context.customerState.name,
       updateTable: true,
       client: {
         client,
@@ -433,18 +456,23 @@ export default function Menu() {
     };
 
     // updateActiveTables(body);
-    setOrderId(0);
+    context.setOrderId(0);
   };
 
   const placeOrder = () => {
-    printReceipt(orders);
+    // printReceipt(orders);
     updateInDB();
   };
 
   const scrollToTop = () => {
     scrollViewRef.current.scrollTo({y: 0, animated: true});
   };
-
+  if (loading)
+    return (
+      <View className="h-screen w-full flex-1 justify-center items-center">
+        <Spinner size="lg" />
+      </View>
+    );
   return (
     <View className="bg-light h-full">
       <Header />
