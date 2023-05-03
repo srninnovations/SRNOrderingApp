@@ -4,9 +4,10 @@
 #Menu page - Add discount functionality
 #Menu page - Recipt divider by main, starters, etc categories
 #Menu page - Add Total, drinks, hot drinks etc to receipt
-#Selection page - Delivery address search functionality
+#Selection page - save Delivery address on Next
 
 #DONE
+#Selection page - Delivery address search functionality
 #Menu page - After placing order, modal for Edit option functionality
 #History page - Edit button to navigate to editable menu
 #History page - Scrollable area for list of order

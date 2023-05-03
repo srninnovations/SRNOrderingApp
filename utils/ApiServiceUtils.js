@@ -196,6 +196,38 @@ export const updateActiveTables = async body => {
   return await response.json();
 };
 
+export const getCustomers = async body => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+
+  const response = await fetch(apiUrl + '/customers', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      'auth-token': token,
+    },
+  });
+
+  return await response.json();
+};
+
+export const addCustomer = async body => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+
+  const response = await fetch(apiUrl + '/customers', {
+    method: 'PUT',
+    body,
+    headers: {
+      'Content-Type': 'application/json',
+      'auth-token': token,
+    },
+  });
+
+  return await response.json();
+};
+
 export default {
   getStaff,
   getOrderTypes,
@@ -207,4 +239,6 @@ export default {
   updateHistory,
   deleteAllHistory,
   updateActiveTables,
+  getCustomers,
+  addCustomer,
 };
