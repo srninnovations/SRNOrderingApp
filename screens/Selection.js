@@ -4,6 +4,7 @@ import StorageUtils from '../utils/StorageUtils';
 import Header from '../components/Header';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import {SelectionConfirmation} from '../components/SelectionConfirmation';
+import PeopleSelector from '../components/PeopleSelector';
 
 import {
   Spinner,
@@ -26,6 +27,7 @@ export default function Selection({navigation}) {
   const [orderType, setOrderType] = useState('');
 
   const [show, setShow] = useState(false);
+  const [selectorShow, setSelectorShow] = useState(false);
 
   const [customerState, setCustomerState] = useState({
     name: '',
@@ -56,6 +58,14 @@ export default function Selection({navigation}) {
 
   const hideModal = () => {
     setShow(false);
+  };
+
+  const showSelectorModal = () => {
+    setSelectorShow(true);
+  };
+
+  const hideSelectorModal = () => {
+    setSelectorShow(false);
   };
 
   const active = table => {
@@ -102,20 +112,24 @@ export default function Selection({navigation}) {
     });
 
     if (!isActive) {
-      await StorageUtils.saveAsyncStorageData('table', table);
-      await StorageUtils.saveAsyncStorageData('customerState', {
-        name: table,
-        address1: '',
-        address2: '',
-        postcode: '',
-        contact: '',
-        deliveryNotes: '',
-      });
-
-      navigation.navigate('Menu');
+      setSelectorShow(true);
     } else {
-      showModal(true);
+      showSelectorModal();
     }
+  };
+
+  const startOrder = async () => {
+    await StorageUtils.saveAsyncStorageData('table', selectedTable);
+    await StorageUtils.saveAsyncStorageData('customerState', {
+      name: selectedTable,
+      address1: '',
+      address2: '',
+      postcode: '',
+      contact: '',
+      deliveryNotes: '',
+    });
+
+    navigation.navigate('Menu');
   };
 
   const updateCustomerState = event => {
@@ -210,6 +224,14 @@ export default function Selection({navigation}) {
     await getDetails();
   };
 
+  const confirmSelection = async value => {
+    await hideSelectorModal();
+    setLoading(true);
+
+    await StorageUtils.saveAsyncStorageData('people', value);
+    await startOrder();
+  };
+
   return (
     <View className="bg-light h-full">
       <Header />
@@ -219,6 +241,12 @@ export default function Selection({navigation}) {
         show={show}
         edit={editOrder}
         hideModal={hideModal}
+      />
+
+      <PeopleSelector
+        show={selectorShow}
+        hideModal={hideSelectorModal}
+        confirm={e => confirmSelection(e)}
       />
 
       <ScrollView ref={scrollViewRef} className="mt-10">
