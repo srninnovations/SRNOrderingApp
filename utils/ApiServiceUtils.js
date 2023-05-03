@@ -101,6 +101,22 @@ const getOrders = async client => {
   return data;
 };
 
+const getSpecificOrder = async orderBody => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+  const response = await fetch(apiUrl + '/orders', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'auth-token': token,
+    },
+    body: JSON.stringify(orderBody),
+  });
+  const data = await response.json();
+  return data;
+};
+
 const deleteHistory = async client => {
   const tokenString = await StorageUtils.getKeychainData('token');
   const token = JSON.parse(tokenString.value);
@@ -186,6 +202,7 @@ export default {
   getTables,
   getMenu,
   getOrders,
+  getSpecificOrder,
   deleteHistory,
   updateHistory,
   deleteAllHistory,
