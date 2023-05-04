@@ -216,16 +216,20 @@ export const addCustomer = async body => {
   const tokenString = await StorageUtils.getKeychainData('token');
   const token = JSON.parse(tokenString.value);
 
-  const response = await fetch(apiUrl + '/customers', {
+  const response = await fetch(apiUrl + '/customer', {
     method: 'PUT',
-    body,
     headers: {
       'Content-Type': 'application/json',
       'auth-token': token,
     },
+    body: JSON.stringify(body),
   });
 
-  return await response.json();
+  if (response.status == 200) {
+    return true;
+  }
+
+  return false;
 };
 
 export default {

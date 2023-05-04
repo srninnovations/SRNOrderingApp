@@ -101,6 +101,27 @@ export default function Selection({navigation}) {
     }
   };
 
+  const updateCustomer = async () => {
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    const client = await StorageUtils.getAsyncStorageData('client');
+
+    const body = {
+      client: {
+        client: client.value,
+        client_id: clientId.value,
+      },
+      address: [
+        {
+          Address1: customerState.address1,
+          Address2: customerState.address2,
+          Postcode: customerState.postcode,
+          Contact: customerState.contact,
+        },
+      ],
+    };
+    return await ApiServiceUtils.addCustomer(body);
+  };
+
   const search = value => {
     setSearchAddress(value);
     if (value.length > 2) {
@@ -224,8 +245,13 @@ export default function Selection({navigation}) {
 
   const takeOrder = async () => {
     if (isFormValid()) {
+      setLoading(true);
       // Proceed with the next steps of taking the order
+      if (orderType == 'Delivery') {
+        await updateCustomer();
+      }
       await StorageUtils.saveAsyncStorageData('customerState', customerState);
+      setLoading(false);
       navigation.navigate('Menu');
     } else {
       // Show an error message or handle the invalid form submission
