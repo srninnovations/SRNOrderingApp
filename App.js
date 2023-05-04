@@ -26,10 +26,7 @@ const App = () => {
   const [orders, setOrders] = useState([]);
   const [customer, setCustomer] = useState({});
   const [tableNo, setTableNo] = useState(0);
-  const [discount, setDiscount] = useState(0);
-  const [total, setTotal] = useState(0);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [people, setPeople] = useState(0);
   const [tableNumbers, setTableNumbers] = useState(0);
   const [orderId, setOrderId] = useState(0);
   const [notes, setNotes] = useState('');
@@ -50,10 +47,6 @@ const App = () => {
               setOrderType,
               tableNo,
               setTableNo,
-              discount,
-              setDiscount,
-              total,
-              setTotal,
               orders,
               setOrders,
               loggedIn,
@@ -62,8 +55,6 @@ const App = () => {
               setCustomer,
               tableNumbers,
               setTableNumbers,
-              people,
-              setPeople,
               customerState,
               orderId,
               setOrderId,
