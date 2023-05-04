@@ -22,7 +22,8 @@ import {getPrinter, printReceipt} from '../utils/PrinterService';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
-import {OrderPlacedComfirmation} from '../components/OrderPlacedConfirmation';
+import {OrderPlacedConfirmation} from '../components/OrderPlacedConfirmation';
+import {ApplyDiscount} from '../components/ApplyDiscount';
 import {Radio, Spinner, Stack, TextArea, useToast} from 'native-base';
 import uniqueID from '../utils/uniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
@@ -56,7 +57,7 @@ export default function Menu({route, navigation}) {
 
   const [itemNoteShow, setItemNoteShow] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [notedItem, setNotedItem] = useState();
 
@@ -71,14 +72,15 @@ export default function Menu({route, navigation}) {
   const [orders, setOrders] = useState([]);
 
   const [total, setTotal] = useState(0);
-
   const [subTotal, setSubTotal] = useState(0);
+  const [discount, setDiscount] = useState(0);
 
   const [totalsByCategory, setTotalsByCategory] = useState();
 
   const [show, setShow] = useState(false);
 
   const [showCustModal, setShowCustModal] = useState(false);
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
 
   const [savedNotes, setSavedNotes] = useState('');
 
@@ -214,7 +216,7 @@ export default function Menu({route, navigation}) {
   }, [menu]);
 
   const getOrder = async () => {
-    setLoading(true);
+    //setLoading(true);
     const customerStateResult = await StorageUtils.getAsyncStorageData(
       'customerState',
     );
@@ -236,11 +238,11 @@ export default function Menu({route, navigation}) {
       });
     });
     order.deliveryNotes && context.setDeliveryNotes(order.deliveryNotes);
-    order.discount && context.setDiscount(order.discount);
+    order.discount && setDiscount(order.discount);
     order.orderType && context.setOrderType(order.orderType);
     order.people && context.setPeople(order.people);
     setTotal(order.total);
-    setLoading(false);
+    //setLoading(false);
   };
   const getDetails = async () => {
     const customerStateResult = await StorageUtils.getAsyncStorageData(
@@ -248,7 +250,7 @@ export default function Menu({route, navigation}) {
     );
     setCustomerState(customerStateResult.value);
 
-    setLoading(true);
+    //setLoading(true);
     const peopleResult = await StorageUtils.getAsyncStorageData('people');
     if (peopleResult) {
       const peopleObject = peopleResult.value;
@@ -283,7 +285,7 @@ export default function Menu({route, navigation}) {
       const sortedCategories = categoryObj.sort((a, b) => a.order - b.order);
       setCategories(sortedCategories);
     }
-    setLoading(false);
+    //setLoading(false);
   };
 
   const findMenuItem = category => {
@@ -455,7 +457,7 @@ export default function Menu({route, navigation}) {
         desserts: totalsByCategory['DESSERTS']
           ? totalsByCategory['DESSERTS']
           : 0,
-        discount: context.discount,
+        discount: discount,
         total,
       },
       client: {
@@ -504,9 +506,19 @@ export default function Menu({route, navigation}) {
     navigation.navigate('Dashboard');
   };
 
+  const addDiscount = () => {
+    setShowDiscountModal(true);
+  };
+
+  const applyDiscount = discountAmount => {
+    setTotal(total - discountAmount);
+    setDiscount(discountAmount);
+  };
+
   const scrollToTop = () => {
     scrollViewRef.current.scrollTo({y: 0, animated: true});
   };
+
   if (loading)
     return (
       <View className="h-screen w-full flex-1 justify-center items-center">
@@ -517,13 +529,21 @@ export default function Menu({route, navigation}) {
     <View className="bg-light h-full">
       <Header />
       <ScrollView ref={scrollViewRef}>
-        <OrderPlacedComfirmation
+        <OrderPlacedConfirmation
           newOrder={newOrder}
           show={orderPlaced}
           edit={() => {
             setOrderPlaced(false), editOrder();
           }}
         />
+
+        <ApplyDiscount
+          show={showDiscountModal}
+          hide={() => setShowDiscountModal(false)}
+          total={total}
+          discount={e => applyDiscount(e)}
+        />
+
         <View className="flex m-6">
           <View className="flex flex-row w-full">
             <View className="w-8/12">
@@ -1087,9 +1107,93 @@ export default function Menu({route, navigation}) {
                     </View>
                     <View className="mt-4 flex w-full h-full">
                       <View className="flex w-full h-full">
-                        <Text className="text-black font-bold text-xl mb-6">
-                          Total: £{total.toFixed(2)}
-                        </Text>
+                        <View className="flex flex-row w-full">
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              Drinks:
+                            </Text>
+                          </View>
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              £
+                              {totalsByCategory && totalsByCategory['ALCOHOL']
+                                ? totalsByCategory['ALCOHOL'].toFixed(2)
+                                : '0.00'}
+                            </Text>
+                          </View>
+                        </View>
+                        <View className="flex flex-row w-full">
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              Desserts:
+                            </Text>
+                          </View>
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              £
+                              {totalsByCategory && totalsByCategory['DESSERTS']
+                                ? totalsByCategory['DESSERTS'].toFixed(2)
+                                : '0.00'}
+                            </Text>
+                          </View>
+                        </View>
+                        <View className="flex flex-row w-full">
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              Hot drinks:{' '}
+                            </Text>
+                          </View>
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              £
+                              {totalsByCategory && totalsByCategory['BEVERAGES']
+                                ? totalsByCategory['BEVERAGES'].toFixed(2)
+                                : '0.00'}
+                            </Text>
+                          </View>
+                        </View>
+                        <View className="flex flex-row w-full">
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              Subtotal:{' '}
+                            </Text>
+                          </View>
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              £{subTotal.toFixed(2)}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View className="flex flex-row w-full">
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              Discount:{' '}
+                            </Text>
+                          </View>
+                          <View className="w-1/3">
+                            <Text className="text-black font-normal text-xl mb-1">
+                              £
+                              {discount && discount > 0
+                                ? discount.toFixed(2)
+                                : '0.00'}{' '}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View className="flex flex-row w-full  mt-4">
+                          <View className="w-1/3">
+                            <Text className="text-black font-bold text-xl mb-1">
+                              Total:
+                            </Text>
+                          </View>
+                          <View className="w-1/3">
+                            <Text className="text-black font-bold text-xl mb-1">
+                              £{total.toFixed(2)}
+                            </Text>
+                          </View>
+                        </View>
+
                         {savedNotes.length > 0 && (
                           <Text className="text-black font-bold text-xl mb-6">
                             Notes:{' '}
@@ -1097,10 +1201,17 @@ export default function Menu({route, navigation}) {
                           </Text>
                         )}
                         <TouchableOpacity
-                          className="bg-custom-amber py-2 px-4 rounded my-4"
+                          className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
                           onPress={placeOrder}>
-                          <Text className="text-black text-center font-bold text-lg">
+                          <Text className="text-white text-center font-bold text-lg">
                             PLACE ORDER
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          className="bg-custom-amber py-2 px-4 rounded my-4"
+                          onPress={addDiscount}>
+                          <Text className="text-black text-center font-bold text-lg">
+                            APPLY DISCOUNT
                           </Text>
                         </TouchableOpacity>
                       </View>

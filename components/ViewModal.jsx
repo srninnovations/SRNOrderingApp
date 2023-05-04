@@ -261,9 +261,7 @@ export default function ViewModal({order}) {
             <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
               <Text className="text-gray-900">Discount:</Text>
               <Text className="text-gray-900 capitalize">
-                {order.orderType === 'DINE IN'
-                  ? `£${order.discount.toFixed(2)}`
-                  : `${order.discount.toFixed(2)}%`}
+                £{order.discount.toFixed(2)}
               </Text>
             </HStack>
           </VStack>
