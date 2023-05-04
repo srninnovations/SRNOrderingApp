@@ -2,7 +2,7 @@ import {Box, Button, HStack, Heading} from 'native-base';
 import {View, Text} from 'react-native';
 import Modal from 'react-native-modal';
 
-export const OrderPlacedComfirmation = ({newOrder, show, edit}) => {
+export const OrderPlacedConfirmation = ({newOrder, show, edit}) => {
   return (
     <>
       <Modal
