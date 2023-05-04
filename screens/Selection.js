@@ -25,6 +25,12 @@ export default function Selection({navigation}) {
   const [tables, setTables] = useState(0);
   const [activeTables, setActiveTables] = useState([]);
   const [orderType, setOrderType] = useState('');
+  const [customers, setCustomers] = useState([]);
+
+  const [searchAddress, setSearchAddress] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [saveAddress, setSaveAddress] = useState(false);
 
   const [show, setShow] = useState(false);
   const [selectorShow, setSelectorShow] = useState(false);
@@ -78,6 +84,83 @@ export default function Selection({navigation}) {
     return false;
   };
 
+  const getCustomersAddresses = async () => {
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    const client = await StorageUtils.getAsyncStorageData('client');
+
+    const params = {
+      client: {
+        client: client.value,
+        client_id: clientId.value,
+      },
+    };
+
+    const customers = await ApiServiceUtils.getCustomers(params);
+    if (customers) {
+      setCustomers(customers);
+    }
+  };
+
+  const updateCustomer = async () => {
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    const client = await StorageUtils.getAsyncStorageData('client');
+
+    const body = {
+      client: {
+        client: client.value,
+        client_id: clientId.value,
+      },
+      address: [
+        {
+          Address1: customerState.address1,
+          Address2: customerState.address2,
+          Postcode: customerState.postcode,
+          Contact: customerState.contact,
+        },
+      ],
+    };
+    return await ApiServiceUtils.addCustomer(body);
+  };
+
+  const search = value => {
+    setSearchAddress(value);
+    if (value.length > 2) {
+      const entries = Object.entries(customers);
+      const filtered = entries.filter(customer => {
+        const address1 = customer[1]['Address1'];
+
+        if (address1.toLowerCase().includes(value.toLowerCase())) {
+          return true;
+        }
+        return false;
+      });
+
+      if (filtered[0]) {
+        const details = filtered[0][1];
+        const exists = searchResults.filter(res => {
+          if (res.Address1 == details.Address1) {
+            return res;
+          }
+        });
+
+        if (exists.length == 0) {
+          setSearchResults([
+            // with a new array
+            ...searchResults, // that contains all the old items
+            details, // and one new item at the end
+          ]);
+        }
+        setShowResults(true);
+      } else {
+        setShowResults(false);
+        setSearchResults([]);
+      }
+    } else {
+      setSearchResults([]);
+      setShowResults(false);
+    }
+  };
+
   const getDetails = async () => {
     const clientObject = await StorageUtils.getAsyncStorageData('client');
     setClient(clientObject.value);
@@ -91,6 +174,9 @@ export default function Selection({navigation}) {
         const tables = await ApiServiceUtils.getTables(clientObject.value);
         setActiveTables(tables.active_tables);
         setTables(tables.no_tables);
+        setLoading(false);
+      } else if (orderTypeValue && orderTypeValue == 'Delivery') {
+        await getCustomersAddresses();
         setLoading(false);
       } else {
         setLoading(false);
@@ -132,8 +218,8 @@ export default function Selection({navigation}) {
     navigation.navigate('Menu');
   };
 
-  const updateCustomerState = event => {
-    const {name, value} = event.target;
+  const updateCustomerState = object => {
+    const {name, value} = object;
     setCustomerState(prevState => ({
       ...prevState,
       [name]: value,
@@ -159,8 +245,13 @@ export default function Selection({navigation}) {
 
   const takeOrder = async () => {
     if (isFormValid()) {
+      setLoading(true);
       // Proceed with the next steps of taking the order
+      if (orderType == 'Delivery') {
+        await updateCustomer();
+      }
       await StorageUtils.saveAsyncStorageData('customerState', customerState);
+      setLoading(false);
       navigation.navigate('Menu');
     } else {
       // Show an error message or handle the invalid form submission
@@ -232,6 +323,13 @@ export default function Selection({navigation}) {
     await startOrder();
   };
 
+  const autoFill = address => {
+    updateCustomerState({name: 'address1', value: address.Address1});
+    updateCustomerState({name: 'address2', value: address.Address2});
+    updateCustomerState({name: 'postcode', value: address.Postcode});
+    updateCustomerState({name: 'contact', value: address.Contact.toString()});
+  };
+
   return (
     <View className="bg-light h-full">
       <Header />
@@ -296,6 +394,7 @@ export default function Selection({navigation}) {
                     Delivery Order
                   </Text>
                 </View>
+
                 <FormControl className="w-96">
                   <Input
                     size="lg"
@@ -303,10 +402,30 @@ export default function Selection({navigation}) {
                     className="bg-white"
                     onSubmitEditing={() => address1Ref.current?.focus()}
                     returnKeyType="next"
+                    value={searchAddress}
+                    onChangeText={e => search(e)}
                   />
-
-                  {/* Render your search results dropdown here */}
                 </FormControl>
+                {showResults && (
+                  <View className="relative">
+                    {searchResults.map((item, index) => {
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          className="py-2 px-4 bg-white border-b border-gray-200"
+                          onPress={() => {
+                            setShowResults(false);
+                            autoFill(item);
+                          }}>
+                          <Text className="text-gray-700 text-xl">
+                            {item.Address1}, {item.Address2}, {item.Postcode}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                )}
+
                 <VStack space={6} mt={6}>
                   <FormControl className="w-96">
                     <Text className="text-xl mb-3">Address 1</Text>
@@ -317,7 +436,7 @@ export default function Selection({navigation}) {
                       name="address1"
                       value={customerState.address1}
                       onChangeText={value =>
-                        updateCustomerState({target: {name: 'address1', value}})
+                        updateCustomerState({name: 'address1', value})
                       }
                       onSubmitEditing={() => address2Ref.current?.focus()}
                       returnKeyType="next"
@@ -332,7 +451,7 @@ export default function Selection({navigation}) {
                       name="address2"
                       value={customerState.address2}
                       onChangeText={value =>
-                        updateCustomerState({target: {name: 'address2', value}})
+                        updateCustomerState({name: 'address2', value})
                       }
                       onSubmitEditing={() => postcodeRef.current?.focus()}
                       returnKeyType="next"
@@ -347,7 +466,7 @@ export default function Selection({navigation}) {
                       name="postcode"
                       value={customerState.postcode}
                       onChangeText={value =>
-                        updateCustomerState({target: {name: 'postcode', value}})
+                        updateCustomerState({name: 'postcode', value})
                       }
                       onSubmitEditing={() => contactRef.current?.focus()}
                       returnKeyType="next"
@@ -363,7 +482,7 @@ export default function Selection({navigation}) {
                       name="contact"
                       value={customerState.contact}
                       onChangeText={value =>
-                        updateCustomerState({target: {name: 'contact', value}})
+                        updateCustomerState({name: 'contact', value})
                       }
                       onSubmitEditing={() => deliveryNotesRef.current?.focus()}
                       returnKeyType="next"
@@ -380,9 +499,7 @@ export default function Selection({navigation}) {
                       name="deliveryNotes"
                       value={customerState.deliveryNotes}
                       onChangeText={value =>
-                        updateCustomerState({
-                          target: {name: 'deliveryNotes', value},
-                        })
+                        updateCustomerState({name: 'deliveryNotes', value})
                       }
                     />
                   </FormControl>
@@ -419,7 +536,7 @@ export default function Selection({navigation}) {
                       name="name"
                       value={customerState.name}
                       onChangeText={value =>
-                        updateCustomerState({target: {name: 'name', value}})
+                        updateCustomerState({name: 'name', value})
                       }
                       onSubmitEditing={() => contactRef.current?.focus()}
                       returnKeyType="next"
@@ -435,7 +552,7 @@ export default function Selection({navigation}) {
                       name="contact"
                       value={customerState.contact}
                       onChangeText={value =>
-                        updateCustomerState({target: {name: 'contact', value}})
+                        updateCustomerState({name: 'contact', value})
                       }
                       onSubmitEditing={() => takeOrder()}
                       returnKeyType="next"
