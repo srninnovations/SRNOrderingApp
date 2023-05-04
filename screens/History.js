@@ -304,8 +304,8 @@ export default function History({navigation}) {
                     key={order.order_id}
                     justifyContent="center"
                     borderColor="gray.400"
-                    borderWidth={'1'}
-                    color={'gray.800'}>
+                    borderWidth="1"
+                    color="gray.800">
                     <Box
                       justifyContent="center"
                       pl={2}
@@ -360,7 +360,7 @@ export default function History({navigation}) {
                     </Box>
                     <Center h="16" borderColor="gray.400" maxW={'1/5'} w="full">
                       <Stack
-                        direction={'row'}
+                        direction="row"
                         flex={1}
                         space={2}
                         justifyContent="center"

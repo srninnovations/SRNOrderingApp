@@ -178,7 +178,23 @@ const deleteAllHistory = async client => {
 
   return response.status;
 };
-
+export const getTableOrder = async (client, table_num) => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+  const response = await fetch(
+    `${apiUrl}/tableOrder?table_num=${table_num}&client=${client}`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'auth-token': token,
+      },
+    },
+  );
+  // console.log('response', response);
+  return await response.json();
+};
 export const updateActiveTables = async body => {
   const tokenString = await StorageUtils.getKeychainData('token');
   const token = JSON.parse(tokenString.value);
@@ -206,5 +222,6 @@ export default {
   deleteHistory,
   updateHistory,
   deleteAllHistory,
+  getTableOrder,
   updateActiveTables,
 };

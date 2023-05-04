@@ -175,105 +175,105 @@ export default function ViewModal({order}) {
             </ScrollView>
           </VStack>
 
-          <VStack minH="1/3">
-            {order.notes && order.notes.length > 0 && (
-              <>
-                <Text className="text-gray-800 mx-5 border-b pb-3 border-custom-border-color">
-                  <Text className="font-bold">Notes</Text>: {order.notes}
-                </Text>
-              </>
-            )}
-            <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
-              <Text className="text-gray-900">Order:</Text>
-              <Text className="text-gray-900 capitalize">
-                {order.orderType.toLowerCase()}
-              </Text>
-            </HStack>
-            {order.orderType === 'DINE IN' && (
-              <HStack
-                maxW={'1/3'}
-                mx="5"
-                mb="5"
-                justifyContent={'space-between'}>
-                <Text className="text-gray-900">Table:</Text>
+          <HStack justifyContent={'center'}>
+            <VStack minH="1/3">
+              {order.notes && order.notes.length > 0 && (
+                <>
+                  <Text className="text-gray-800 mx-5 border-b pb-3 border-custom-border-color">
+                    <Text className="font-bold">Notes</Text>: {order.notes}
+                  </Text>
+                </>
+              )}
+              <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
+                <Text className="text-gray-900">Order:</Text>
                 <Text className="text-gray-900 capitalize">
-                  {order.customer.name}
-                  {order?.people && ` (${order.people} people)`}
+                  {order.orderType.toLowerCase()}
                 </Text>
               </HStack>
-            )}
-            {order.orderType === 'DELIVERY' && (
-              <HStack
-                maxW={'1/3'}
-                mx="5"
-                mb={order.deliveryNotes.length > 0 ? '0' : '5'}
-                justifyContent={'space-between'}>
-                <Text className="text-gray-900">Address:</Text>
-                <Text className="text-gray-900">
-                  {`${order.customer.address1}, ${order.customer.address2}`}
+              {order.orderType.toUpperCase() === 'DINE IN' && (
+                <HStack
+                  w={'2/3'}
+                  mx="5"
+                  mb="5"
+                  justifyContent={'space-between'}>
+                  <Text className="text-gray-900">Table:</Text>
+                  <Text className="text-gray-900 capitalize">
+                    {order.customer.name}
+                    {order?.people && ` (${order.people} people)`}
+                  </Text>
+                </HStack>
+              )}
+              {order.orderType.toUpperCase() === 'DELIVERY' && (
+                <HStack
+                  w={'2/3'}
+                  mx="5"
+                  mb={order.deliveryNotes.length > 0 ? '0' : '5'}
+                  justifyContent={'space-between'}>
+                  <Text className="text-gray-900">Address:</Text>
+                  <Text className="text-gray-900">
+                    {`${order.customer.address1}, ${order.customer.address2}`}
+                  </Text>
+                </HStack>
+              )}
+              {order.orderType.toUpperCase() === 'COLLECTION' && (
+                <HStack
+                  w={'2/3'}
+                  mx="5"
+                  mb="5"
+                  justifyContent={'space-between'}>
+                  <Text className="text-gray-900">Name:</Text>
+                  <Text className="text-gray-900">{order.customer.name}</Text>
+                </HStack>
+              )}
+              {order.deliveryNotes && (
+                <HStack
+                  w={'2/3'}
+                  mx="5"
+                  mb="5"
+                  justifyContent={'space-between'}>
+                  <Text className="text-gray-900">Notes:</Text>
+                  <Text className="text-gray-900">{order.deliveryNotes}</Text>
+                </HStack>
+              )}
+              <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
+                <Text className="text-gray-900">Drinks:</Text>
+                <Text className="text-gray-900 capitalize">
+                  £{order.drinks.toFixed(2)}
                 </Text>
               </HStack>
-            )}
-            {order.orderType === 'COLLECTION' && (
-              <HStack
-                maxW={'1/3'}
-                mx="5"
-                mb="5"
-                justifyContent={'space-between'}>
-                <Text className="text-gray-900">Name:</Text>
-                <Text className="text-gray-900">{order.customer.name}</Text>
+              <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
+                <Text className="text-gray-900">Desserts:</Text>
+                <Text className="text-gray-900 capitalize">
+                  £{order.desserts.toFixed(2)}
+                </Text>
               </HStack>
-            )}
-            {order.deliveryNotes && (
-              <HStack
-                maxW={'1/3'}
-                mx="5"
-                mb="5"
-                justifyContent={'space-between'}>
-                <Text className="text-gray-900">Notes:</Text>
-                <Text className="text-gray-900">{order.deliveryNotes}</Text>
+              <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
+                <Text className="text-gray-900">Hot drinks:</Text>
+                <Text className="text-gray-900 capitalize">
+                  £{order.hotDrinks.toFixed(2)}
+                </Text>
               </HStack>
-            )}
-            <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
-              <Text className="text-gray-900">Drinks:</Text>
-              <Text className="text-gray-900 capitalize">
-                £{order.drinks.toFixed(2)}
-              </Text>
-            </HStack>
-            <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
-              <Text className="text-gray-900">Desserts:</Text>
-              <Text className="text-gray-900 capitalize">
-                £{order.desserts.toFixed(2)}
-              </Text>
-            </HStack>
-            <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
-              <Text className="text-gray-900">Hot drinks:</Text>
-              <Text className="text-gray-900 capitalize">
-                £{order.hotDrinks.toFixed(2)}
-              </Text>
-            </HStack>
-            <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
-              <Text className="text-gray-900">Subtotal:</Text>
-              <Text className="text-gray-900 capitalize">
-                £{order.subTotal.toFixed(2)}
-              </Text>
-            </HStack>
-            <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
-              <Text className="text-gray-900">Discount:</Text>
-              <Text className="text-gray-900 capitalize">
-                {order.orderType === 'DINE IN'
-                  ? `£${order.discount.toFixed(2)}`
-                  : `${order.discount.toFixed(2)}%`}
-              </Text>
-            </HStack>
-          </VStack>
-          <HStack maxW={'1/3'} mx="5" justifyContent={'space-between'}>
+              <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
+                <Text className="text-gray-900">Subtotal:</Text>
+                <Text className="text-gray-900 capitalize">
+                  £{order.subTotal.toFixed(2)}
+                </Text>
+              </HStack>
+              <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
+                <Text className="text-gray-900">Discount:</Text>
+                <Text className="text-gray-900 capitalize">
+                  £{order.discount.toFixed(2)}
+                </Text>
+              </HStack>
+            </VStack>
+          </HStack>
+          <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
             <Text className="text-gray-900 font-bold">Total:</Text>
             <Text className="text-gray-900 capitalize">
               £{order.total.toFixed(2)}
             </Text>
           </HStack>
-          <HStack space="2" justifyContent="flex-end" mr="5" mb="4">
+          <HStack space="2" justifyContent="flex-end" m="5">
             <Button
               size="lg"
               colorScheme="gray"
