@@ -72,7 +72,7 @@ export default function ViewModal({order}) {
     <>
       <Button
         onPress={() => setModalShow(true)}
-        size="sm"
+        size="lg"
         colorScheme={'lightBlue'}>
         View
       </Button>

@@ -186,7 +186,7 @@ export default function History({navigation}) {
       <Header />
       <View className="px-20 bg-white min-h-screen">
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text className="text-2xl font-medium text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
+          <Text className="text-3xl font-medium text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
             History
           </Text>
           {allOrders.length > 0 && (
@@ -195,39 +195,40 @@ export default function History({navigation}) {
               space={10}
               className="px-3 mt-5">
               <Checkbox.Group accessibilityLabel="Filter history">
-                <Heading className="text-custom-dark text-base">
+                <Heading className="text-custom-dark text-xl">
                   Filter by:
                 </Heading>
                 <VStack space={1} my={2}>
                   <Checkbox
                     onChange={isChecked => setFilterCollection(isChecked)}
                     value="Collection">
-                    Collection
+                    <Text className="text-black text-xl">Collection</Text>
                   </Checkbox>
                   <Checkbox
                     onChange={isChecked => setFilterDelivery(isChecked)}
                     value="Delivery">
-                    Delivery
+                    <Text className="text-black text-xl">Delivery</Text>
                   </Checkbox>
                   <Checkbox
+                    className="text-xl"
                     onChange={isChecked => setFilterDineIn(isChecked)}
                     value="Dine In">
-                    Dine In
+                    <Text className="text-black text-xl">Dine In</Text>
                   </Checkbox>
                 </VStack>
               </Checkbox.Group>
               <VStack>
-                <Heading className="text-custom-dark text-base mb-2">
+                <Heading className="text-custom-dark text-xl mb-2">
                   Find by:
                 </Heading>
                 <Input
                   keyboardType="numeric"
-                  size="md"
+                  size="lg"
                   placeholder="Order ID"
                   w="2xs"
                   h="10"
                   focusOutlineColor={'darkBlue.400'}
-                  className="bg-gray-100"
+                  className="bg-gray-50"
                   onChangeText={text => filterByOrderId(parseInt(text))}
                 />
               </VStack>
@@ -247,7 +248,9 @@ export default function History({navigation}) {
               {filterByIdFound ? (
                 <Text className="m-2 text-green-400">Found order</Text>
               ) : (
-                <Text className="m-2 text-black ">Orders: {orders.length}</Text>
+                <Text className="my-4 text-black text-xl">
+                  Orders: {orders.length}
+                </Text>
               )}
               <VStack minH={'3/5'} pb="32">
                 <HStack
@@ -263,7 +266,9 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-bold">Order type</Text>
+                    <Text className="text-black font-semibold text-xl">
+                      Order type
+                    </Text>
                   </Box>
                   <Box
                     justifyContent="center"
@@ -273,7 +278,9 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-bold">Order time</Text>
+                    <Text className="text-black font-semibold text-xl">
+                      Order time
+                    </Text>
                   </Box>
                   <Box
                     justifyContent="center"
@@ -283,7 +290,9 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-bold">Order id</Text>
+                    <Text className="text-black font-semibold text-xl">
+                      Order id
+                    </Text>
                   </Box>
                   <Box
                     justifyContent="center"
@@ -293,10 +302,14 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-bold">Served by</Text>
+                    <Text className="text-black font-semibold text-xl">
+                      Served by
+                    </Text>
                   </Box>
                   <Center h="10" borderColor="gray.400" maxW={'1/5'} w="full">
-                    <Text className="text-black font-bold">Action</Text>
+                    <Text className="text-black font-semibold text-xl">
+                      Action
+                    </Text>
                   </Center>
                 </HStack>
                 {orders.map((order, index) => (
@@ -314,13 +327,15 @@ export default function History({navigation}) {
                       borderColor="gray.400"
                       maxW={'1/5'}
                       w="full">
-                      <Text className="text-black">
+                      <Text className="text-black text-lg">
                         {order.orderType}
                         {order.orderType == 'COLLECTION' && (
-                          <Text className="ml-2">({order.customer.name})</Text>
+                          <Text className="ml-2 text-xl">
+                            ({order.customer.name})
+                          </Text>
                         )}
                         {order.orderType == 'DINE IN' && (
-                          <Text className="px-2">
+                          <Text className="px-2 text-lg">
                             (Table {order.customer.name})
                           </Text>
                         )}
@@ -334,7 +349,7 @@ export default function History({navigation}) {
                       borderColor="gray.400"
                       maxW={'1/5'}
                       w="full">
-                      <Text className="text-black">
+                      <Text className="text-black text-lg">
                         {convertMillisToTime(order.orderDate)}
                       </Text>
                     </Box>
@@ -346,7 +361,9 @@ export default function History({navigation}) {
                       borderColor="gray.400"
                       maxW={'1/5'}
                       w="full">
-                      <Text className="text-black">{order.order_id}</Text>
+                      <Text className="text-black text-lg">
+                        {order.order_id}
+                      </Text>
                     </Box>
                     <Box
                       justifyContent="center"
@@ -356,7 +373,7 @@ export default function History({navigation}) {
                       borderColor="gray.400"
                       maxW={'1/5'}
                       w="full">
-                      <Text className="text-black">{order.staff}</Text>
+                      <Text className="text-black text-lg">{order.staff}</Text>
                     </Box>
                     <Center h="16" borderColor="gray.400" maxW={'1/5'} w="full">
                       <Stack
@@ -372,9 +389,9 @@ export default function History({navigation}) {
                               order_id: order.order_id,
                             })
                           }
-                          size="sm"
+                          size="lg"
                           colorScheme={'muted'}>
-                          <AntIcon name="edit" size={16} color="white" />
+                          <AntIcon name="edit" size={22} color="white" />
                         </Button>
                         <DeleteConfirmation
                           order={deleteOrder}

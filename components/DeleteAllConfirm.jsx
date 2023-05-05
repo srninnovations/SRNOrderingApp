@@ -36,7 +36,11 @@ export default function DeleteAllConfirm({
   };
   return (
     <>
-      <Button colorScheme={'danger'} onPress={showModal} className="h-10">
+      <Button
+        colorScheme={'danger'}
+        onPress={showModal}
+        className="h-16"
+        size="lg">
         Delete All
       </Button>
       <Modal

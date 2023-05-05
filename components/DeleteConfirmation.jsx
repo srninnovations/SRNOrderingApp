@@ -38,8 +38,8 @@ export const DeleteConfirmation = ({
   };
   return (
     <>
-      <Button onPress={showModal} size="sm" colorScheme={'danger'}>
-        <AntIcon name="delete" size={16} color="white" />
+      <Button onPress={showModal} size="lg" colorScheme={'danger'}>
+        <AntIcon name="delete" size={22} color="white" />
       </Button>
       <Modal
         isVisible={show}
