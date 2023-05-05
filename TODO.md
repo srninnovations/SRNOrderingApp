@@ -1,7 +1,10 @@
 #TODO
 
+#Show loader on delete actions
+#Change all buttons to touchable
 #Menu page - Recipt divider by main, starters, etc categories
 #Receipt - Add Total, drinks, hot drinks etc
+#Adjust time on orders (currently 1 hour behind)
 
 #DONE
 #History page - View modal add Delivery and Collection customer details
