@@ -2,7 +2,7 @@ import {Text, ScrollView} from 'react-native';
 import {useEffect, useReducer, useState} from 'react';
 import Modal from 'react-native-modal';
 import {Box, Button, Divider, HStack, Heading, VStack} from 'native-base';
-import {printReceipt} from '../utils/PrinterService';
+import {printReceipt, printKitchenReceipt} from '../utils/PrinterService';
 
 const initialState = {
   starterItems: 0,
@@ -64,8 +64,23 @@ export default function ViewModal({order}) {
     dispatch({type: 'SET_SUBTOTAL', payload: subTotal});
   }, [order]);
 
-  const placeOrder = () => {
-    printReceipt(order.items);
+  const placeOrder = async () => {
+    const totals = {
+      total: order.total,
+      subTotal: order.subTotal,
+      hotDrinks: order.hotDrinks,
+      desserts: order.desserts,
+      discount: order.discount,
+      drinks: order.drinks,
+    };
+    await printReceipt(
+      order.items,
+      totals,
+      order.orderType.toUpperCase() != 'DINE IN',
+    );
+    // if (order.orderType.toUpperCase() != 'DINE IN') {
+    //   await printKitchenReceipt(order.items);
+    // }
   };
 
   return (

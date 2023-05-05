@@ -484,6 +484,18 @@ export default function Menu({route, navigation}) {
 
   const placeOrder = async () => {
     // await printReceipt(orders);
+    const totals = {
+      total: total,
+      subTotal: subTotal,
+      hotDrinks: totalsByCategory['BEVERAGES']
+        ? totalsByCategory['BEVERAGES']
+        : 0,
+      desserts: totalsByCategory['DESSERTS'] ? totalsByCategory['DESSERTS'] : 0,
+      discount: discount,
+      drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
+    };
+    await printReceipt(orders, totals, context.orderType != 'Dine In');
+
     await updateInDB();
     setOrderPlaced(true);
   };
