@@ -1,10 +1,10 @@
 #TODO
 
-#History page - View modal add Delivery and Collection customer details
 #Menu page - Recipt divider by main, starters, etc categories
 #Receipt - Add Total, drinks, hot drinks etc
 
 #DONE
+#History page - View modal add Delivery and Collection customer details
 #Selection page - Delivery address search functionality
 #Menu page - Add Total, drinks, hot drinks etc to order list
 #Menu page - Add discount functionality

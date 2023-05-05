@@ -90,7 +90,7 @@ export default function Menu({route, navigation}) {
   const [customItemQuantity, setCustomItemQuantity] = useState(1);
   const [customItemPrice, setCustomItemPrice] = useState('0.00');
 
-  const [customerState, setCustomerState] = useState(null);
+  // const [context.customerState, setCustomerState] = useState(null);
 
   const [itemNoteText, setItemNoteText] = useState('');
 
@@ -103,8 +103,8 @@ export default function Menu({route, navigation}) {
   const [sundriesItems, setSundriesItems] = useState(0);
   const [sundayItems, setSundayItems] = useState(0);
 
-  const [table, setTable] = useState('');
-  const [people, setPeople] = useState('');
+  // const [context.table, setTable] = useState('');
+  // const [context.people, setPeople] = useState('');
 
   const scrollViewRef = useRef();
 
@@ -201,10 +201,18 @@ export default function Menu({route, navigation}) {
   }, [orders]);
 
   useEffect(() => {
-    getDetails();
-    // params && params.order_id && console.log(params.order_id);
-    params && params.order_id ? getOrder() : context.setOrderId(uniqueID());
+    setLoading(true);
+    newOrder(false);
+    getAllDetails();
   }, [params]);
+
+  const getAllDetails = async () => {
+    await getDetails();
+    params && params.order_id
+      ? await getOrder()
+      : context.setOrderId(uniqueID());
+    setLoading(false);
+  };
 
   // When the menu updates, recalculate the memoized menuItemsByCategory
   useMemo(() => {
@@ -216,11 +224,6 @@ export default function Menu({route, navigation}) {
   }, [menu]);
 
   const getOrder = async () => {
-    //setLoading(true);
-    const customerStateResult = await StorageUtils.getAsyncStorageData(
-      'customerState',
-    );
-    setCustomerState(customerStateResult.value);
     const clientId = await StorageUtils.getAsyncStorageData('clientId');
     const client = await StorageUtils.getAsyncStorageData('client');
     const order = await ApiServiceUtils.getSpecificOrder({
@@ -238,31 +241,16 @@ export default function Menu({route, navigation}) {
       });
     });
     order.deliveryNotes && context.setDeliveryNotes(order.deliveryNotes);
-    order.discount && setDiscount(order.discount);
     order.orderType && context.setOrderType(order.orderType);
     order.people && context.setPeople(order.people);
+    typeof order.customer.name === 'number' &&
+      context.setTableNo(order.customer.name);
+    setSubTotal(order.subTotal);
     setTotal(order.total);
-    //setLoading(false);
+    order.discount && setDiscount(order.discount);
+    order && setLoading(false);
   };
   const getDetails = async () => {
-    const customerStateResult = await StorageUtils.getAsyncStorageData(
-      'customerState',
-    );
-    setCustomerState(customerStateResult.value);
-
-    //setLoading(true);
-    const peopleResult = await StorageUtils.getAsyncStorageData('people');
-    if (peopleResult) {
-      const peopleObject = peopleResult.value;
-
-      setPeople(peopleObject);
-    }
-    const tableResult = await StorageUtils.getAsyncStorageData('table');
-    if (tableResult) {
-      const tableObject = tableResult.value;
-      setTable(tableObject);
-    }
-
     const menuResult = await StorageUtils.getAsyncStorageData('menu');
     if (menuResult) {
       const menuObject = menuResult.value;
@@ -285,7 +273,6 @@ export default function Menu({route, navigation}) {
       const sortedCategories = categoryObj.sort((a, b) => a.order - b.order);
       setCategories(sortedCategories);
     }
-    //setLoading(false);
   };
 
   const findMenuItem = category => {
@@ -497,13 +484,10 @@ export default function Menu({route, navigation}) {
     console.log('Edit order');
   };
 
-  const newOrder = () => {
+  const newOrder = (shouldNavigate = true) => {
     context.setOrderId(0);
-    StorageUtils.removeAsyncStorageData('customerState');
-    StorageUtils.removeAsyncStorageData('table');
-    StorageUtils.removeAsyncStorageData('orderType');
-    StorageUtils.removeAsyncStorageData('people');
-    navigation.navigate('Dashboard');
+    shouldNavigate&& context.dispatch({type:"RESET"})
+    shouldNavigate && navigation.navigate('Dashboard');
   };
 
   const addDiscount = () => {
@@ -552,19 +536,21 @@ export default function Menu({route, navigation}) {
             <View className="flex w-4/12 justify-center items-center">
               {context.orderType == 'Dine In' && (
                 <Text className="text-xl font-semibold text-gray-700">
-                  {`Dine In - Table ${table} (${people} people)`}
+                  {`Dine In - Table ${context.tableNo} (${context.people} people)`}
                 </Text>
               )}
 
               {context.orderType == 'Collection' && (
                 <Text className="text-xl font-semibold text-gray-700">
-                  Collection order - {customerState && customerState.name}
+                  Collection order -{' '}
+                  {context.customerState && context.customerState.name}
                 </Text>
               )}
 
               {context.orderType == 'Delivery' && (
                 <Text className="text-xl font-semibold text-gray-700">
-                  Delivery order - {customerState && customerState.address1}
+                  Delivery order -{' '}
+                  {context.customerState && context.customerState.address1}
                 </Text>
               )}
             </View>
@@ -576,7 +562,11 @@ export default function Menu({route, navigation}) {
                 return (
                   <TouchableOpacity
                     key={`${index}-${category.name}`}
-                    className="my-2 h-14 bg-custom-secondary rounded-lg justify-center"
+                    className={`my-2 h-14 ${
+                      selectedMenu == category.name
+                        ? 'bg-custom-primary'
+                        : 'bg-custom-secondary '
+                    } rounded-lg justify-center`}
                     onPress={() => {
                       findMenuItem(category.name);
                       setHasSubCat(initialHasSubCat);
