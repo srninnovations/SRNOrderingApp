@@ -106,56 +106,55 @@ export default function Login({navigation}) {
   return (
     <>
       <View className="flex-1 justify-center items-center bg-light">
-        <View className="mb-24">
-          <Text className="text-2xl font-medium text-black">
-            Please sign in to continue
-          </Text>
-        </View>
-        <SafeAreaView>
-          <View className="bg-white w-60 h-12 mb-4 items-center align-middle rounded-full">
-            <TextInput
-              className="text-center w-full h-full text-black"
-              placeholder="Email."
-              placeholderTextColor="black"
-              autoCapitalize="none"
-              onChangeText={email => setEmail(email)}
-            />
-          </View>
-          <View className="bg-white w-60 h-12 mb-2 items-center align-middle  rounded-full">
-            <TextInput
-              placeholder="Password."
-              placeholderTextColor="black"
-              className="text-center w-full h-full text-black"
-              autoCapitalize="none"
-              secureTextEntry={true}
-              onChangeText={password => setPassword(password)}
-              onSubmitEditing={loginValidate} // Trigger handleLogin when the user presses the enter button
-            />
-          </View>
-        </SafeAreaView>
-
-        <TouchableOpacity className="mt-5">
-          <Text className="text-custom-grey">Forgot Password?</Text>
-        </TouchableOpacity>
-
-        <View className="mt-10">
-          <Text className="text-warningDark">{error}</Text>
-        </View>
-
         {!loading && (
-          <TouchableOpacity
-            className="bg-custom-secondary rounded-full w-80 h-12 items-center justify-center mt-32"
-            onPress={() => {
-              setError('');
-              loginValidate();
-            }}>
-            <Text className="text-white font-medium text-lg">LOGIN</Text>
-          </TouchableOpacity>
+          <>
+            <View className="mb-24">
+              <Text className="text-2xl font-medium text-black">
+                Please sign in to continue
+              </Text>
+            </View>
+            <SafeAreaView>
+              <View className="bg-white w-60 h-12 mb-4 items-center align-middle rounded-full">
+                <TextInput
+                  className="text-center w-full h-full text-black"
+                  placeholder="Email."
+                  placeholderTextColor="black"
+                  autoCapitalize="none"
+                  onChangeText={email => setEmail(email)}
+                />
+              </View>
+              <View className="bg-white w-60 h-12 mb-2 items-center align-middle  rounded-full">
+                <TextInput
+                  placeholder="Password."
+                  placeholderTextColor="black"
+                  className="text-center w-full h-full text-black"
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                  onChangeText={password => setPassword(password)}
+                  onSubmitEditing={loginValidate} // Trigger handleLogin when the user presses the enter button
+                />
+              </View>
+            </SafeAreaView>
+            <TouchableOpacity className="mt-5">
+              <Text className="text-custom-grey">Forgot Password?</Text>
+            </TouchableOpacity>
+            <View className="mt-10">
+              <Text className="text-warningDark">{error}</Text>
+            </View>
+            <TouchableOpacity
+              className="bg-custom-secondary rounded-full w-80 h-12 items-center justify-center mt-32"
+              onPress={() => {
+                setError('');
+                loginValidate();
+              }}>
+              <Text className="text-white font-medium text-lg">LOGIN</Text>
+            </TouchableOpacity>
+          </>
         )}
 
         {loading && (
           <>
-            <View className="w-80 h-12 items-center justify-center mt-32">
+            <View className="w-80 h-12 items-center justify-center">
               <ActivityIndicator size={40} color="#3498db" />
               <Text className="font-semibold text-lg">Logging in...</Text>
             </View>
