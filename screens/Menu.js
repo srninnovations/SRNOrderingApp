@@ -690,14 +690,15 @@ export default function Menu({route, navigation}) {
                 {orders.length > 0 ? (
                   <>
                     <View className="mb-4">
-                      <Text className="text-black font-medium text-xl">
-                        Order:
+                      <Text className="text-black text-xl text-center font-bold">
+                        ORDER
                       </Text>
+                      <Divider my="4" />
                     </View>
                     <View>
                       {starterItems > 0 && (
-                        <Heading className="font-medium text-lg">
-                          Starters:
+                        <Heading className="font-medium text-xl mb-2">
+                          Starters
                         </Heading>
                       )}
                       {orders.map((o, index) => {
@@ -714,7 +715,7 @@ export default function Menu({route, navigation}) {
                                   <Text className="text-xl text-black">
                                     {o.quantity} x {o.name}
                                   </Text>
-                                  <Text>{o.notes && `- ${o.notes}`}</Text>
+                                  {o.notes && <Text>- {o.notes}</Text>}
                                 </View>
                                 <View className="flex flex-row space-x-1">
                                   <View>
@@ -751,12 +752,14 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               </View>
-                              {starterItems > 0 && <Divider mb="2" />}
                             </View>
                           );
                       })}
+                      {starterItems > 0 && <Divider my="2" />}
                       {mainItems > 0 && (
-                        <Heading className="font-medium text-lg">Main:</Heading>
+                        <Heading className="font-medium text-xl my-2">
+                          Main
+                        </Heading>
                       )}
                       {orders.map((o, index) => {
                         if (
@@ -776,7 +779,7 @@ export default function Menu({route, navigation}) {
                                   <Text className="text-xl text-black">
                                     {o.quantity} x {o.name}
                                   </Text>
-                                  <Text>{o.notes && `- ${o.notes}`}</Text>
+                                  {o.notes && <Text>- {o.notes}</Text>}
                                 </View>
                                 <View className="flex flex-row space-x-1">
                                   <View>
@@ -813,13 +816,13 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               </View>
-                              {mainItems > 0 && <Divider mb="2" />}
                             </View>
                           );
                       })}
+                      {mainItems > 0 && <Divider my="2" />}
                       {sundayItems > 0 && (
-                        <Heading className="font-medium text-lg">
-                          Sundays:
+                        <Heading className="font-medium text-xl my-2 ">
+                          Sundays
                         </Heading>
                       )}
                       {orders.map((o, index) => {
@@ -868,14 +871,14 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               </View>
-                              {sundayItems > 0 && <Divider mb="2" />}
                             </View>
                           );
                       })}
 
+                      {sundayItems > 0 && <Divider my="2" />}
                       {sideDishes > 0 && (
-                        <Heading className="font-medium text-lg">
-                          Side-dishes:
+                        <Heading className="font-medium text-xl my-2 ">
+                          Side-dishes
                         </Heading>
                       )}
                       {orders.map((o, index) => {
@@ -924,13 +927,13 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               </View>
-                              {sideDishes > 0 && <Divider mb="2" />}
                             </View>
                           );
                       })}
+                      {sideDishes > 0 && <Divider my="2" />}
                       {sundriesItems > 0 && (
-                        <Heading className="font-medium text-lg">
-                          Sundries:
+                        <Heading className="font-medium text-xl my-2 ">
+                          Sundries
                         </Heading>
                       )}
                       {orders.map((o, index) => {
@@ -979,19 +982,19 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               </View>
-                              {sundriesItems > 0 && <Divider mb="2" />}
                             </View>
                           );
                       })}
+                      {sundriesItems > 0 && <Divider my="2" />}
                       {dessertItems > 0 && (
-                        <Heading className="font-medium text-lg">
-                          Desserts:
+                        <Heading className="font-medium text-xl my-1 ">
+                          Desserts
                         </Heading>
                       )}
                       {orders.map((o, index) => {
                         if (o.category == 'DESSERTS')
                           return (
-                            <View key={`${index}-${o.name}`} className="my-2">
+                            <View key={`${index}-${o.name}`} className="my-1">
                               <View className="flex flex-row w-full">
                                 <View className="flex w-2/3">
                                   <Text className="text-xl text-black">
@@ -1029,13 +1032,13 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               </View>
-                              {dessertItems > 0 && <Divider mb="2" />}
                             </View>
                           );
                       })}
+                      {dessertItems > 0 && <Divider my="2" />}
                       {beverageItems > 0 && (
-                        <Heading className="font-medium text-lg">
-                          Beverages:
+                        <Heading className="font-medium text-xl mb-2 ">
+                          Beverages
                         </Heading>
                       )}
                       {orders.map((o, index) => {
@@ -1081,13 +1084,13 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               }
-                              {beverageItems > 0 && <Divider mb="2" />}
                             </View>
                           );
                       })}
+                      {beverageItems > 0 && <Divider my="2" />}
                       {alcoholItems > 0 && (
-                        <Heading className="font-medium text-lg">
-                          Alcohols:
+                        <Heading className="font-medium text-xl mb-2 ">
+                          Alcohols
                         </Heading>
                       )}
                       {orders.map((o, index) => {
@@ -1131,11 +1134,11 @@ export default function Menu({route, navigation}) {
                                   </View>
                                 </View>
                               </View>
-                              {alcoholItems > 0 && <Divider mt="3" />}
                             </View>
                           );
                       })}
                     </View>
+                    {alcoholItems > 0 && <Divider mt="6" />}
                     <View className="mt-4 flex w-full h-full">
                       <View className="flex w-full h-full">
                         <View className="flex flex-row w-full">
