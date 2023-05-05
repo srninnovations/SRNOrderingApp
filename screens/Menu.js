@@ -241,12 +241,13 @@ export default function Menu({route, navigation}) {
       });
     });
     order.deliveryNotes && context.setDeliveryNotes(order.deliveryNotes);
-    order.discount && setDiscount(order.discount);
     order.orderType && context.setOrderType(order.orderType);
     order.people && context.setPeople(order.people);
     typeof order.customer.name === 'number' &&
       context.setTableNo(order.customer.name);
-    setTotal(order.subTotal);
+    setSubTotal(order.subTotal);
+    setTotal(order.total);
+    order.discount && setDiscount(order.discount);
     order && setLoading(false);
   };
   const getDetails = async () => {
@@ -485,10 +486,7 @@ export default function Menu({route, navigation}) {
 
   const newOrder = (shouldNavigate = true) => {
     context.setOrderId(0);
-    StorageUtils.removeAsyncStorageData('customerState');
-    StorageUtils.removeAsyncStorageData('table');
-    StorageUtils.removeAsyncStorageData('orderType');
-    StorageUtils.removeAsyncStorageData('people');
+    shouldNavigate&& context.dispatch({type:"RESET"})
     shouldNavigate && navigation.navigate('Dashboard');
   };
 
