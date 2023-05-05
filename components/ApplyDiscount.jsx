@@ -82,6 +82,7 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
                 <Input
                   size="lg"
                   className="bg-white text-center text-xl"
+                  type="password"
                   keyboardType="number-pad"
                   onChangeText={text => setDiscountPin(text)}
                   value={discountPin}
