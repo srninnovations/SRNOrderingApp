@@ -35,8 +35,10 @@ import {
 } from 'native-base';
 import uniqueID from '../utils/uniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
+import Ignore from '../utils/Ignore';
 
 export default function Menu({route, navigation}) {
+  Ignore();
   const params = route.params;
   const initialHasSubCat = {
     isSubCategory: false,
@@ -307,20 +309,42 @@ export default function Menu({route, navigation}) {
   };
 
   const addToOrder = item => {
-    const result = _.filter(orders, el => el.name == item.name && !el.notes);
+    const result = _.filter(orders, el => el.name === item.name && !el.notes);
     if (result.length > 0) {
       const prevOrders = [...orders];
-      const newOrders = prevOrders.find(a => a.name == item.name && !a.notes);
-      if (newOrders != undefined) {
+      const newOrders = prevOrders.find(a => a.name === item.name && !a.notes);
+      if (newOrders !== undefined) {
         newOrders.quantity = newOrders.quantity + 1;
         setOrders(prevOrders);
       }
     } else {
+      let sortOrder = 0;
+
+      const key = item.name;
+
+      switch (true) {
+        case /Pappadom/.test(key):
+          sortOrder = 1;
+          break;
+        case /Chutneys/.test(key):
+          sortOrder = 2;
+          break;
+        case /Rice/.test(key):
+          sortOrder = 1;
+          break;
+        case /Nan/.test(key):
+          sortOrder = 2;
+          break;
+
+        default:
+          sortOrder = orders.length + 3;
+      }
       const addItem = {
         name: item.name,
         price: item.price,
         quantity: 1,
         category: item.category,
+        sortOrder,
       };
       setOrders(oldState => [...oldState, addItem]);
     }
@@ -337,12 +361,34 @@ export default function Menu({route, navigation}) {
   };
 
   const addToOrderWithNotes = item => {
+    let sortOrder = 0;
+
+    const key = item.name;
+
+    switch (true) {
+      case /Pappadom/.test(key):
+        sortOrder = 1;
+        break;
+      case /Chutneys/.test(key):
+        sortOrder = 2;
+        break;
+      case /Rice/.test(key):
+        sortOrder = 1;
+        break;
+      case /Nan/.test(key):
+        sortOrder = 2;
+        break;
+
+      default:
+        sortOrder = orders.length + 3;
+    }
     const addItem = {
       name: item.name,
       price: item.price,
       quantity: 1,
       category: item.category,
       notes: item.notes,
+      sortOrder,
     };
     setOrders(oldState => [...oldState, addItem]);
 
@@ -712,60 +758,62 @@ export default function Menu({route, navigation}) {
                           Starters
                         </Heading>
                       )}
-                      {orders.map((o, index) => {
-                        if (
-                          o.category == 'STARTERS' ||
-                          o.category == 'SIGNATURE STARTERS'
-                        )
-                          return (
-                            <View
-                              key={`${index}-${o.name}`}
-                              className="w-full my-1 font-semibold">
-                              <View className="flex flex-row w-full">
-                                <View className="flex w-2/3">
-                                  <Text className="text-xl text-black">
-                                    {o.quantity} x {o.name}
-                                  </Text>
-                                  {o.notes && <Text>- {o.notes}</Text>}
-                                </View>
-                                <View className="flex flex-row space-x-1">
-                                  <View>
-                                    <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
-                                      onPress={
-                                        o.notes
-                                          ? () => removeOrderWithNotes(o)
-                                          : () => removeItem(o)
-                                      }>
-                                      <Text className="text-center text-xl text-white">
-                                        <Icon
-                                          name="minus"
-                                          size={16}
-                                          color="#fefefe"
-                                        />
-                                      </Text>
-                                    </TouchableOpacity>
+                      {orders
+                        .sort((a, b) => a.sortOrder - b.sortOrder)
+                        .map((o, index) => {
+                          if (
+                            o.category === 'STARTERS' ||
+                            o.category === 'SIGNATURE STARTERS'
+                          )
+                            return (
+                              <View
+                                key={`${index}-${o.name}`}
+                                className="w-full my-1 font-semibold">
+                                <View className="flex flex-row w-full">
+                                  <View className="flex w-2/3">
+                                    <Text className="text-xl text-black">
+                                      {o.quantity} x {o.name}
+                                    </Text>
+                                    {o.notes && <Text>- {o.notes}</Text>}
                                   </View>
-                                  <View>
-                                    <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
-                                      onPress={() =>
-                                        increaseQuantity(o, index)
-                                      }>
-                                      <Text className="text-center text-xl text-white">
-                                        <Icon
-                                          name="plus"
-                                          size={16}
-                                          color="#fefefe"
-                                        />
-                                      </Text>
-                                    </TouchableOpacity>
+                                  <View className="flex flex-row space-x-1">
+                                    <View>
+                                      <TouchableOpacity
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                        onPress={
+                                          o.notes
+                                            ? () => removeOrderWithNotes(o)
+                                            : () => removeItem(o)
+                                        }>
+                                        <Text className="text-center text-xl text-white">
+                                          <Icon
+                                            name="minus"
+                                            size={16}
+                                            color="#fefefe"
+                                          />
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                    <View>
+                                      <TouchableOpacity
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                        onPress={() =>
+                                          increaseQuantity(o, index)
+                                        }>
+                                        <Text className="text-center text-xl text-white">
+                                          <Icon
+                                            name="plus"
+                                            size={16}
+                                            color="#fefefe"
+                                          />
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
                                   </View>
                                 </View>
                               </View>
-                            </View>
-                          );
-                      })}
+                            );
+                        })}
                       {starterItems > 0 && <Divider my="2" />}
                       {mainItems > 0 && (
                         <Heading className="font-medium text-xl my-2">
@@ -947,55 +995,57 @@ export default function Menu({route, navigation}) {
                           Sundries
                         </Heading>
                       )}
-                      {orders.map((o, index) => {
-                        if (o.category == 'SUNDRIES')
-                          return (
-                            <View key={`${index}-${o.name}`} className="my-1">
-                              <View className="flex flex-row w-full">
-                                <View className="flex w-2/3">
-                                  <Text className="text-xl text-black">
-                                    {o.quantity} x {o.name}
-                                  </Text>
-                                  <Text>{o.notes && `- ${o.notes}`}</Text>
-                                </View>
-                                <View className="flex flex-row space-x-1">
-                                  <View>
-                                    <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
-                                      onPress={
-                                        o.notes
-                                          ? () => removeOrderWithNotes(o)
-                                          : () => removeItem(o)
-                                      }>
-                                      <Text className="text-center text-xl text-white">
-                                        <Icon
-                                          name="minus"
-                                          size={16}
-                                          color="#fefefe"
-                                        />
-                                      </Text>
-                                    </TouchableOpacity>
+                      {orders
+                        .sort((a, b) => a.sortOrder - b.sortOrder)
+                        .map((o, index) => {
+                          if (o.category === 'SUNDRIES')
+                            return (
+                              <View key={`${index}-${o.name}`} className="my-1">
+                                <View className="flex flex-row w-full">
+                                  <View className="flex w-2/3">
+                                    <Text className="text-xl text-black">
+                                      {o.quantity} x {o.name}
+                                    </Text>
+                                    <Text>{o.notes && `- ${o.notes}`}</Text>
                                   </View>
-                                  <View>
-                                    <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
-                                      onPress={() =>
-                                        increaseQuantity(o, index)
-                                      }>
-                                      <Text className="text-center text-xl text-white">
-                                        <Icon
-                                          name="plus"
-                                          size={16}
-                                          color="#fefefe"
-                                        />
-                                      </Text>
-                                    </TouchableOpacity>
+                                  <View className="flex flex-row space-x-1">
+                                    <View>
+                                      <TouchableOpacity
+                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                        onPress={
+                                          o.notes
+                                            ? () => removeOrderWithNotes(o)
+                                            : () => removeItem(o)
+                                        }>
+                                        <Text className="text-center text-xl text-white">
+                                          <Icon
+                                            name="minus"
+                                            size={16}
+                                            color="#fefefe"
+                                          />
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                    <View>
+                                      <TouchableOpacity
+                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                        onPress={() =>
+                                          increaseQuantity(o, index)
+                                        }>
+                                        <Text className="text-center text-xl text-white">
+                                          <Icon
+                                            name="plus"
+                                            size={16}
+                                            color="#fefefe"
+                                          />
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
                                   </View>
                                 </View>
                               </View>
-                            </View>
-                          );
-                      })}
+                            );
+                        })}
                       {sundriesItems > 0 && <Divider my="2" />}
                       {dessertItems > 0 && (
                         <Heading className="font-medium text-xl my-1 ">

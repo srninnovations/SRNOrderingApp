@@ -20,6 +20,7 @@ export const DeleteConfirmation = ({
   showModal,
   hideModal,
   order,
+  deleteLoad,
 }) => {
   const [validPin, setValidPin] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
@@ -109,11 +110,18 @@ export const DeleteConfirmation = ({
             </FormControl>
           )}
           <HStack justifyContent="flex-end" space="3" px="5" pt="2" pb={'4'}>
-            <Button onPress={hideModal} colorScheme={'gray'}>
+            <Button
+              isDisabled={deleteLoad}
+              onPress={hideModal}
+              colorScheme={'gray'}>
               Close
             </Button>
             {validPin && (
-              <Button onPress={confirmDelete} colorScheme={'danger'}>
+              <Button
+                isLoading={deleteLoad}
+                isLoadingText="Deleting"
+                onPress={confirmDelete}
+                colorScheme={'danger'}>
                 Delete
               </Button>
             )}

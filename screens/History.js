@@ -24,6 +24,7 @@ import ViewModal from '../components/ViewModal';
 import DeleteAllConfirm from '../components/DeleteAllConfirm';
 import * as RNLocalize from 'react-native-localize';
 import moment from 'moment-timezone';
+import CustomToast from '../components/CustomToast';
 
 export default function History({navigation}) {
   Ignore();
@@ -42,6 +43,7 @@ export default function History({navigation}) {
   const [filterCollection, setFilterCollection] = useState(false);
   const [filterByIdFound, setFilterByIdFound] = useState(false);
   const [deleteOrder, setDeleteOrder] = useState({});
+  const [deleteLoad, setDeleteLoad] = useState(false);
 
   const getClient = async () => {
     const res = await StorageUtils.getAsyncStorageData('client');
@@ -58,7 +60,7 @@ export default function History({navigation}) {
       if (!toast.isActive('staff'))
         toast.show({
           id: 'staff',
-          title: 'Select a staff to continue.',
+          render: () => <CustomToast title="Select a staff to continue." />,
         });
     } else {
       getClient();
@@ -142,6 +144,7 @@ export default function History({navigation}) {
   };
 
   const confirmDelete = async order => {
+    setDeleteLoad(true);
     const res = await ApiServiceUtils.deleteHistory({
       client,
       client_id: clientId,
@@ -156,12 +159,13 @@ export default function History({navigation}) {
       if (!toast.isActive('delete'))
         toast.show({
           id: 'delete',
-          title: 'Deleted Successfully!',
+          render: () => <CustomToast title={'Deleted Successfully!'} />,
         });
     }
   };
 
   const confirmDeleteAll = async () => {
+    setDeleteLoad(true);
     const res = await ApiServiceUtils.deleteAllHistory({
       client,
       client_id: clientId,
@@ -174,7 +178,7 @@ export default function History({navigation}) {
       if (!toast.isActive('delete-all'))
         toast.show({
           id: 'delete-all',
-          title: 'Cleared all orders!',
+          render: () => <CustomToast title="Cleared all orders!" />,
         });
     }
   };
@@ -239,9 +243,13 @@ export default function History({navigation}) {
                 <DeleteAllConfirm
                   order={deleteOrder}
                   show={showAll}
+                  deleteLoad={deleteLoad}
                   showModal={() => setShowAll(true)}
                   hideModal={hideDeleteAllModal}
-                  confirmDelete={confirmDeleteAll}
+                  confirmDelete={async () => {
+                    await confirmDeleteAll();
+                    setDeleteLoad(false);
+                  }}
                 />
               )}
             </HStack>
@@ -401,7 +409,11 @@ export default function History({navigation}) {
                           show={show}
                           showModal={() => showModal(order)}
                           hideModal={hideModal}
-                          confirmDelete={() => confirmDelete(deleteOrder)}
+                          deleteLoad={deleteLoad}
+                          confirmDelete={async () => {
+                            await confirmDelete(deleteOrder);
+                            setDeleteLoad(false);
+                          }}
                         />
                       </Stack>
                     </Center>
