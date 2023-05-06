@@ -97,7 +97,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
         break;
 
       default:
-        item.sortOrder = sortedOrders.length + 3;
+        item.sortOrder = orders.length + 3;
     }
     return item;
   });
