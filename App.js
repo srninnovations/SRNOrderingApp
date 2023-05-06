@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './navigations/AuthNavigator';
 import GlobalContext from './utils/GlobalContext.';
 import {NativeBaseProvider} from 'native-base';
+import Ignore from './utils/Ignore';
 const App = () => {
   const initialCustomer = {
     address1: '',
@@ -36,6 +37,7 @@ const App = () => {
     customerReducer,
     initialCustomer,
   );
+  Ignore();
   return (
     <>
       <NavigationContainer>
