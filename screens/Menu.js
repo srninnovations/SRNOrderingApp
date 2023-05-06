@@ -17,12 +17,18 @@ import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
 // import {useNavigation} from '@react-navigation/native';
 
-import {getPrinter, printReceiptsOnPlaceOrder} from '../utils/PrinterService';
+import {
+  getPrinter,
+  printReceiptsOnPlaceOrder,
+  printNewKitckenReceipt,
+  printNewCustomerReceipt,
+} from '../utils/PrinterService';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AddNotesModal from '../components/AddNotesModal';
 import {OrderPlacedConfirmation} from '../components/OrderPlacedConfirmation';
+import {OrderUpdatedConfirmation} from '../components/OrderUpdatedConfirmation';
 import {ApplyDiscount} from '../components/ApplyDiscount';
 import {
   Divider,
@@ -91,6 +97,8 @@ export default function Menu({route, navigation}) {
   const [showDiscountModal, setShowDiscountModal] = useState(false);
 
   const [savedNotes, setSavedNotes] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [orderUpdated, setOrderUpdated] = useState(false);
 
   const [customItemType, setCustomItemType] = useState('Food');
   const [customItemCategory, setCustomItemCategory] = useState('STARTERS');
@@ -216,9 +224,13 @@ export default function Menu({route, navigation}) {
 
   const getAllDetails = async () => {
     await getDetails();
-    params && params.order_id
-      ? await getOrder()
-      : context.setOrderId(uniqueID());
+
+    if (params && params.order_id) {
+      await getOrder();
+      setEditMode(true);
+    } else {
+      context.setOrderId(uniqueID());
+    }
     setLoading(false);
   };
 
@@ -476,7 +488,12 @@ export default function Menu({route, navigation}) {
   };
 
   const placeOrder = async () => {
-    // await printReceipt(orders);
+    await print();
+    await updateInDB();
+    setOrderPlaced(true);
+  };
+
+  const print = async () => {
     const totals = {
       total: total,
       subTotal: subTotal,
@@ -494,9 +511,44 @@ export default function Menu({route, navigation}) {
     };
 
     await printReceiptsOnPlaceOrder(orders, totals, orderDetails);
+  };
+  const printKitcken = async () => {
+    const totals = {
+      total: total,
+      subTotal: subTotal,
+      hotDrinks: totalsByCategory['BEVERAGES']
+        ? totalsByCategory['BEVERAGES']
+        : 0,
+      desserts: totalsByCategory['DESSERTS'] ? totalsByCategory['DESSERTS'] : 0,
+      discount: discount,
+      drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
+    };
 
-    await updateInDB();
-    setOrderPlaced(true);
+    const orderDetails = {
+      orderType: context.orderType,
+      customerDetails: context.customerState,
+    };
+
+    await printNewKitckenReceipt(orders, orderDetails);
+  };
+  const printCustomer = async () => {
+    const totals = {
+      total: total,
+      subTotal: subTotal,
+      hotDrinks: totalsByCategory['BEVERAGES']
+        ? totalsByCategory['BEVERAGES']
+        : 0,
+      desserts: totalsByCategory['DESSERTS'] ? totalsByCategory['DESSERTS'] : 0,
+      discount: discount,
+      drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
+    };
+
+    const orderDetails = {
+      orderType: context.orderType,
+      customerDetails: context.customerState,
+    };
+
+    await printNewCustomerReceipt(orders, totals, orderDetails);
   };
 
   const editOrder = () => {
@@ -538,6 +590,15 @@ export default function Menu({route, navigation}) {
           edit={() => {
             setOrderPlaced(false), editOrder();
           }}
+        />
+        <OrderUpdatedConfirmation
+          newOrder={newOrder}
+          show={orderUpdated}
+          edit={() => {
+            setOrderUpdated(false), editOrder();
+          }}
+          kitchenRecipt={() => printKitcken()}
+          customerReceipt={() => printCustomer()}
         />
 
         <ApplyDiscount
@@ -1245,13 +1306,25 @@ export default function Menu({route, navigation}) {
                             <Text className="font-normal">{savedNotes}</Text>
                           </Text>
                         )}
-                        <TouchableOpacity
-                          className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
-                          onPress={placeOrder}>
-                          <Text className="text-white text-center font-bold text-lg">
-                            PLACE ORDER
-                          </Text>
-                        </TouchableOpacity>
+                        {!editMode ? (
+                          <TouchableOpacity
+                            className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
+                            onPress={placeOrder}>
+                            <Text className="text-white text-center font-bold text-lg">
+                              PLACE ORDER
+                            </Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
+                            onPress={async () => {
+                              await updateInDB(), setOrderUpdated(true);
+                            }}>
+                            <Text className="text-white text-center font-bold text-lg">
+                              UPDATE ORDER
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                         <TouchableOpacity
                           className="bg-custom-amber py-2 px-4 rounded my-4"
                           onPress={addDiscount}>
