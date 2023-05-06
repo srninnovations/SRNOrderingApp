@@ -1,3 +1,4 @@
+import {LogBox} from 'react-native';
 import EscPosPrinter, {
   getPrinterSeriesByName,
 } from 'react-native-esc-pos-printer';
@@ -18,6 +19,9 @@ export const getPrinter = async () => {
 };
 
 export const printReceipt = async (orders, totals, orderDetails) => {
+  LogBox.ignoreLogs([
+    ' Possible Unhandled Promise Rejection (id: 2)  Error: ERR_CONNECT Error: ERR_CONNECT',
+  ]);
   try {
     await EscPosPrinter.init({
       target: 'TCP:192.168.1.125',
