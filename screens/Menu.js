@@ -17,7 +17,7 @@ import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
 // import {useNavigation} from '@react-navigation/native';
 
-import {getPrinter, printReceipt} from '../utils/PrinterService';
+import {getPrinter, printReceiptsOnPlaceOrder} from '../utils/PrinterService';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -493,7 +493,7 @@ export default function Menu({route, navigation}) {
       customerDetails: context.customerState,
     };
 
-    await printReceipt(orders, totals, orderDetails);
+    await printReceiptsOnPlaceOrder(orders, totals, orderDetails);
 
     await updateInDB();
     setOrderPlaced(true);
