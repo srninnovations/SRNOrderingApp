@@ -22,6 +22,29 @@ export const printReceiptsOnPlaceOrder = async (
   totals,
   orderDetails,
 ) => {
+  const sortReadyArr = orders.map(item => {
+    const key = item.name;
+
+    switch (true) {
+      case /Pappadom/.test(key):
+        item.sortOrder = 1;
+        break;
+      case /Chutneys/.test(key):
+        item.sortOrder = 2;
+        break;
+      case /Rice/.test(key):
+        item.sortOrder = 1;
+        break;
+      case /Nan/.test(key):
+        item.sortOrder = 2;
+        break;
+
+      default:
+        item.sortOrder = orders.length + 3;
+    }
+    return item;
+  });
+  const sortedOrders = sortReadyArr.sort((a, b) => a.sortOrder - b.sortOrder);
   try {
     await EscPosPrinter.init({
       target: 'TCP:192.168.1.125',
@@ -39,14 +62,14 @@ export const printReceiptsOnPlaceOrder = async (
     ) {
       printing = await printCustomerReceipt(
         printing,
-        orders,
+        sortedOrders,
         totals,
         orderDetails,
       );
     }
 
     // print kitchen receipt
-    printing = await printKitchenReceipt(printing, orders, orderDetails);
+    printing = await printKitchenReceipt(printing, sortedOrders, orderDetails);
 
     printing.send();
     console.log('Success:', status);
@@ -56,6 +79,29 @@ export const printReceiptsOnPlaceOrder = async (
 };
 
 export const printNewKitckenReceipt = async (orders, orderDetails) => {
+  const sortReadyArr = orders.map(item => {
+    const key = item.name;
+
+    switch (true) {
+      case /Pappadom/.test(key):
+        item.sortOrder = 1;
+        break;
+      case /Chutneys/.test(key):
+        item.sortOrder = 2;
+        break;
+      case /Rice/.test(key):
+        item.sortOrder = 1;
+        break;
+      case /Nan/.test(key):
+        item.sortOrder = 2;
+        break;
+
+      default:
+        item.sortOrder = sortedOrders.length + 3;
+    }
+    return item;
+  });
+  const sortedOrders = sortReadyArr.sort((a, b) => a.sortOrder - b.sortOrder);
   try {
     await EscPosPrinter.init({
       target: 'TCP:192.168.1.125',
@@ -69,7 +115,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     // Print order items
     printing.align('left');
     printing.size(2, 2);
-    orders.forEach(o => {
+    sortedOrders.forEach(o => {
       if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
         printing.line(o.quantity + ' ' + o.name).newline();
         if (o.notes && o.notes.length > 0) {
@@ -78,7 +124,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
       }
     });
 
-    orders.forEach(o => {
+    sortedOrders.forEach(o => {
       if (
         o.category != 'STARTERS' &&
         o.category != 'SIGNATURE STARTERS' &&
@@ -97,7 +143,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     });
 
     // Print Sunday Menu items
-    orders.forEach((o, index) => {
+    sortedOrders.forEach((o, index) => {
       if (o.category === 'SUNDAY MENU') {
         printing.line(o.quantity + ' ' + o.name).newline();
         if (o.notes && o.notes.length > 0) {
@@ -107,7 +153,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     });
 
     // Print Vegetable Side Dishes items
-    orders.forEach(o => {
+    sortedOrders.forEach(o => {
       if (o.category == 'VEGETABLE SIDE DISHES') {
         printing.line(o.quantity + ' ' + o.name).newline();
         if (o.notes && o.notes.length > 0) {
@@ -117,7 +163,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     });
 
     // Print Sundries items
-    orders.forEach(o => {
+    sortedOrders.forEach(o => {
       if (o.category == 'SUNDRIES') {
         printing.line(o.quantity + ' ' + o.name).newline();
         if (o.notes && o.notes.length > 0) {
@@ -399,10 +445,33 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
 };
 
 const printKitchenReceipt = async (printing, orders, orderDetails) => {
+  const sortReadyArr = orders.map(item => {
+    const key = item.name;
+
+    switch (true) {
+      case /Pappadom/.test(key):
+        item.sortOrder = 1;
+        break;
+      case /Chutneys/.test(key):
+        item.sortOrder = 2;
+        break;
+      case /Rice/.test(key):
+        item.sortOrder = 1;
+        break;
+      case /Nan/.test(key):
+        item.sortOrder = 2;
+        break;
+
+      default:
+        item.sortOrder = orders.length + 3;
+    }
+    return item;
+  });
+  const sortedOrders = sortReadyArr.sort((a, b) => a.sortOrder - b.sortOrder);
   // Print order items
   printing.align('left');
   printing.size(2, 2);
-  orders.forEach(o => {
+  sortedOrders.forEach(o => {
     if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
       printing.line(o.quantity + ' ' + o.name).newline();
       if (o.notes && o.notes.length > 0) {
@@ -411,7 +480,7 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
     }
   });
 
-  orders.forEach(o => {
+  sortedOrders.forEach(o => {
     if (
       o.category != 'STARTERS' &&
       o.category != 'SIGNATURE STARTERS' &&
@@ -430,7 +499,7 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   });
 
   // Print Sunday Menu items
-  orders.forEach((o, index) => {
+  sortedOrders.forEach((o, index) => {
     if (o.category === 'SUNDAY MENU') {
       printing.line(o.quantity + ' ' + o.name).newline();
       if (o.notes && o.notes.length > 0) {
@@ -440,7 +509,7 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   });
 
   // Print Vegetable Side Dishes items
-  orders.forEach(o => {
+  sortedOrders.forEach(o => {
     if (o.category == 'VEGETABLE SIDE DISHES') {
       printing.line(o.quantity + ' ' + o.name).newline();
       if (o.notes && o.notes.length > 0) {
@@ -450,7 +519,7 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   });
 
   // Print Sundries items
-  orders.forEach(o => {
+  sortedOrders.forEach(o => {
     if (o.category == 'SUNDRIES') {
       printing.line(o.quantity + ' ' + o.name).newline();
       if (o.notes && o.notes.length > 0) {
