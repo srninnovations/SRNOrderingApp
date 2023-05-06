@@ -461,13 +461,6 @@ export default function Menu({route, navigation}) {
       },
     };
 
-    // const res = await ApiServiceUtils.updateHistory(params);
-    // if (res.acknowledged) {
-    //   toast.show({
-    //     id: 'order-added',
-    //     title: 'Order added successfully',
-    //   });
-    // }
     await ApiServiceUtils.updateHistory(params);
 
     const body = {
@@ -494,7 +487,7 @@ export default function Menu({route, navigation}) {
       discount: discount,
       drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
     };
-    await printReceipt(orders, totals, context.orderType != 'Dine In');
+    // await printReceipt(orders, totals, context.orderType != 'Dine In');
 
     await updateInDB();
     setOrderPlaced(true);
@@ -1515,42 +1508,3 @@ export default function Menu({route, navigation}) {
     </View>
   );
 }
-/*
-<View className="w-4/12 mt-3">
-              <View
-                className="w-full p-4 h-auto min-h-10 bg-white rounded-lg"
-                style={[styles.elevation]}>
-                {orders.length > 0 ? (
-                  <>
-                    
-                    <View className="mt-4 flex w-full h-full">
-                      <View className="flex w-full h-full">
-                        <Text className="text-black font-bold text-xl mb-6">
-                          Total: £{total.toFixed(2)}
-                        </Text>
-                        {savedNotes.length > 0 && (
-                          <Text className="text-black font-bold text-xl mb-6">
-                            Notes:{' '}
-                            <Text className="font-normal">{savedNotes}</Text>
-                          </Text>
-                        )}
-                        <TouchableOpacity
-                          className="bg-custom-amber py-2 px-4 rounded my-4"
-                          onPress={placeOrder}>
-                          <Text className="text-black text-center font-bold text-lg">
-                            PLACE ORDER
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </>
-                ) : (
-                  <View className="w-full justify-center items-center flex">
-                    <Text className="text-center text-black text-lg">
-                      Empty plate 🙁
-                    </Text>
-                  </View>
-                )}
-              </View>
-            </View>
-*/

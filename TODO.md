@@ -4,9 +4,9 @@
 #Change all buttons to touchable
 #Menu page - Recipt divider by main, starters, etc categories
 #Receipt - Add Total, drinks, hot drinks etc
-#Adjust time on orders (currently 1 hour behind)
 
 #DONE
+#Adjust time on orders (currently 1 hour behind)
 #History page - View modal add Delivery and Collection customer details
 #Selection page - Delivery address search functionality
 #Menu page - Add Total, drinks, hot drinks etc to order list

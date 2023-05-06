@@ -22,6 +22,8 @@ import Ignore from '../utils/Ignore';
 import {DeleteConfirmation} from '../components/DeleteConfirmation';
 import ViewModal from '../components/ViewModal';
 import DeleteAllConfirm from '../components/DeleteAllConfirm';
+import * as RNLocalize from 'react-native-localize';
+import moment from 'moment-timezone';
 
 export default function History({navigation}) {
   Ignore();
@@ -133,9 +135,10 @@ export default function History({navigation}) {
 
   const convertMillisToTime = millis => {
     const date = new Date(millis);
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+    const deviceTimeZone = RNLocalize.getTimeZone();
+    //if top return doesn't work then try the bottom one
+    return moment(date).tz(deviceTimeZone).format('HH:mm');
+    // return moment(date).tz('Europe/London').format('HH:mm');
   };
 
   const confirmDelete = async order => {
