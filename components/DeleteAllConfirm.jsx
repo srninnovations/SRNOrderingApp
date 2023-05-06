@@ -18,6 +18,7 @@ export default function DeleteAllConfirm({
   show,
   showModal,
   hideModal,
+  deleteLoad,
 }) {
   const [validPin, setValidPin] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
@@ -108,11 +109,18 @@ export default function DeleteAllConfirm({
             </FormControl>
           )}
           <HStack justifyContent="flex-end" space="3" px="5" pt="2" pb={'4'}>
-            <Button onPress={hideModal} colorScheme={'gray'}>
+            <Button
+              isDisabled={deleteLoad}
+              onPress={hideModal}
+              colorScheme={'gray'}>
               Close
             </Button>
             {validPin && (
-              <Button onPress={confirmDelete} colorScheme={'danger'}>
+              <Button
+                isLoading={deleteLoad}
+                isLoadingText="Clearing All Orders"
+                onPress={confirmDelete}
+                colorScheme={'danger'}>
                 Delete
               </Button>
             )}

@@ -19,6 +19,7 @@ import {
   useToast,
 } from 'native-base';
 import GlobalContext from '../utils/GlobalContext.';
+import CustomToast from '../components/CustomToast';
 
 export default function Selection({navigation}) {
   const [loading, setLoading] = useState(false);
@@ -273,13 +274,16 @@ export default function Selection({navigation}) {
       // Show an error message or handle the invalid form submission
       if (orderType == 'Delivery') {
         toast.show({
-          title:
-            'Please fill out all required fields:\n\nAddress 1, Postcode, Contact Number',
+          render: () => (
+            <CustomToast title="Please fill out all required fields:\n\nAddress 1, Postcode, Contact Number" />
+          ),
         });
       }
       if (orderType == 'Collection') {
         toast.show({
-          title: `Please fill out all required fields:\n\nName, Contact Number`,
+          render: () => (
+            <CustomToast title="Please fill out all required fields:\n\nName, Contact Number" />
+          ),
         });
       }
     }
