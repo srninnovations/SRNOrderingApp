@@ -1,8 +1,11 @@
-import {Text, ScrollView} from 'react-native';
+import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 import {useEffect, useReducer, useState} from 'react';
 import Modal from 'react-native-modal';
 import {Box, Button, Divider, HStack, Heading, VStack} from 'native-base';
-import {printReceipt, printKitchenReceipt} from '../utils/PrinterService';
+import {
+  printReceiptsOnPlaceOrder,
+  printKitchenReceipt,
+} from '../utils/PrinterService';
 
 const initialState = {
   starterItems: 0,
@@ -73,12 +76,13 @@ export default function ViewModal({order}) {
       discount: order.discount,
       drinks: order.drinks,
     };
+
     const orderDetails = {
       orderType: order.orderType,
       customerDetails: order.customer,
     };
 
-    await printReceipt(order.items, totals, orderDetails);
+    await printReceiptsOnPlaceOrder(order.items, totals, orderDetails);
   };
 
   return (
@@ -106,7 +110,7 @@ export default function ViewModal({order}) {
               {order.items.map((o, idx) => (
                 <Box key={idx}>
                   {o.category == 'STARTERS' && (
-                    <Text className="text-black">
+                    <Text className="text-black text-xl">
                       {o.quantity} x {o.name}
                       {o.notes && `- ${o.notes}`}
                     </Text>
@@ -122,7 +126,7 @@ export default function ViewModal({order}) {
                     o.category != 'BEVERAGES' &&
                     o.category != 'SUNDAY MENU' &&
                     o.category != 'ALCOHOL' && (
-                      <Text className="text-black">
+                      <Text className="text-black text-xl">
                         {o.quantity} x {o.name}
                         {o.notes && `- ${o.notes}`}
                       </Text>
@@ -133,7 +137,7 @@ export default function ViewModal({order}) {
               {order.items.map((o, idx) => (
                 <Box key={idx}>
                   {o.category === 'SUNDAY MENU' && (
-                    <Text className="text-black">
+                    <Text className="text-black text-xl">
                       {o.quantity} x {o.name}
                       {o.notes && `- ${o.notes}`}
                     </Text>
@@ -144,7 +148,7 @@ export default function ViewModal({order}) {
               {order.items.map((o, idx) => (
                 <Box key={idx}>
                   {o.category === 'SUNDRIES' && (
-                    <Text className="text-black">
+                    <Text className="text-black text-xl">
                       {o.quantity} x {o.name}
                       {o.notes && `- ${o.notes}`}
                     </Text>
@@ -155,7 +159,7 @@ export default function ViewModal({order}) {
               {order.items.map((o, idx) => (
                 <Box key={idx}>
                   {o.category === 'DESSERTS' && (
-                    <Text className="text-black">
+                    <Text className="text-black text-xl">
                       {o.quantity} x {o.name}
                       {o.notes && `- ${o.notes}`}
                     </Text>
@@ -166,7 +170,7 @@ export default function ViewModal({order}) {
               {order.items.map((o, idx) => (
                 <Box key={idx}>
                   {o.category === 'BEVERAGES' && (
-                    <Text className="text-black">
+                    <Text className="text-black text-xl">
                       {o.quantity} x {o.name}
                       {o.notes && `- ${o.notes}`}
                     </Text>
@@ -177,7 +181,7 @@ export default function ViewModal({order}) {
               {order.items.map((o, idx) => (
                 <Box key={idx}>
                   {o.category === 'ALCOHOL' && (
-                    <Text className="text-black">
+                    <Text className="text-black text-xl">
                       {o.quantity} x {o.name}
                       {o.notes && `- ${o.notes}`}
                     </Text>
@@ -193,13 +197,14 @@ export default function ViewModal({order}) {
               {order.notes && order.notes.length > 0 && (
                 <>
                   <Text className="text-gray-800 mx-5 border-b pb-3 border-custom-border-color">
-                    <Text className="font-bold">Notes</Text>: {order.notes}
+                    <Text className="font-bold text-xl">Notes</Text>:{' '}
+                    {order.notes}
                   </Text>
                 </>
               )}
               <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
-                <Text className="text-gray-900">Order:</Text>
-                <Text className="text-gray-900 capitalize">
+                <Text className="text-gray-900 text-xl">Order:</Text>
+                <Text className="text-gray-900 text-xl capitalize">
                   {order.orderType.toLowerCase()}
                 </Text>
               </HStack>
@@ -209,8 +214,8 @@ export default function ViewModal({order}) {
                   mx="5"
                   mb="5"
                   justifyContent={'space-between'}>
-                  <Text className="text-gray-900">Table:</Text>
-                  <Text className="text-gray-900 capitalize">
+                  <Text className="text-gray-900 text-xl">Table:</Text>
+                  <Text className="text-gray-900 text-xl capitalize">
                     {order.customer.name}
                     {order?.people && ` (${order.people} people)`}
                   </Text>
@@ -222,10 +227,14 @@ export default function ViewModal({order}) {
                   mx="5"
                   mb={order.deliveryNotes.length > 0 ? '0' : '5'}
                   justifyContent={'space-between'}>
-                  <Text className="text-gray-900">Address:</Text>
-                  <Text className="text-gray-900">
-                    {`${order.customer.address1}, ${order.customer.address2}`}
-                  </Text>
+                  <View className="flex flex-col">
+                    <Text className="text-gray-900 font-semibold text-xl my-2">
+                      Address
+                    </Text>
+                    <Text className="text-gray-900 text-xl">
+                      {`${order.customer.address1}, ${order.customer.address2}`}
+                    </Text>
+                  </View>
                 </HStack>
               )}
               {order.orderType.toUpperCase() === 'COLLECTION' && (
@@ -234,8 +243,10 @@ export default function ViewModal({order}) {
                   mx="5"
                   mb="5"
                   justifyContent={'space-between'}>
-                  <Text className="text-gray-900">Name:</Text>
-                  <Text className="text-gray-900">{order.customer.name}</Text>
+                  <Text className="text-gray-900 text-xl">Name:</Text>
+                  <Text className="text-gray-900 text-xl">
+                    {order.customer.name}
+                  </Text>
                 </HStack>
               )}
               {order.deliveryNotes && (
@@ -244,61 +255,61 @@ export default function ViewModal({order}) {
                   mx="5"
                   mb="5"
                   justifyContent={'space-between'}>
-                  <Text className="text-gray-900">Notes:</Text>
-                  <Text className="text-gray-900">{order.deliveryNotes}</Text>
+                  <Text className="text-gray-900 text-xl">Notes:</Text>
+                  <Text className="text-gray-900 text-xl">
+                    {order.deliveryNotes}
+                  </Text>
                 </HStack>
               )}
               <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
-                <Text className="text-gray-900">Drinks:</Text>
-                <Text className="text-gray-900 capitalize">
+                <Text className="text-gray-900 text-xl">Drinks:</Text>
+                <Text className="text-gray-900 text-xl capitalize">
                   £{order.drinks.toFixed(2)}
                 </Text>
               </HStack>
               <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
-                <Text className="text-gray-900">Desserts:</Text>
-                <Text className="text-gray-900 capitalize">
+                <Text className="text-gray-900 text-xl">Desserts:</Text>
+                <Text className="text-gray-900 text-xl capitalize">
                   £{order.desserts.toFixed(2)}
                 </Text>
               </HStack>
               <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
-                <Text className="text-gray-900">Hot drinks:</Text>
-                <Text className="text-gray-900 capitalize">
+                <Text className="text-gray-900 text-xl">Hot drinks:</Text>
+                <Text className="text-gray-900 text-xl capitalize">
                   £{order.hotDrinks.toFixed(2)}
                 </Text>
               </HStack>
               <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
-                <Text className="text-gray-900">Subtotal:</Text>
-                <Text className="text-gray-900 capitalize">
+                <Text className="text-gray-900 text-xl">Subtotal:</Text>
+                <Text className="text-gray-900 text-xl capitalize">
                   £{order.subTotal.toFixed(2)}
                 </Text>
               </HStack>
               <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
-                <Text className="text-gray-900">Discount:</Text>
-                <Text className="text-gray-900 capitalize">
+                <Text className="text-gray-900 text-xl">Discount:</Text>
+                <Text className="text-gray-900 text-xl capitalize">
                   £{order.discount.toFixed(2)}
+                </Text>
+              </HStack>
+              <HStack w={'2/3'} mx="5" my="2" justifyContent={'space-between'}>
+                <Text className="text-gray-900 font-bold text-xl">Total:</Text>
+                <Text className="text-gray-900 text-xl capitalize">
+                  £{order.total.toFixed(2)}
                 </Text>
               </HStack>
             </VStack>
           </HStack>
-          <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
-            <Text className="text-gray-900 font-bold">Total:</Text>
-            <Text className="text-gray-900 capitalize">
-              £{order.total.toFixed(2)}
-            </Text>
-          </HStack>
-          <HStack space="2" justifyContent="flex-end" m="5">
-            <Button
-              size="lg"
-              colorScheme="gray"
-              onPress={() => setModalShow(false)}>
-              Close
-            </Button>
-            <Button
-              size="lg"
+          <HStack space="2" justifyContent="flex-end" mx="5" my="7">
+            <TouchableOpacity
+              onPress={() => setModalShow(false)}
+              className="bg-custom-grey w-32 h-10 flex justify-center rounded">
+              <Text className="text-white text-center text-xl">Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={placeOrder}
-              className="bg-custom-primary">
-              Print
-            </Button>
+              className="bg-custom-primary w-32 h-10 flex justify-center rounded">
+              <Text className="text-white text-center text-xl">Print</Text>
+            </TouchableOpacity>
           </HStack>
         </Box>
       </Modal>
