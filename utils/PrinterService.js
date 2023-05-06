@@ -17,7 +17,7 @@ export const getPrinter = async () => {
   }
 };
 
-export const printReceipt = async (orders, totals, kitchenReceipt) => {
+export const printReceipt = async (orders, totals, orderDetails) => {
   try {
     await EscPosPrinter.init({
       target: 'TCP:192.168.1.125',
@@ -26,8 +26,9 @@ export const printReceipt = async (orders, totals, kitchenReceipt) => {
     });
 
     const printing = new EscPosPrinter.printing();
-    const status = await printing
-      .initialize()
+    const status = await printing.initialize();
+
+    printing
       .align('center')
       .size(3, 3)
       .line('CHILLI N SPICE')
@@ -166,38 +167,63 @@ export const printReceipt = async (orders, totals, kitchenReceipt) => {
       .size(1, 1)
       .textLine(20, {
         left: 'Drinks',
-        right: totals.drinks.toFixed(2),
+        right: '£' + totals.drinks.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Desserts',
-        right: totals.desserts.toFixed(2),
+        right: '£' + totals.desserts.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Hot drinks',
-        right: totals.hotDrinks.toFixed(2),
+        right: '£' + totals.hotDrinks.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Sub Total',
-        right: totals.subTotal.toFixed(2),
+        right: '£' + totals.subTotal.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Discount',
-        right: totals.discount.toFixed(2),
+        right: '£' + totals.discount.toFixed(2),
       })
       .newline()
       .newline()
       .textLine(20, {
         left: 'Total',
-        right: totals.total.toFixed(2),
+        right: '£' + totals.total.toFixed(2),
       });
 
-    printing.newline().newline().newline().newline().cut();
+    // customer details
+    if (orderDetails.orderType == 'Delivery') {
+      printing.newline();
+      printing.newline();
+      printing.newline();
+      printing.align('center');
+      printing.size(1, 1);
+      printing.line('DELIVERY');
+      printing.line(orderDetails.customerDetails.address1);
+      printing.line(orderDetails.customerDetails.address2);
+      printing.line(orderDetails.customerDetails.postcode);
+      printing.line(orderDetails.customerDetails.contact);
+    }
 
-    if (kitchenReceipt) {
+    if (orderDetails.orderType == 'Collection') {
+      printing.newline();
+      printing.newline();
+      printing.newline();
+      printing.align('center');
+      printing.size(1, 1);
+      printing.line('COLLECTION');
+      printing.line(orderDetails.customerDetails.name);
+      printing.line(orderDetails.customerDetails.contact);
+    }
+
+    printing.newline().newline().newline().cut();
+
+    if (orderDetails.orderType != 'Dine In') {
       // Print order items
       printing.align('left');
       printing.size(2, 2);
@@ -257,110 +283,36 @@ export const printReceipt = async (orders, totals, kitchenReceipt) => {
           }
         }
       });
-      printing.newline().newline().newline().newline().cut();
+      printing.newline().newline().newline().newline();
     }
+
+    if (orderDetails.orderType == 'Delivery') {
+      printing.align('center');
+      printing.size(2, 2);
+      printing.line('DELIVERY');
+      printing.newline().newline();
+      printing.size(1, 1);
+      printing.line(orderDetails.customerDetails.address1);
+      printing.line(orderDetails.customerDetails.address2);
+      printing.line(orderDetails.customerDetails.postcode);
+      printing.line(orderDetails.customerDetails.contact);
+      printing.newline().newline();
+      printing.cut();
+    }
+    if (orderDetails.orderType == 'Collection') {
+      printing.align('center');
+      printing.size(2, 2);
+      printing.line('COLLECTION');
+      printing.newline();
+      printing.line(orderDetails.customerDetails.name);
+      printing.newline();
+      printing.size(1, 1);
+      printing.line(orderDetails.customerDetails.contact);
+      printing.newline().newline();
+      printing.cut();
+    }
+
     printing.send();
-    console.log('Success:', status);
-  } catch (e) {
-    console.log('Catch Error:', e);
-  }
-};
-
-export const printKitchenReceipt = async orders => {
-  try {
-    await EscPosPrinter.init({
-      target: 'TCP:192.168.1.125',
-      seriesName: getPrinterSeriesByName('TM-m30'),
-      // language: 'EPOS2_LANG_EN',
-    });
-
-    const printing = new EscPosPrinter.printing();
-    const status = await printing.initialize();
-
-    // Print order items
-    orders.forEach(o => {
-      if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
-        printing
-          .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
-          })
-          .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
-      }
-    });
-
-    orders.forEach(o => {
-      if (
-        o.category != 'STARTERS' &&
-        o.category != 'SIGNATURE STARTERS' &&
-        o.category != 'VEGETABLE SIDE DISHES' &&
-        o.category != 'SUNDAY MENU' &&
-        o.category != 'SUNDRIES' &&
-        o.category != 'DESSERTS' &&
-        o.category != 'BEVERAGES' &&
-        o.category != 'ALCOHOL'
-      ) {
-        printing
-          .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
-          })
-          .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
-      }
-    });
-
-    // Print Sunday Menu items
-    orders.forEach((o, index) => {
-      if (o.category === 'SUNDAY MENU') {
-        printing
-          .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
-          })
-          .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
-      }
-    });
-
-    // Print Vegetable Side Dishes items
-    orders.forEach(o => {
-      if (o.category == 'VEGETABLE SIDE DISHES') {
-        printing
-          .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
-          })
-          .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
-      }
-    });
-
-    // Print Sundries items
-    orders.forEach(o => {
-      if (o.category == 'SUNDRIES') {
-        printing
-          .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
-          })
-          .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
-      }
-    });
-
-    printing.newline().newline().newline().newline().cut().send();
     console.log('Success:', status);
   } catch (e) {
     console.log('Catch Error:', e);

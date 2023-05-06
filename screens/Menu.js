@@ -487,7 +487,13 @@ export default function Menu({route, navigation}) {
       discount: discount,
       drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
     };
-    // await printReceipt(orders, totals, context.orderType != 'Dine In');
+
+    const orderDetails = {
+      orderType: context.orderType,
+      customerDetails: context.customerState,
+    };
+
+    await printReceipt(orders, totals, orderDetails);
 
     await updateInDB();
     setOrderPlaced(true);

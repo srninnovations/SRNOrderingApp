@@ -1,12 +1,14 @@
 #TODO
 
+#Make toast bigger
 #Show loader on delete actions
+#Bring in changes from order-id-styling-and-receipt-priority branch from web app
 #Change all buttons to touchable
 #Menu page - Recipt divider by main, starters, etc categories
-#Receipt - Add Total, drinks, hot drinks etc
 
 #DONE
 #Adjust time on orders (currently 1 hour behind)
+#Receipt - Add Total, drinks, hot drinks etc
 #History page - View modal add Delivery and Collection customer details
 #Selection page - Delivery address search functionality
 #Menu page - Add Total, drinks, hot drinks etc to order list

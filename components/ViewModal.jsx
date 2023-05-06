@@ -73,14 +73,12 @@ export default function ViewModal({order}) {
       discount: order.discount,
       drinks: order.drinks,
     };
-    await printReceipt(
-      order.items,
-      totals,
-      order.orderType.toUpperCase() != 'DINE IN',
-    );
-    // if (order.orderType.toUpperCase() != 'DINE IN') {
-    //   await printKitchenReceipt(order.items);
-    // }
+    const orderDetails = {
+      orderType: order.orderType,
+      customerDetails: order.customer,
+    };
+
+    await printReceipt(order.items, totals, orderDetails);
   };
 
   return (
