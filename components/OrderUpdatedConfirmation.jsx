@@ -5,7 +5,7 @@ import Modal from 'react-native-modal';
 export const OrderUpdatedConfirmation = ({
   newOrder,
   show,
-  edit,
+  close,
   kitchenRecipt,
   customerReceipt,
 }) => {
@@ -15,7 +15,7 @@ export const OrderUpdatedConfirmation = ({
         isVisible={show}
         animationType="fade"
         className="flex-1 justify-center items-center"
-        onBackButtonPress={edit}>
+        onBackButtonPress={close}>
         <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
           <Heading
             borderBottomWidth={1}
@@ -38,9 +38,6 @@ export const OrderUpdatedConfirmation = ({
               <Button size={'lg'} colorScheme={'cyan'} onPress={newOrder}>
                 NEW ORDER
               </Button>
-              <Button size={'lg'} colorScheme={'light'} onPress={edit}>
-                EDIT ORDER
-              </Button>
               <Button size={'lg'} colorScheme={'amber'} onPress={kitchenRecipt}>
                 PRINT KITCHEN RECEIPT
               </Button>
@@ -49,6 +46,9 @@ export const OrderUpdatedConfirmation = ({
                 colorScheme={'amber'}
                 onPress={customerReceipt}>
                 PRINT CUSTOMER RECEIPT
+              </Button>
+              <Button size={'lg'} colorScheme={'light'} onPress={close}>
+                Close
               </Button>
             </HStack>
           </View>

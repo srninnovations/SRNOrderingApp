@@ -559,17 +559,6 @@ export default function Menu({route, navigation}) {
     await printReceiptsOnPlaceOrder(orders, totals, orderDetails);
   };
   const printKitcken = async () => {
-    const totals = {
-      total: total,
-      subTotal: subTotal,
-      hotDrinks: totalsByCategory['BEVERAGES']
-        ? totalsByCategory['BEVERAGES']
-        : 0,
-      desserts: totalsByCategory['DESSERTS'] ? totalsByCategory['DESSERTS'] : 0,
-      discount: discount,
-      drinks: totalsByCategory['ALCOHOL'] ? totalsByCategory['ALCOHOL'] : 0,
-    };
-
     const orderDetails = {
       orderType: context.orderType,
       customerDetails: context.customerState,
@@ -577,6 +566,7 @@ export default function Menu({route, navigation}) {
 
     await printNewKitckenReceipt(orders, orderDetails);
   };
+
   const printCustomer = async () => {
     const totals = {
       total: total,
@@ -598,7 +588,9 @@ export default function Menu({route, navigation}) {
   };
 
   const editOrder = () => {
-    console.log('Edit order');
+    navigation.navigate('Menu', {
+      order_id: context.orderId,
+    });
   };
 
   const newOrder = (shouldNavigate = true) => {
@@ -640,8 +632,8 @@ export default function Menu({route, navigation}) {
         <OrderUpdatedConfirmation
           newOrder={newOrder}
           show={orderUpdated}
-          edit={() => {
-            setOrderUpdated(false), editOrder();
+          close={() => {
+            setOrderUpdated(false);
           }}
           kitchenRecipt={() => printKitcken()}
           customerReceipt={() => printCustomer()}
@@ -1365,21 +1357,37 @@ export default function Menu({route, navigation}) {
                             </Text>
                           </TouchableOpacity>
                         ) : (
-                          <TouchableOpacity
-                            className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
-                            onPress={async () => {
-                              await updateInDB(), setOrderUpdated(true);
-                            }}>
-                            <Text className="text-white text-center font-bold text-lg">
-                              UPDATE ORDER
-                            </Text>
-                          </TouchableOpacity>
+                          <>
+                            <TouchableOpacity
+                              className="bg-custom-amber py-2 px-4 rounded my-4"
+                              onPress={addDiscount}>
+                              <Text className="text-black text-center font-bold text-lg">
+                                APPLY DISCOUNT
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
+                              onPress={async () => {
+                                await updateInDB(), setOrderUpdated(true);
+                              }}>
+                              <Text className="text-white text-center font-bold text-lg">
+                                UPDATE ORDER
+                              </Text>
+                            </TouchableOpacity>
+                          </>
                         )}
                         <TouchableOpacity
-                          className="bg-custom-amber py-2 px-4 rounded my-4"
-                          onPress={addDiscount}>
-                          <Text className="text-black text-center font-bold text-lg">
-                            APPLY DISCOUNT
+                          className="bg-custom-grey py-2 px-4 rounded mt-4 mb-2"
+                          onPress={printCustomer}>
+                          <Text className="text-white text-center font-bold text-lg">
+                            PRINT CUSTOMER RECEIPT
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          className="bg-custom-grey py-2 px-4 rounded my-2"
+                          onPress={printKitcken}>
+                          <Text className="text-white text-center font-bold text-lg">
+                            PRINT KITCHEN RECEIPT
                           </Text>
                         </TouchableOpacity>
                       </View>
