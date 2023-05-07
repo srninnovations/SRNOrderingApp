@@ -117,9 +117,11 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     printing.size(2, 2);
     sortedOrders.forEach(o => {
       if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
-        printing.line(o.quantity + ' ' + o.name).newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
+        printing.line(o.quantity + ' ' + o.name);
+        if (o.notes) {
+          printing.line('- ' + o.notes).newline();
+        } else {
+          printing.newline();
         }
       }
     });
@@ -135,9 +137,11 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
         o.category != 'BEVERAGES' &&
         o.category != 'ALCOHOL'
       ) {
-        printing.line(o.quantity + ' ' + o.name).newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
+        printing.line(o.quantity + ' ' + o.name);
+        if (o.notes) {
+          printing.line('- ' + o.notes).newline();
+        } else {
+          printing.newline();
         }
       }
     });
@@ -145,9 +149,11 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     // Print Sunday Menu items
     sortedOrders.forEach((o, index) => {
       if (o.category === 'SUNDAY MENU') {
-        printing.line(o.quantity + ' ' + o.name).newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
+        printing.line(o.quantity + ' ' + o.name);
+        if (o.notes) {
+          printing.line('- ' + o.notes).newline();
+        } else {
+          printing.newline();
         }
       }
     });
@@ -155,9 +161,11 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     // Print Vegetable Side Dishes items
     sortedOrders.forEach(o => {
       if (o.category == 'VEGETABLE SIDE DISHES') {
-        printing.line(o.quantity + ' ' + o.name).newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
+        printing.line(o.quantity + ' ' + o.name);
+        if (o.notes) {
+          printing.line('- ' + o.notes).newline();
+        } else {
+          printing.newline();
         }
       }
     });
@@ -165,9 +173,11 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     // Print Sundries items
     sortedOrders.forEach(o => {
       if (o.category == 'SUNDRIES') {
-        printing.line(o.quantity + ' ' + o.name).newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
+        printing.line(o.quantity + ' ' + o.name);
+        if (o.notes) {
+          printing.line('- ' + o.notes).newline();
+        } else {
+          printing.newline();
         }
       }
     });
@@ -219,7 +229,6 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
 };
 
 export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
-  console.log('HERE');
   try {
     await EscPosPrinter.init({
       target: 'TCP:192.168.1.125',
@@ -256,12 +265,9 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
+            right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
       }
     });
 
@@ -279,12 +285,9 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
+            right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
       }
     });
 
@@ -294,12 +297,9 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
+            right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
       }
     });
 
@@ -309,12 +309,9 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
+            right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
       }
     });
 
@@ -324,12 +321,9 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
+            right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
       }
     });
 
@@ -339,12 +333,9 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
+            right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
       }
     });
 
@@ -354,12 +345,9 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' x ' + o.name,
-            right: '£' + o.price.toFixed(2),
+            right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
-        if (o.notes && o.notes.length > 0) {
-          printing.textLine(32, {left: '- ' + o.notes}).newline();
-        }
       }
     });
 
@@ -473,9 +461,11 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   printing.size(2, 2);
   sortedOrders.forEach(o => {
     if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
-      printing.line(o.quantity + ' ' + o.name).newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
+      printing.line(o.quantity + ' ' + o.name);
+      if (o.notes) {
+        printing.line('- ' + o.notes).newline();
+      } else {
+        printing.newline();
       }
     }
   });
@@ -491,9 +481,11 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
       o.category != 'BEVERAGES' &&
       o.category != 'ALCOHOL'
     ) {
-      printing.line(o.quantity + ' ' + o.name).newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
+      printing.line(o.quantity + ' ' + o.name);
+      if (o.notes) {
+        printing.line('- ' + o.notes).newline();
+      } else {
+        printing.newline();
       }
     }
   });
@@ -501,9 +493,11 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   // Print Sunday Menu items
   sortedOrders.forEach((o, index) => {
     if (o.category === 'SUNDAY MENU') {
-      printing.line(o.quantity + ' ' + o.name).newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
+      printing.line(o.quantity + ' ' + o.name);
+      if (o.notes) {
+        printing.line('- ' + o.notes).newline();
+      } else {
+        printing.newline();
       }
     }
   });
@@ -511,9 +505,11 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   // Print Vegetable Side Dishes items
   sortedOrders.forEach(o => {
     if (o.category == 'VEGETABLE SIDE DISHES') {
-      printing.line(o.quantity + ' ' + o.name).newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
+      printing.line(o.quantity + ' ' + o.name);
+      if (o.notes) {
+        printing.line('- ' + o.notes).newline();
+      } else {
+        printing.newline();
       }
     }
   });
@@ -521,9 +517,11 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   // Print Sundries items
   sortedOrders.forEach(o => {
     if (o.category == 'SUNDRIES') {
-      printing.line(o.quantity + ' ' + o.name).newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
+      printing.line(o.quantity + ' ' + o.name);
+      if (o.notes) {
+        printing.line('- ' + o.notes).newline();
+      } else {
+        printing.newline();
       }
     }
   });
@@ -597,12 +595,9 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' x ' + o.name,
-          right: '£' + o.price.toFixed(2),
+          right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
-      }
     }
   });
 
@@ -620,12 +615,9 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' x ' + o.name,
-          right: '£' + o.price.toFixed(2),
+          right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
-      }
     }
   });
 
@@ -635,12 +627,9 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' x ' + o.name,
-          right: '£' + o.price.toFixed(2),
+          right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
-      }
     }
   });
 
@@ -650,12 +639,9 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' x ' + o.name,
-          right: '£' + o.price.toFixed(2),
+          right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
-      }
     }
   });
 
@@ -665,12 +651,9 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' x ' + o.name,
-          right: '£' + o.price.toFixed(2),
+          right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
-      }
     }
   });
 
@@ -680,12 +663,9 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' x ' + o.name,
-          right: '£' + o.price.toFixed(2),
+          right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
-      }
     }
   });
 
@@ -695,12 +675,9 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' x ' + o.name,
-          right: '£' + o.price.toFixed(2),
+          right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
-      if (o.notes && o.notes.length > 0) {
-        printing.textLine(32, {left: '- ' + o.notes}).newline();
-      }
     }
   });
 
