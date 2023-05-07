@@ -21,6 +21,8 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [error, setError] = useState(null);
 
+  const [applyDiscount, setApplyDiscount] = useState(false);
+
   useEffect(() => {
     if (discountPin.length === 6) {
       setPinIsValid(discountPin == validPin);
@@ -38,6 +40,21 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
       setDiscountAmount(calculatedDiscountAmount);
     }
   }, [amount]);
+
+  useEffect(() => {
+    if (applyDiscount && error == null && pinIsValid && amount > 0) {
+      if (value === 'fixed') {
+        discount(Number(amount));
+      } else if (value === 'percentage') {
+        discount(Number(discountAmount));
+      }
+      setDiscountPin('');
+      setAmount(0);
+      setPinIsValid(false);
+      setApplyDiscount(false);
+      hide();
+    }
+  }, [applyDiscount]);
 
   const validateInput = inputValue => {
     const parsedValue = Number(inputValue);
@@ -124,11 +141,7 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
                       onChangeText={value => {
                         if (validateInput(value)) setAmount(value);
                       }}
-                      onSubmitEditing={() => {
-                        if (error == null) {
-                          discount(Number(amount)), hide();
-                        }
-                      }}
+                      onSubmitEditing={() => setApplyDiscount(true)}
                       returnKeyType="next"
                     />
                   </FormControl>
@@ -148,14 +161,7 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
                       onChangeText={value => {
                         if (validateInput(value)) setAmount(value);
                       }}
-                      onSubmitEditing={() => {
-                        if (error == null) {
-                          discount(Number(discountAmount));
-                          setDiscountPin('');
-                          setPinIsValid(false);
-                          hide();
-                        }
-                      }}
+                      onSubmitEditing={() => setApplyDiscount(true)}
                       returnKeyType="next"
                     />
                   </FormControl>
@@ -179,19 +185,14 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
               <Text className="text-white text-center text-xl">Close</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={error != null || pinIsValid == false}
+              disabled={error != null || pinIsValid == false || amount == 0}
               onPress={() => {
-                if (value === 'fixed') {
-                  discount(Number(amount));
-                } else if (value === 'percentage') {
-                  discount(Number(discountAmount));
-                }
-                setDiscountPin('');
-                setPinIsValid(false);
-                hide();
+                setApplyDiscount(true);
               }}
               className={`bg-custom-primary w-32 h-10 flex justify-center rounded ${
-                error != null || pinIsValid == false ? 'opacity-60' : ''
+                error != null || pinIsValid == false || amount == 0
+                  ? 'opacity-60'
+                  : ''
               }`}>
               <Text className="text-white text-center text-xl">Apply</Text>
             </TouchableOpacity>
