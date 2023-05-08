@@ -1378,14 +1378,20 @@ export default function Menu({route, navigation}) {
                         )}
                         <TouchableOpacity
                           className="bg-custom-grey py-2 px-4 rounded mt-4 mb-2"
-                          onPress={printCustomer}>
+                          onPress={async () => {
+                            printCustomer();
+                            await updateInDB();
+                          }}>
                           <Text className="text-white text-center font-bold text-lg">
                             PRINT CUSTOMER RECEIPT
                           </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                           className="bg-custom-grey py-2 px-4 rounded my-2"
-                          onPress={printKitcken}>
+                          onPress={async () => {
+                            printKitcken();
+                            await updateInDB();
+                          }}>
                           <Text className="text-white text-center font-bold text-lg">
                             PRINT KITCHEN RECEIPT
                           </Text>
@@ -1461,6 +1467,7 @@ export default function Menu({route, navigation}) {
                       setItemNoteText('');
                     }}
                   />
+                  {/* change to TouchableOpacity */}
                   <StyledComponent
                     component={Button}
                     tw="w-1/2 rounded capitalize m-2"

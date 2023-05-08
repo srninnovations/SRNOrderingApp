@@ -757,3 +757,18 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
 
   return printing;
 };
+
+// retry printing if something fails - implement later
+const printReceipt = async retryCount => {
+  try {
+    // Put the entire printing process here
+  } catch (e) {
+    console.log('Catch Error:', e);
+    if (retryCount < 3) {
+      console.log(`Retrying... Attempt: ${retryCount + 1}`);
+      // setTimeout(() => printReceipt(retryCount + 1), 3000);
+    } else {
+      console.log('Max retry attempts reached. Giving up.');
+    }
+  }
+};
