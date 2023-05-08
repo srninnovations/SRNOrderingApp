@@ -46,7 +46,7 @@ export const DeleteConfirmation = ({
         isVisible={show}
         animationType="fade"
         className="flex-1 justify-center items-center"
-        backdropOpacity={0.35}
+        backdropOpacity={0.2}
         onBackButtonPress={hideModal}>
         <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
           <Heading

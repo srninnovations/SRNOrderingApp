@@ -1,10 +1,10 @@
 #TODO
 
 #Bring in changes from order-id-styling-and-receipt-priority branch from web app
-#Change all buttons to touchable
-#Menu page - Recipt divider by main, starters, etc categories
 
 #DONE
+#Menu page - Recipt divider by main, starters, etc categories
+#Change all buttons to touchable
 #Make toast bigger
 #Show loader on delete actions
 #Adjust time on orders (currently 1 hour behind)

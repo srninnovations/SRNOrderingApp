@@ -1,16 +1,7 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  TextInput,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Button, SafeAreaView, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useContext} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
-import {StyledComponent} from 'nativewind';
 import {Stack, TextArea} from 'native-base';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
@@ -32,18 +23,14 @@ export default function AddNotesModal({
         animationType="fade"
         className="flex-1 justify-center items-center"
         onBackButtonPress={handleClose}>
-        <StyledComponent
-          component={View}
-          tw="bg-white w-[500px] rounded-xl p-4">
+        <View className="bg-white w-[500px] rounded-xl p-4">
           <Stack
             direction="row"
             justifyContent="space-between"
             alignItems="center">
-            <StyledComponent
-              component={Text}
-              tw="text-2xl font-medium text-black">
+            <Text className="text-2xl font-medium text-black">
               Add notes to order
-            </StyledComponent>
+            </Text>
             <TouchableOpacity onPress={handleClose}>
               <FeatherIcon name="x" size={40} color="#555" />
             </TouchableOpacity>
@@ -56,9 +43,9 @@ export default function AddNotesModal({
               my={6}
               color="trueGray.500"
               bgColor="trueGray.50"
-              focusOutlineColor="blueGray.400"
+              focusOutlineColor="lightBlue.400"
               defaultValue={notes.length > 0 ? notes : ''}
-              onChangeText={e => context.setNotes(e)}
+              onChangeText={text => context.setNotes(text)}
               onSubmitEditing={handleSave}
             />
           </SafeAreaView>
@@ -67,21 +54,19 @@ export default function AddNotesModal({
             space={4}
             alignItems="center"
             justifyContent="flex-end">
-            <StyledComponent
-              component={Button}
-              tw="w-1/2 rounded"
-              title="Close"
-              color="grey"
+            <TouchableOpacity
               onPress={handleClose}
-            />
-            <StyledComponent
-              component={Button}
-              tw="w-1/2 rounded"
-              title="Save"
+              className="h-auto rounded  bg-custom-grey px-4 py-2">
+              <Text className="text-white uppercase font-semibold">Close</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
               onPress={handleSave}
-            />
+              className="h-auto rounded  bg-custom-primary px-4 py-2">
+              <Text className="text-white uppercase font-semibold">Save</Text>
+            </TouchableOpacity>
           </Stack>
-        </StyledComponent>
+        </View>
       </Modal>
     </View>
   );

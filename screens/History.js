@@ -138,7 +138,6 @@ export default function History({navigation}) {
   const convertMillisToTime = millis => {
     const date = new Date(millis);
     const deviceTimeZone = RNLocalize.getTimeZone();
-    //if top return doesn't work then try the bottom one
     return moment(date).tz(deviceTimeZone).format('HH:mm');
     // return moment(date).tz('Europe/London').format('HH:mm');
   };
