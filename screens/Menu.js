@@ -1348,6 +1348,13 @@ export default function Menu({route, navigation}) {
                             <Text className="font-normal">{savedNotes}</Text>
                           </Text>
                         )}
+                        <TouchableOpacity
+                          className="bg-custom-amber py-2 px-4 rounded my-4"
+                          onPress={addDiscount}>
+                          <Text className="text-black text-center font-bold text-lg">
+                            APPLY DISCOUNT
+                          </Text>
+                        </TouchableOpacity>
                         {!editMode ? (
                           <TouchableOpacity
                             className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
@@ -1359,13 +1366,6 @@ export default function Menu({route, navigation}) {
                         ) : (
                           <>
                             <TouchableOpacity
-                              className="bg-custom-amber py-2 px-4 rounded my-4"
-                              onPress={addDiscount}>
-                              <Text className="text-black text-center font-bold text-lg">
-                                APPLY DISCOUNT
-                              </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
                               className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
                               onPress={async () => {
                                 await updateInDB(), setOrderUpdated(true);
@@ -1374,28 +1374,28 @@ export default function Menu({route, navigation}) {
                                 UPDATE ORDER
                               </Text>
                             </TouchableOpacity>
+                            <TouchableOpacity
+                              className="bg-custom-grey py-2 px-4 rounded mt-4 mb-2"
+                              onPress={async () => {
+                                printCustomer();
+                                await updateInDB();
+                              }}>
+                              <Text className="text-white text-center font-bold text-lg">
+                                PRINT CUSTOMER RECEIPT
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              className="bg-custom-grey py-2 px-4 rounded my-2"
+                              onPress={async () => {
+                                printKitcken();
+                                await updateInDB();
+                              }}>
+                              <Text className="text-white text-center font-bold text-lg">
+                                PRINT KITCHEN RECEIPT
+                              </Text>
+                            </TouchableOpacity>
                           </>
                         )}
-                        <TouchableOpacity
-                          className="bg-custom-grey py-2 px-4 rounded mt-4 mb-2"
-                          onPress={async () => {
-                            printCustomer();
-                            await updateInDB();
-                          }}>
-                          <Text className="text-white text-center font-bold text-lg">
-                            PRINT CUSTOMER RECEIPT
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          className="bg-custom-grey py-2 px-4 rounded my-2"
-                          onPress={async () => {
-                            printKitcken();
-                            await updateInDB();
-                          }}>
-                          <Text className="text-white text-center font-bold text-lg">
-                            PRINT KITCHEN RECEIPT
-                          </Text>
-                        </TouchableOpacity>
                       </View>
                     </View>
                   </>
