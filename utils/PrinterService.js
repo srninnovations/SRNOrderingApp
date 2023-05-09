@@ -242,7 +242,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
     printing
       .align('center')
       .size(3, 3)
-      .line('CHILLI N SPICE')
+      .line("CHILLI 'N' SPICE")
       .smooth(true)
       .newline()
       .size(1, 1)
@@ -352,7 +352,6 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
     });
 
     printing
-      .newline()
       .newline()
       .line('-------------------------------------')
       .newline()
@@ -572,7 +571,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
   printing
     .align('center')
     .size(3, 3)
-    .line('CHILLI N SPICE')
+    .line("CHILLI 'N' SPICE")
     .smooth(true)
     .newline()
     .size(1, 1)
