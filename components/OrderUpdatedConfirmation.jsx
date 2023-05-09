@@ -1,5 +1,5 @@
 import {Box, Button, HStack, Heading} from 'native-base';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
 
 export const OrderUpdatedConfirmation = ({
@@ -34,22 +34,44 @@ export const OrderUpdatedConfirmation = ({
               space="3"
               px="5"
               pt="2"
-              pb={'4'}>
-              <Button size={'lg'} colorScheme={'cyan'} onPress={newOrder}>
-                NEW ORDER
-              </Button>
-              <Button size={'lg'} colorScheme={'amber'} onPress={kitchenRecipt}>
+              pb="4">
+              <TouchableOpacity
+                className="py-2 w-full my-2 rounded bg-cyan-500"
+                onPress={newOrder}>
+                <Text className="text-white my-auto text-center font-semibold uppercase text-lg">
+                  New Order
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="py-2 w-full my-2 rounded bg-amber-500"
+                onPress={kitchenRecipt}>
+                <Text className="text-white my-auto text-center font-semibold uppercase text-lg">
+                  PRINT KITCHEN RECEIPT
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="py-2 w-full my-2 rounded bg-amber-500"
+                onPress={customerReceipt}>
+                <Text className="text-white my-auto text-center font-semibold uppercase text-lg">
+                  PRINT CUSTOMER RECEIPT
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="py-2 w-full my-2 rounded bg-custom-grey"
+                onPress={close}>
+                <Text className="text-white my-auto text-center font-semibold uppercase text-lg">
+                  Close
+                </Text>
+              </TouchableOpacity>
+              {/* <Button size={'lg'} colorScheme={'amber'} onPress={kitchenRecipt}>
                 PRINT KITCHEN RECEIPT
-              </Button>
-              <Button
+              </Button> */}
+              {/* <Button
                 size={'lg'}
                 colorScheme={'amber'}
                 onPress={customerReceipt}>
                 PRINT CUSTOMER RECEIPT
-              </Button>
-              <Button size={'lg'} colorScheme={'light'} onPress={close}>
-                Close
-              </Button>
+              </Button> */}
             </HStack>
           </View>
         </Box>

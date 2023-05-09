@@ -14,7 +14,6 @@ import GlobalContext from '../utils/GlobalContext.';
 import Header from '../components/Header';
 import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
-// import {useNavigation} from '@react-navigation/native';
 
 import {
   getPrinter,
@@ -41,6 +40,7 @@ import {
 import uniqueID from '../utils/uniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import Ignore from '../utils/Ignore';
+import CustomItemModal from '../components/CustomItemModal';
 
 export default function Menu({route, navigation}) {
   Ignore();
@@ -107,8 +107,6 @@ export default function Menu({route, navigation}) {
   const [customItemQuantity, setCustomItemQuantity] = useState(1);
   const [customItemPrice, setCustomItemPrice] = useState('0.00');
 
-  // const [context.customerState, setCustomerState] = useState(null);
-
   const [itemNoteText, setItemNoteText] = useState('');
 
   const [starterItems, setStarterItems] = useState(0);
@@ -119,9 +117,6 @@ export default function Menu({route, navigation}) {
   const [alcoholItems, setAlcoholItems] = useState(0);
   const [sundriesItems, setSundriesItems] = useState(0);
   const [sundayItems, setSundayItems] = useState(0);
-
-  // const [context.table, setTable] = useState('');
-  // const [context.people, setPeople] = useState('');
 
   const scrollViewRef = useRef();
 
@@ -1470,142 +1465,24 @@ export default function Menu({route, navigation}) {
           </Modal>
         </View>
         <View>
-          <Modal
-            isVisible={showCustModal}
-            animationType="fade"
-            className="flex-1 justify-center items-center"
-            onBackButtonPress={handleCustItemClose}>
-            <View className="bg-white min-w-[500px] max-w-[80%] rounded-lg shadow-lg">
-              <ScrollView>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  borderBottomWidth={1}
-                  borderBottomColor="rgb(206, 212, 218)"
-                  padding={4}>
-                  <Text className="text-2xl font-medium text-black">
-                    Add custom item - {customItemType}
-                  </Text>
-                  <TouchableOpacity onPress={handleCustItemClose}>
-                    <FeatherIcon name="x" size={40} color="#555" />
-                  </TouchableOpacity>
-                </Stack>
-                <View className="p-4">
-                  <Text className="my-2 text-custom-dark text-xl">Type</Text>
-                  <Radio.Group
-                    name="FoodType"
-                    accessibilityLabel="Select type"
-                    value={customItemType}
-                    onChange={nextValue => {
-                      setCustomItemType(nextValue);
-                    }}>
-                    <Stack direction="row" alignItems="center" space={4}>
-                      <Radio value="Food" my={1}>
-                        Food
-                      </Radio>
-                      <Radio value="Drink" my={1}>
-                        Drink
-                      </Radio>
-                    </Stack>
-                  </Radio.Group>
-                  {customItemType == 'Food' && (
-                    <>
-                      <Text className="my-2 text-custom-dark text-xl">
-                        Category
-                      </Text>
-                      <Radio.Group
-                        name="FoodCategory"
-                        accessibilityLabel="Select category"
-                        value={customItemCategory}
-                        onChange={nextValue => {
-                          setCustomItemCategory(nextValue);
-                        }}>
-                        <Stack direction="row" alignItems="center" space={4}>
-                          <Radio value="STARTERS" my={1}>
-                            Starter
-                          </Radio>
-                          <Radio value="ENGLISH DISHES" my={1}>
-                            Main
-                          </Radio>
-                          <Radio value="SUNDRIES" my={1}>
-                            Sundry
-                          </Radio>
-                        </Stack>
-                      </Radio.Group>
-                    </>
-                  )}
-                  <Text className="my-2 text-black text-xl">Item</Text>
-                  <TextArea
-                    focusOutlineColor={'lightBlue.400'}
-                    bgColor={'gray.50'}
-                    onChangeText={t => setCustomItem(t)}
-                    className="pl-3 rounded-md w-full"
-                    defaultValue={customItem.toString()}
-                    placeholder="Add Details"
-                    placeholderTextColor="grey"
-                  />
-                  <Text className="my-2 text-black text-xl">Quantity</Text>
-                  <TextInput
-                    keyboardType="numeric"
-                    maxLength={2}
-                    onChangeText={t => setCustomItemQuantity(t)}
-                    className="border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
-                    placeholder="1,2,3 etc..."
-                    defaultValue={customItemQuantity.toString()}
-                    placeholderTextColor="grey"
-                  />
-                  <Text className="my-2 text-black text-xl" component={Text}>
-                    Price
-                  </Text>
-                  <TextInput
-                    keyboardType="numeric"
-                    className="border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
-                    placeholder="Item Price"
-                    onChangeText={t => setCustomItemPrice(t)}
-                    onSubmitEditing={() => {
-                      setShowCustModal(false);
-                      addCustomItem();
-                      scrollToTop();
-                    }}
-                    defaultValue={customItemPrice.toString()}
-                    placeholderTextColor="grey"
-                  />
-                </View>
-                <Stack
-                  marginY={4}
-                  marginRight={4}
-                  direction="row"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  space={4}>
-                  <TouchableOpacity
-                    onPress={handleCustItemClose}
-                    className="h-auto rounded  bg-custom-grey px-4 py-2">
-                    <Text className="text-white uppercase font-semibold">
-                      Close
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    disabled={customItemQuantity === 0 || customItem === ''}
-                    onPress={() => {
-                      setShowCustModal(false);
-                      addCustomItem();
-                      scrollToTop();
-                    }}
-                    className={`h-auto rounded  bg-custom-grey px-4 py-2 ${
-                      customItemQuantity === 0 || customItem === ''
-                        ? 'bg-gray-300'
-                        : 'bg-custom-primary'
-                    }`}>
-                    <Text className="text-white uppercase font-semibold">
-                      Add to order
-                    </Text>
-                  </TouchableOpacity>
-                </Stack>
-              </ScrollView>
-            </View>
-          </Modal>
+          <CustomItemModal
+            {...{
+              showCustModal,
+              handleCustItemClose,
+              customItemType,
+              setCustomItemType,
+              setCustomItemCategory,
+              setCustomItem,
+              customItem,
+              setCustomItemQuantity,
+              customItemQuantity,
+              setCustomItemPrice,
+              setShowCustModal,
+              addCustomItem,
+              scrollToTop,
+              customItemPrice,
+            }}
+          />
         </View>
         <AddNotesModal
           show={show}

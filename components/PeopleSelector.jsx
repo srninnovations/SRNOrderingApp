@@ -69,17 +69,20 @@ export default function PeopleSelector({confirm, show, hideModal}) {
           <Divider my="3" />
 
           <HStack space="2" justifyContent="flex-end" mr="5" mb="4">
-            <Button size="lg" colorScheme="gray" onPress={hideModal}>
-              Cancel
-            </Button>
-            <Button
-              size="lg"
-              className="bg-custom-primary"
-              onPress={() => {
-                confirm(people);
-              }}>
-              Confirm
-            </Button>
+            <TouchableOpacity
+              className="py-2.5 w-28 rounded bg-custom-grey"
+              onPress={hideModal}>
+              <Text className="text-white my-auto text-center font-semibold uppercase text-lg">
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="py-2.5 w-28 rounded bg-custom-primary"
+              onPress={() => confirm(people)}>
+              <Text className="text-white my-auto text-center font-semibold uppercase text-lg">
+                Confirm
+              </Text>
+            </TouchableOpacity>
           </HStack>
         </Box>
       </Modal>

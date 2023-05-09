@@ -87,12 +87,11 @@ export default function ViewModal({order}) {
 
   return (
     <>
-      <Button
-        onPress={() => setModalShow(true)}
-        size="lg"
-        colorScheme={'lightBlue'}>
-        View
-      </Button>
+      <TouchableOpacity
+        className="p-3 rounded bg-custom-primary"
+        onPress={() => setModalShow(true)}>
+        <Text className="text-white my-auto font-semibold uppercase">View</Text>
+      </TouchableOpacity>
       <Modal
         isVisible={modalShow}
         onBackButtonPress={() => setModalShow(false)}

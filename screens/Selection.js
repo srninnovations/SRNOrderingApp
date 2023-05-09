@@ -291,18 +291,14 @@ export default function Selection({navigation}) {
 
   const clear = () => {
     context.dispatch({type: 'RESET'});
-    // setCustomerState({
-    //   name: '',
-    //   address1: '',
-    //   address2: '',
-    //   postcode: '',
-    //   contact: '',
-    //   deliveryNotes: '',
-    // });
-    // setSearchAddress('');
-    // setDeliveryNotes('');
+    nameRef?.current?.clear();
+    address1Ref?.current?.clear();
+    address2Ref?.current?.clear();
+    postcodeRef?.current?.clear();
+    contactRef?.current?.clear();
+    deliveryNotesRef?.current?.clear();
+    // address1Ref?.current?.focus();
   };
-
   const editOrder = async () => {
     setShow(false); // close modal
 
@@ -533,18 +529,20 @@ export default function Selection({navigation}) {
                 />
               </FormControl>
               <HStack mt={6} space={4}>
-                <Button
-                  // variant="outline"
-                  // colorScheme="yellow"
-                  className="bg-custom-amber w-32"
-                  onPress={() => clear()}>
-                  <Text className=" text-black">Clear</Text>
-                </Button>
-                <Button
-                  className="bg-custom-primary w-32"
-                  onPress={() => takeOrder()}>
-                  Next
-                </Button>
+                <TouchableOpacity
+                  className="px-5 py-2.5 w-32 rounded bg-custom-warning"
+                  onPress={clear}>
+                  <Text className="tracking-wide text-white my-auto font-semibold uppercase text-center">
+                    Clear
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="px-5 py-2.5 w-32 rounded bg-custom-primary"
+                  onPress={takeOrder}>
+                  <Text className="text-white my-auto font-semibold uppercase text-center">
+                    Next
+                  </Text>
+                </TouchableOpacity>
               </HStack>
             </VStack>
           </View>
@@ -584,22 +582,24 @@ export default function Selection({navigation}) {
                     updateCustomerState({name: 'contact', value})
                   }
                   onSubmitEditing={() => takeOrder()}
-                  returnKeyType="next"
+                  returnKeyType="done"
                 />
               </FormControl>
               <HStack mt={6} space={4}>
-                <Button
-                  // variant="outline"
-                  // colorScheme="yellow"
-                  className="bg-custom-amber w-32"
-                  onPress={() => clear()}>
-                  <Text className=" text-black">Clear</Text>
-                </Button>
-                <Button
-                  className="bg-custom-primary w-32"
-                  onPress={() => takeOrder()}>
-                  Next
-                </Button>
+                <TouchableOpacity
+                  className="px-5 py-2.5 w-32 rounded bg-custom-warning"
+                  onPress={clear}>
+                  <Text className="tracking-wide text-white my-auto font-semibold uppercase text-center">
+                    Clear
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="px-5 py-2.5 w-32 rounded bg-custom-primary"
+                  onPress={takeOrder}>
+                  <Text className="text-white my-auto font-semibold uppercase text-center">
+                    Next
+                  </Text>
+                </TouchableOpacity>
               </HStack>
             </View>
           </View>

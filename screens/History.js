@@ -1,9 +1,8 @@
-import {ScrollView, Text, View} from 'react-native';
-import {useContext, useEffect, useState} from 'react';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import Header from '../components/Header';
 import {
   Box,
-  Button,
   Center,
   Checkbox,
   HStack,
@@ -393,16 +392,15 @@ export default function History({navigation}) {
                         justifyContent="center"
                         alignItems="center">
                         <ViewModal order={order} />
-                        <Button
+                        <TouchableOpacity
+                          className="p-2.5 bg-gray-600 rounded"
                           onPress={() =>
                             navigation.navigate('Menu', {
                               order_id: order.order_id,
                             })
-                          }
-                          size="lg"
-                          colorScheme={'muted'}>
+                          }>
                           <AntIcon name="edit" size={22} color="white" />
-                        </Button>
+                        </TouchableOpacity>
                         <DeleteConfirmation
                           order={deleteOrder}
                           show={show}
