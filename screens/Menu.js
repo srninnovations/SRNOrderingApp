@@ -420,9 +420,45 @@ export default function Menu({route, navigation}) {
     setItemNoteText('');
   };
 
+  // const addToOrderWithNotes = item => {
+  //   let sortOrder = 0;
+
+  //   const key = item.name;
+
+  //   switch (true) {
+  //     case /Pappadom/.test(key):
+  //       sortOrder = 1;
+  //       break;
+  //     case /Chutneys/.test(key):
+  //       sortOrder = 2;
+  //       break;
+  //     case /Rice/.test(key):
+  //       sortOrder = 1;
+  //       break;
+  //     case /Nan/.test(key):
+  //       sortOrder = 2;
+  //       break;
+
+  //     default:
+  //       sortOrder = orders.length + 3;
+  //   }
+  //   const addItem = {
+  //     name: item.name,
+  //     price: item.price,
+  //     quantity: 1,
+  //     category: item.category,
+  //     notes: item.notes,
+  //     sortOrder,
+  //   };
+  //   setOrders(oldState => [...oldState, addItem]);
+
+  //   let prevPrice = total;
+
+  //   setTotal(prevPrice + item.price);
+  // };
+
   const addToOrderWithNotes = item => {
     let sortOrder = 0;
-
     const key = item.name;
 
     switch (true) {
@@ -438,10 +474,10 @@ export default function Menu({route, navigation}) {
       case /Nan/.test(key):
         sortOrder = 2;
         break;
-
       default:
         sortOrder = orders.length + 3;
     }
+
     const addItem = {
       name: item.name,
       price: item.price,
@@ -450,11 +486,9 @@ export default function Menu({route, navigation}) {
       notes: item.notes,
       sortOrder,
     };
+
     setOrders(oldState => [...oldState, addItem]);
-
-    let prevPrice = total;
-
-    setTotal(prevPrice + item.price);
+    setTotal(prevPrice => prevPrice + item.price);
   };
 
   const removeOrderWithNotes = o => {
@@ -466,21 +500,39 @@ export default function Menu({route, navigation}) {
     setOrders(allorders);
   };
 
+  // const increaseQuantity = (item, index) => {
+  //   let prevPrice = total;
+
+  //   if (item.category === 'Custom') {
+  //     const price = orders[index].price / orders[index].quantity;
+
+  //     orders[index].quantity++;
+  //     orders[index].price += price;
+  //     setTotal(prevPrice + price);
+  //   } else {
+  //     orders[index].quantity++;
+  //     setTotal(prevPrice + orders[index].price);
+  //   }
+
+  //   setOrders([...orders]);
+  // };
+
   const increaseQuantity = (item, index) => {
-    let prevPrice = total;
+    // We first create a copy of the orders array
+    let newOrders = [...orders];
 
     if (item.category === 'Custom') {
-      const price = orders[index].price / orders[index].quantity;
-
-      orders[index].quantity++;
-      orders[index].price += price;
-      setTotal(prevPrice + price);
+      const price = newOrders[index].price / newOrders[index].quantity;
+      newOrders[index].quantity++;
+      newOrders[index].price += price;
+      setTotal(prevPrice => prevPrice + price);
     } else {
-      orders[index].quantity++;
-      setTotal(prevPrice + orders[index].price);
+      newOrders[index].quantity++;
+      setTotal(prevPrice => prevPrice + newOrders[index].price);
     }
 
-    setOrders([...orders]);
+    // Update the orders state with the new array
+    setOrders(newOrders);
   };
 
   // const removeItem = item => {
