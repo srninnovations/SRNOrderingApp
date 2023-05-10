@@ -90,6 +90,8 @@ export default function ViewModal({order}) {
     };
 
     const orderDetails = {
+      orderId: order.order_id,
+      orderDate: order.orderDate,
       orderType: order.orderType,
       customerDetails: order.customer,
     };

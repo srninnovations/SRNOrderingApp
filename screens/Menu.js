@@ -580,6 +580,8 @@ export default function Menu({route, navigation}) {
     };
 
     const orderDetails = {
+      orderId: context.orderId,
+      orderDate: Date.now(),
       orderType: context.orderType,
       customerDetails: context.customerState,
     };

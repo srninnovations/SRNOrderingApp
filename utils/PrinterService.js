@@ -1,6 +1,8 @@
 import EscPosPrinter, {
   getPrinterSeriesByName,
 } from 'react-native-esc-pos-printer';
+import moment from 'moment-timezone';
+import * as RNLocalize from 'react-native-localize';
 
 export const getPrinter = async () => {
   try {
@@ -253,6 +255,12 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       .text('Tel: 01530 83 22 11')
       .newline()
       .text('www.chillinspicerestaurant.co.uk')
+      .newline()
+      .newline()
+      .textLine(32, {
+        left: 'Order: ' + orderDetails.orderId.toString(),
+        right: convertMillisToDate(orderDetails.orderDate).toString(),
+      })
       .newline()
       .newline()
       .line('-------------------------------------')
@@ -585,6 +593,12 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     .text('www.chillinspicerestaurant.co.uk')
     .newline()
     .newline()
+    .textLine(32, {
+      left: 'Order: ' + orderDetails.orderId.toString(),
+      right: convertMillisToDate(orderDetails.orderDate).toString(),
+    })
+    .newline()
+    .newline()
     .line('-------------------------------------')
     .newline()
     .align('center')
@@ -773,4 +787,11 @@ const printReceipt = async retryCount => {
       console.log('Max retry attempts reached. Giving up.');
     }
   }
+};
+
+const convertMillisToDate = millis => {
+  const date = new Date(millis);
+  const deviceTimeZone = RNLocalize.getTimeZone();
+  //if top return doesn't work then try the bottom one
+  return moment(date).tz(deviceTimeZone).format('DD/MM/YYYY HH:mm');
 };
