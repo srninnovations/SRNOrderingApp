@@ -2,9 +2,10 @@ import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
 import {useEffect, useReducer, useState} from 'react';
 import Modal from 'react-native-modal';
 import {Box, Button, Divider, HStack, Heading, VStack} from 'native-base';
+import {PrintingOptions} from './PrintingOptions';
 import {
-  printReceiptsOnPlaceOrder,
-  printKitchenReceipt,
+  printNewKitckenReceipt,
+  printNewCustomerReceipt,
 } from '../utils/PrinterService';
 
 const initialState = {
@@ -44,6 +45,8 @@ export default function ViewModal({order}) {
 
   const [modalShow, setModalShow] = useState(false);
 
+  const [showPrintOptions, setShowPrintOptions] = useState(false);
+
   useEffect(() => {
     let subTotal = 0;
     for (const item of order.items) {
@@ -67,7 +70,16 @@ export default function ViewModal({order}) {
     dispatch({type: 'SET_SUBTOTAL', payload: subTotal});
   }, [order]);
 
-  const placeOrder = async () => {
+  const printKitcken = async () => {
+    const orderDetails = {
+      orderType: order.orderType,
+      customerDetails: order.customer,
+    };
+
+    await printNewKitckenReceipt(order.items, orderDetails);
+  };
+
+  const printCustomer = async () => {
     const totals = {
       total: order.total,
       subTotal: order.subTotal,
@@ -78,11 +90,13 @@ export default function ViewModal({order}) {
     };
 
     const orderDetails = {
+      orderId: order.order_id,
+      orderDate: order.orderDate,
       orderType: order.orderType,
       customerDetails: order.customer,
     };
 
-    await printReceiptsOnPlaceOrder(order.items, totals, orderDetails);
+    await printNewCustomerReceipt(order.items, totals, orderDetails);
   };
 
   return (
@@ -104,8 +118,14 @@ export default function ViewModal({order}) {
             Order ID: {order.order_id}
           </Text>
           <Divider my="3" />
+          <PrintingOptions
+            show={showPrintOptions}
+            close={() => setShowPrintOptions(false)}
+            kitchenRecipt={printKitcken}
+            customerReceipt={printCustomer}
+          />
           <VStack mx={'5'} maxH={'1/3'}>
-            <ScrollView>
+            <ScrollView className="my-2 border-2 border-gray-200 p-2">
               {order.items.map((o, idx) => (
                 <Box key={idx}>
                   {o.category == 'STARTERS' && (
@@ -201,7 +221,7 @@ export default function ViewModal({order}) {
                   </Text>
                 </>
               )}
-              <HStack w={'2/3'} mx="5" justifyContent={'space-between'}>
+              <HStack w={'2/3'} mx="5" my="1" justifyContent={'space-between'}>
                 <Text className="text-gray-900 text-xl">Order:</Text>
                 <Text className="text-gray-900 text-xl capitalize">
                   {order.orderType.toLowerCase()}
@@ -307,7 +327,7 @@ export default function ViewModal({order}) {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={placeOrder}
+              onPress={() => setShowPrintOptions(true)}
               className="bg-custom-primary w-32 h-10 flex justify-center rounded">
               <Text className="text-white text-center uppercase text-xl">
                 Print

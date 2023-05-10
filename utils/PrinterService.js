@@ -1,6 +1,8 @@
 import EscPosPrinter, {
   getPrinterSeriesByName,
 } from 'react-native-esc-pos-printer';
+import moment from 'moment-timezone';
+import * as RNLocalize from 'react-native-localize';
 
 export const getPrinter = async () => {
   try {
@@ -242,7 +244,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
     printing
       .align('center')
       .size(3, 3)
-      .line('CHILLI N SPICE')
+      .line("CHILLI 'N' SPICE")
       .smooth(true)
       .newline()
       .size(1, 1)
@@ -255,22 +257,29 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       .text('www.chillinspicerestaurant.co.uk')
       .newline()
       .newline()
+      .textLine(32, {
+        left: 'Order: ' + orderDetails.orderId.toString(),
+        right: convertMillisToDate(orderDetails.orderDate).toString(),
+      })
+      .newline()
+      .newline()
       .line('-------------------------------------')
       .newline()
       .align('center')
       .size(1, 1);
-    // Print order items
+    // Print starter items
     orders.forEach(o => {
       if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
         printing
           .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
+            left: o.quantity + ' ' + o.name.substring(0, 23),
             right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
     });
 
+    // Print main items
     orders.forEach(o => {
       if (
         o.category != 'STARTERS' &&
@@ -284,7 +293,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       ) {
         printing
           .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
+            left: o.quantity + ' ' + o.name.substring(0, 23),
             right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
@@ -296,7 +305,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       if (o.category === 'SUNDAY MENU') {
         printing
           .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
+            left: o.quantity + ' ' + o.name.substring(0, 23),
             right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
@@ -308,7 +317,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       if (o.category == 'VEGETABLE SIDE DISHES') {
         printing
           .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
+            left: o.quantity + ' ' + o.name.substring(0, 23),
             right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
@@ -320,7 +329,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       if (o.category == 'SUNDRIES') {
         printing
           .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
+            left: o.quantity + ' ' + o.name.substring(0, 23),
             right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
@@ -332,7 +341,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       if (o.category == 'DESSERTS') {
         printing
           .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
+            left: o.quantity + ' ' + o.name.substring(0, 23),
             right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
@@ -344,7 +353,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       if (o.category == 'BEVERAGES') {
         printing
           .textLine(32, {
-            left: o.quantity + ' x ' + o.name,
+            left: o.quantity + ' ' + o.name.substring(0, 23),
             right: '£' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
@@ -352,7 +361,6 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
     });
 
     printing
-      .newline()
       .newline()
       .line('-------------------------------------')
       .newline()
@@ -572,7 +580,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
   printing
     .align('center')
     .size(3, 3)
-    .line('CHILLI N SPICE')
+    .line("CHILLI 'N' SPICE")
     .smooth(true)
     .newline()
     .size(1, 1)
@@ -585,22 +593,30 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     .text('www.chillinspicerestaurant.co.uk')
     .newline()
     .newline()
+    .textLine(32, {
+      left: 'Order: ' + orderDetails.orderId.toString(),
+      right: convertMillisToDate(orderDetails.orderDate).toString(),
+    })
+    .newline()
+    .newline()
     .line('-------------------------------------')
     .newline()
     .align('center')
     .size(1, 1);
-  // Print order items
+
+  // Print starter items
   orders.forEach(o => {
     if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
       printing
         .textLine(32, {
-          left: o.quantity + ' x ' + o.name,
+          left: o.quantity + ' ' + o.name.substring(0, 23),
           right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
   });
 
+  // Print main items
   orders.forEach(o => {
     if (
       o.category != 'STARTERS' &&
@@ -614,7 +630,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     ) {
       printing
         .textLine(32, {
-          left: o.quantity + ' x ' + o.name,
+          left: o.quantity + ' ' + o.name.substring(0, 23),
           right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
@@ -626,7 +642,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     if (o.category === 'SUNDAY MENU') {
       printing
         .textLine(32, {
-          left: o.quantity + ' x ' + o.name,
+          left: o.quantity + ' ' + o.name.substring(0, 23),
           right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
@@ -638,7 +654,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     if (o.category == 'VEGETABLE SIDE DISHES') {
       printing
         .textLine(32, {
-          left: o.quantity + ' x ' + o.name,
+          left: o.quantity + ' ' + o.name.substring(0, 23),
           right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
@@ -650,7 +666,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     if (o.category == 'SUNDRIES') {
       printing
         .textLine(32, {
-          left: o.quantity + ' x ' + o.name,
+          left: o.quantity + ' ' + o.name.substring(0, 23),
           right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
@@ -662,7 +678,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     if (o.category == 'DESSERTS') {
       printing
         .textLine(32, {
-          left: o.quantity + ' x ' + o.name,
+          left: o.quantity + ' ' + o.name.substring(0, 23),
           right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
@@ -674,7 +690,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     if (o.category == 'BEVERAGES') {
       printing
         .textLine(32, {
-          left: o.quantity + ' x ' + o.name,
+          left: o.quantity + ' ' + o.name.substring(0, 23),
           right: '£' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
@@ -771,4 +787,11 @@ const printReceipt = async retryCount => {
       console.log('Max retry attempts reached. Giving up.');
     }
   }
+};
+
+const convertMillisToDate = millis => {
+  const date = new Date(millis);
+  const deviceTimeZone = RNLocalize.getTimeZone();
+  //if top return doesn't work then try the bottom one
+  return moment(date).tz(deviceTimeZone).format('DD/MM/YYYY HH:mm');
 };
