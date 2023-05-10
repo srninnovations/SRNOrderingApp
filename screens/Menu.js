@@ -314,18 +314,72 @@ export default function Menu({route, navigation}) {
     });
   };
 
+  // const addToOrder = item => {
+  //   const result = _.filter(orders, el => el.name === item.name && !el.notes);
+  //   if (result.length > 0) {
+  //     const prevOrders = [...orders];
+  //     const newOrders = prevOrders.find(a => a.name === item.name && !a.notes);
+  //     if (newOrders !== undefined) {
+  //       newOrders.quantity = newOrders.quantity + 1;
+  //       setOrders(prevOrders);
+  //     }
+  //   } else {
+  //     let sortOrder = 0;
+
+  //     const key = item.name;
+
+  //     switch (true) {
+  //       case /Pappadom/.test(key):
+  //         sortOrder = 1;
+  //         break;
+  //       case /Chutneys/.test(key):
+  //         sortOrder = 2;
+  //         break;
+  //       case /Rice/.test(key):
+  //         sortOrder = 1;
+  //         break;
+  //       case /Nan/.test(key):
+  //         sortOrder = 2;
+  //         break;
+
+  //       default:
+  //         sortOrder = orders.length + 3;
+  //     }
+  //     const addItem = {
+  //       name: item.name,
+  //       price: item.price,
+  //       quantity: 1,
+  //       category: item.category,
+  //       sortOrder,
+  //     };
+  //     setOrders(oldState => [...oldState, addItem]);
+  //   }
+
+  //   let prevPrice = total;
+
+  //   setTotal(prevPrice + item.price);
+  // };
+
   const addToOrder = item => {
-    const result = _.filter(orders, el => el.name === item.name && !el.notes);
-    if (result.length > 0) {
-      const prevOrders = [...orders];
-      const newOrders = prevOrders.find(a => a.name === item.name && !a.notes);
-      if (newOrders !== undefined) {
-        newOrders.quantity = newOrders.quantity + 1;
-        setOrders(prevOrders);
+    const itemIndex = orders.findIndex(
+      el => el.name === item.name && !el.notes,
+    );
+
+    // If an order already exists, increment its quantity and update state if necessary
+    if (itemIndex !== -1) {
+      if (
+        orders[itemIndex].quantity === undefined ||
+        orders[itemIndex].quantity < 1
+      ) {
+        let newOrders = [...orders];
+        newOrders[itemIndex].quantity = 1;
+        setOrders(newOrders);
+      } else {
+        orders[itemIndex].quantity += 1;
       }
     } else {
+      // Create a new order if it does not exist
       let sortOrder = 0;
-
       const key = item.name;
 
       switch (true) {
@@ -341,10 +395,10 @@ export default function Menu({route, navigation}) {
         case /Nan/.test(key):
           sortOrder = 2;
           break;
-
         default:
           sortOrder = orders.length + 3;
       }
+
       const addItem = {
         name: item.name,
         price: item.price,
@@ -352,13 +406,13 @@ export default function Menu({route, navigation}) {
         category: item.category,
         sortOrder,
       };
-      setOrders(oldState => [...oldState, addItem]);
+      setOrders(oldOrders => [...oldOrders, addItem]);
     }
 
-    let prevPrice = total;
-
-    setTotal(prevPrice + item.price);
+    // Always update the total price
+    setTotal(prevTotal => prevTotal + item.price);
   };
+
   const addItemNote = () => {
     const customItem = {...notedItem, notes: itemNoteText};
     addToOrderWithNotes(customItem);
@@ -429,37 +483,73 @@ export default function Menu({route, navigation}) {
     setOrders([...orders]);
   };
 
+  // const removeItem = item => {
+  //   let itemIndex = -1;
+  //   let totalDecrease = 0;
+
+  //   for (let i = 0; i < orders.length; i++) {
+  //     const orderItem = orders[i];
+  //     if (
+  //       orderItem.name === item.name &&
+  //       orderItem.category === item.category &&
+  //       !orderItem.notes
+  //     ) {
+  //       itemIndex = i;
+  //       if (item.category === 'Custom') {
+  //         const price = orderItem.price / orderItem.quantity;
+  //         orderItem.price -= price;
+  //         totalDecrease = price;
+  //       } else {
+  //         totalDecrease = item.price;
+  //       }
+  //       orderItem.quantity -= 1;
+  //       break;
+  //     }
+  //   }
+
+  //   if (itemIndex !== -1) {
+  //     if (orders[itemIndex].quantity === 0) {
+  //       orders.splice(itemIndex, 1);
+  //       setOrders([...orders]);
+  //     } else {
+  //       setOrders([...orders]);
+  //     }
+  //     setTotal(prevTotal => prevTotal - totalDecrease);
+  //   }
+  // };
+
   const removeItem = item => {
-    let itemIndex = -1;
+    // Create a copy of orders array upfront
+    let newOrders = [...orders];
     let totalDecrease = 0;
 
-    for (let i = 0; i < orders.length; i++) {
-      const orderItem = orders[i];
-      if (
+    // Find the item index in the copy
+    let itemIndex = newOrders.findIndex(
+      orderItem =>
         orderItem.name === item.name &&
         orderItem.category === item.category &&
-        !orderItem.notes
-      ) {
-        itemIndex = i;
-        if (item.category === 'Custom') {
-          const price = orderItem.price / orderItem.quantity;
-          orderItem.price -= price;
-          totalDecrease = price;
-        } else {
-          totalDecrease = item.price;
-        }
-        orderItem.quantity -= 1;
-        break;
-      }
-    }
+        !orderItem.notes,
+    );
 
+    // If the item is found
     if (itemIndex !== -1) {
-      if (orders[itemIndex].quantity === 0) {
-        orders.splice(itemIndex, 1);
-        setOrders([...orders]);
+      if (newOrders[itemIndex].category === 'Custom') {
+        const price =
+          newOrders[itemIndex].price / newOrders[itemIndex].quantity;
+        newOrders[itemIndex].price -= price;
+        totalDecrease = price;
       } else {
-        setOrders([...orders]);
+        totalDecrease = item.price;
       }
+
+      newOrders[itemIndex].quantity -= 1;
+
+      // Remove item from the copy if quantity is 0
+      if (newOrders[itemIndex].quantity === 0) {
+        newOrders.splice(itemIndex, 1);
+      }
+
+      setOrders(newOrders);
       setTotal(prevTotal => prevTotal - totalDecrease);
     }
   };
