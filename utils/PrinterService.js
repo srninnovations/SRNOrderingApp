@@ -114,7 +114,12 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     const printing = new EscPosPrinter.printing();
     const status = await printing.initialize();
 
-    // Print order items
+    printing.newline();
+    printing.newline();
+    printing.newline();
+    printing.newline();
+
+    // Print starter items
     printing.align('left');
     printing.size(2, 2);
     sortedOrders.forEach(o => {
@@ -127,6 +132,9 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
         }
       }
     });
+
+    printing.line('------------------------');
+    printing.newline();
 
     sortedOrders.forEach(o => {
       if (
@@ -465,8 +473,14 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
   });
   const sortedOrders = sortReadyArr.sort((a, b) => a.sortOrder - b.sortOrder);
   // Print order items
+  printing.newline();
+  printing.newline();
+  printing.newline();
+  printing.newline();
   printing.align('left');
   printing.size(2, 2);
+
+  // Print starter items
   sortedOrders.forEach(o => {
     if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
       printing.line(o.quantity + ' ' + o.name);
@@ -478,6 +492,10 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
     }
   });
 
+  printing.line('------------------------');
+  printing.newline();
+
+  // Print main items
   sortedOrders.forEach(o => {
     if (
       o.category != 'STARTERS' &&
