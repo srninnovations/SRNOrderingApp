@@ -546,12 +546,15 @@ export default function Menu({route, navigation}) {
     };
 
     const orderDetails = {
+      orderId: context.orderId,
+      orderDate: Date.now(),
       orderType: context.orderType,
       customerDetails: context.customerState,
     };
 
     await printReceiptsOnPlaceOrder(orders, totals, orderDetails);
   };
+
   const printKitcken = async () => {
     const orderDetails = {
       orderType: context.orderType,
@@ -758,7 +761,7 @@ export default function Menu({route, navigation}) {
                               s.category != 'ALCOHOL' && (
                                 <>
                                   <TouchableOpacity
-                                    className="w-10 h-8 bg-custom-primary flex justify-center rounded-md"
+                                    className="w-12 h-10 bg-custom-primary flex justify-center rounded-md"
                                     onPress={() => {
                                       setNotedItem(s);
                                       setItemNoteShow(true);
@@ -774,8 +777,8 @@ export default function Menu({route, navigation}) {
                                 </>
                               )}
                             <TouchableOpacity
-                              className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
-                              onPress={e => addToOrder(s)}>
+                              className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
+                              onPress={() => addToOrder(s)}>
                               <Text className="text-center text-xl text-white">
                                 <Icon name="plus" size={16} color="#fefefe" />
                               </Text>
@@ -830,7 +833,7 @@ export default function Menu({route, navigation}) {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                        className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                         onPress={
                                           o.notes
                                             ? () => removeOrderWithNotes(o)
@@ -847,7 +850,7 @@ export default function Menu({route, navigation}) {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                        className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
@@ -894,7 +897,7 @@ export default function Menu({route, navigation}) {
                                 <View className="flex flex-row space-x-1">
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                       onPress={
                                         o.notes
                                           ? () => removeOrderWithNotes(o)
@@ -911,7 +914,7 @@ export default function Menu({route, navigation}) {
                                   </View>
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                       onPress={() =>
                                         increaseQuantity(o, index)
                                       }>
@@ -949,7 +952,7 @@ export default function Menu({route, navigation}) {
                                 <View className="flex flex-row space-x-1">
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                       onPress={
                                         o.notes
                                           ? () => removeOrderWithNotes(o)
@@ -966,7 +969,7 @@ export default function Menu({route, navigation}) {
                                   </View>
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                       onPress={() =>
                                         increaseQuantity(o, index)
                                       }>
@@ -1005,7 +1008,7 @@ export default function Menu({route, navigation}) {
                                 <View className="flex flex-row space-x-1">
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                       onPress={
                                         o.notes
                                           ? () => removeOrderWithNotes(o)
@@ -1022,7 +1025,7 @@ export default function Menu({route, navigation}) {
                                   </View>
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                       onPress={() =>
                                         increaseQuantity(o, index)
                                       }>
@@ -1062,7 +1065,7 @@ export default function Menu({route, navigation}) {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                        className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                         onPress={
                                           o.notes
                                             ? () => removeOrderWithNotes(o)
@@ -1079,7 +1082,7 @@ export default function Menu({route, navigation}) {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                        className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
@@ -1116,7 +1119,7 @@ export default function Menu({route, navigation}) {
                                 <View className="flex flex-row space-x-1">
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                       onPress={() => removeItem(o)}>
                                       <Text className="text-center text-xl text-white">
                                         <Icon
@@ -1129,7 +1132,7 @@ export default function Menu({route, navigation}) {
                                   </View>
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                       onPress={() =>
                                         increaseQuantity(o, index)
                                       }>
@@ -1167,7 +1170,7 @@ export default function Menu({route, navigation}) {
                                   <View className="flex flex-row space-x-1">
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                        className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                         onPress={() => removeItem(o)}>
                                         <Text className="text-center text-xl text-white">
                                           <Icon
@@ -1180,7 +1183,7 @@ export default function Menu({route, navigation}) {
                                     </View>
                                     <View>
                                       <TouchableOpacity
-                                        className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                        className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                         onPress={() =>
                                           increaseQuantity(o, index)
                                         }>
@@ -1218,7 +1221,7 @@ export default function Menu({route, navigation}) {
                                 <View className="flex flex-row space-x-1">
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-danger flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
                                       onPress={() => removeItem(o)}>
                                       <Text className="text-center text-xl text-white">
                                         <Icon
@@ -1231,7 +1234,7 @@ export default function Menu({route, navigation}) {
                                   </View>
                                   <View>
                                     <TouchableOpacity
-                                      className="w-10 h-8 bg-custom-secondary flex justify-center rounded-md"
+                                      className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
                                       onPress={() =>
                                         increaseQuantity(o, index)
                                       }>
