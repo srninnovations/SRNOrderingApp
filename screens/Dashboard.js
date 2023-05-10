@@ -52,7 +52,7 @@ export default function Dashboard() {
               <TouchableOpacity
                 className="mb-10 bg-custom-primary rounded"
                 onPress={() => setStaff('')}>
-                <Text className="text-white text-3xl font-semibold w-full p-3 text-center">
+                <Text className="text-white text-3xl font-semibold w-full p-3 uppercase text-center">
                   {staff}
                 </Text>
               </TouchableOpacity>
@@ -75,7 +75,7 @@ export default function Dashboard() {
                     key={index}
                     onPress={() => selectStaff(person)}
                     className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-custom-secondary">
-                    <Text className="text-center text-white text-2xl">
+                    <Text className="text-center text-white text-2xl uppercase">
                       {person}
                     </Text>
                   </TouchableOpacity>
@@ -89,7 +89,7 @@ export default function Dashboard() {
                     key={index}
                     onPress={() => selectOrderType(orderType)}
                     className="flex my-2 rounded  w-96 mx-5 h-20 justify-center bg-custom-secondary">
-                    <Text className="text-center text-white text-2xl">
+                    <Text className="text-center text-white text-2xl uppercase">
                       {orderType}
                     </Text>
                   </TouchableOpacity>

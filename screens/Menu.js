@@ -643,7 +643,9 @@ export default function Menu({route, navigation}) {
         <View className="flex m-6">
           <View className="flex flex-row w-full">
             <View className="w-8/12">
-              <Text className="text-4xl font-semibold text-gray-800">Menu</Text>
+              <Text className="text-4xl font-semibold uppercase text-gray-800">
+                Menu
+              </Text>
             </View>
             <View className="flex w-4/12 justify-center items-center">
               {context.orderType == 'Dine In' && (

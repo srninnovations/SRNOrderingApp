@@ -53,6 +53,7 @@ export const DeleteConfirmation = ({
         onBackButtonPress={hideModal}>
         <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
           <Heading
+            className="uppercase"
             borderBottomWidth={1}
             fontWeight={'semibold'}
             color={'gray.800'}
@@ -129,7 +130,7 @@ export const DeleteConfirmation = ({
                   !deleteLoad ? 'bg-custom-danger' : 'bg-custom-danger/40'
                 } `}
                 onPress={confirmDelete}>
-                <Text className="text-white my-auto text-center font-semibold ">
+                <Text className="text-white my-auto text-center uppercase font-semibold ">
                   {deleteLoad ? 'Deleting' : 'Delete'}
                 </Text>
               </TouchableOpacity>

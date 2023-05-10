@@ -302,12 +302,16 @@ export default function ViewModal({order}) {
             <TouchableOpacity
               onPress={() => setModalShow(false)}
               className="bg-custom-grey w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center text-xl">Close</Text>
+              <Text className="text-white text-center uppercase text-xl">
+                Close
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={placeOrder}
               className="bg-custom-primary w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center text-xl">Print</Text>
+              <Text className="text-white text-center uppercase text-xl">
+                Print
+              </Text>
             </TouchableOpacity>
           </HStack>
         </Box>

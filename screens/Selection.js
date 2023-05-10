@@ -388,20 +388,20 @@ export default function Selection({navigation}) {
                     active(i + 1) ? 'bg-custom-danger' : 'bg-custom-light'
                   }`}>
                   <Box>
-                    <Text className="text-3xl text-center text-white mb-4">
+                    <Text className="text-3xl text-center uppercase text-white mb-4">
                       Table {i + 1}
                     </Text>
 
                     {active(i + 1) ? (
                       <Box className="bg-custom-amber flex rounded-md p-2">
-                        <Text className="text-black font-bold text-center">
+                        <Text className="text-black font-bold uppercase text-center">
                           Active
                         </Text>
                       </Box>
                     ) : (
                       <Box className="bg-custom-primary flex rounded-md p-2">
-                        <Text className="text-white font-bold text-center">
-                          Available
+                        <Text className="text-white font-bold uppercase text-center">
+                          Free
                         </Text>
                       </Box>
                     )}
@@ -415,7 +415,7 @@ export default function Selection({navigation}) {
         {orderType == 'Delivery' && (
           <View className="flex justify-center w-full m-2 align-middle items-center mb-10">
             <View className="text-center">
-              <Text className="text-3xl font-semibold mb-8">
+              <Text className="text-3xl font-semibold uppercase mb-8">
                 Delivery Order
               </Text>
             </View>
@@ -453,7 +453,7 @@ export default function Selection({navigation}) {
 
             <VStack space={6} mt={6}>
               <FormControl className="w-96">
-                <Text className="text-xl mb-3">Address 1</Text>
+                <Text className="text-xl uppercase mb-3">Address 1</Text>
                 <Input
                   ref={address1Ref}
                   size="lg"
@@ -468,7 +468,7 @@ export default function Selection({navigation}) {
                 />
               </FormControl>
               <FormControl className="w-96">
-                <Text className="text-xl mb-3">Address 2</Text>
+                <Text className="text-xl uppercase mb-3">Address 2</Text>
                 <Input
                   ref={address2Ref}
                   size="lg"
@@ -483,7 +483,7 @@ export default function Selection({navigation}) {
                 />
               </FormControl>
               <FormControl className="w-96">
-                <Text className="text-xl mb-3">Postcode</Text>
+                <Text className="text-xl uppercase mb-3">Postcode</Text>
                 <Input
                   ref={postcodeRef}
                   size="lg"
@@ -498,7 +498,7 @@ export default function Selection({navigation}) {
                 />
               </FormControl>
               <FormControl className="w-96">
-                <Text className="text-xl mb-3">Contact number</Text>
+                <Text className="text-xl uppercase mb-3">Contact Number</Text>
                 <Input
                   ref={contactRef}
                   size="lg"
@@ -514,7 +514,7 @@ export default function Selection({navigation}) {
                 />
               </FormControl>
               <FormControl className="w-96">
-                <Text className="text-xl mb-3">Delivery notes</Text>
+                <Text className="text-xl uppercase mb-3">Delivery Notes</Text>
                 <TextArea
                   ref={deliveryNotesRef}
                   size={'lg'}
@@ -551,11 +551,11 @@ export default function Selection({navigation}) {
         {orderType == 'Collection' && (
           <View className="flex flex-row flex-wrap gap-2 justify-center align-middle w-full m-2">
             <View className="text-center">
-              <Text className="text-3xl font-semibold mb-8">
+              <Text className="text-3xl font-semibold uppercase mb-8">
                 Collection Order
               </Text>
               <FormControl className="w-96">
-                <Text className="text-xl mb-3">Name</Text>
+                <Text className="text-xl uppercase mb-3">Name</Text>
                 <Input
                   ref={nameRef}
                   size="lg"
@@ -570,7 +570,7 @@ export default function Selection({navigation}) {
                 />
               </FormControl>
               <FormControl className="w-96">
-                <Text className="text-xl mb-3">Contact number</Text>
+                <Text className="text-xl uppercase mb-3">Contact Number</Text>
                 <Input
                   ref={contactRef}
                   size="lg"

@@ -17,7 +17,8 @@ export const SelectionConfirmation = ({clear, show, edit, hideModal}) => {
             color={'gray.800'}
             borderColor={'gray.400'}
             px={5}
-            py={4}>
+            py={4}
+            className="uppercase">
             Active table
           </Heading>
 
