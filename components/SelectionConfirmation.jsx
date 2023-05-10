@@ -1,5 +1,5 @@
 import {Box, Button, HStack, Heading} from 'native-base';
-import {View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
 
 export const SelectionConfirmation = ({clear, show, edit, hideModal}) => {
@@ -17,7 +17,8 @@ export const SelectionConfirmation = ({clear, show, edit, hideModal}) => {
             color={'gray.800'}
             borderColor={'gray.400'}
             px={5}
-            py={4}>
+            py={4}
+            className="uppercase">
             Active table
           </Heading>
 
@@ -28,19 +29,31 @@ export const SelectionConfirmation = ({clear, show, edit, hideModal}) => {
               px="5"
               pt="2"
               pb={'4'}>
-              <Button size={'lg'} colorScheme={'cyan'} onPress={edit}>
-                Edit order
-              </Button>
-              <Button size={'lg'} colorScheme={'amber'} onPress={clear}>
-                Clear table
-              </Button>
+              <TouchableOpacity
+                className="py-3 w-28 my-2 rounded bg-cyan-500"
+                onPress={edit}>
+                <Text className="text-white my-auto text-center font-semibold uppercase">
+                  Edit Order
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="py-3 w-28 my-2 rounded bg-amber-500"
+                onPress={clear}>
+                <Text className="text-white my-auto text-center font-semibold uppercase">
+                  Clear table
+                </Text>
+              </TouchableOpacity>
             </HStack>
           </View>
 
           <HStack justifyContent="flex-end" space="3" px="5" pt="2" pb={'4'}>
-            <Button onPress={hideModal} colorScheme={'gray'}>
-              Close
-            </Button>
+            <TouchableOpacity
+              className="py-2 w-20 rounded bg-custom-grey"
+              onPress={hideModal}>
+              <Text className="text-white my-auto text-center font-semibold uppercase">
+                Close
+              </Text>
+            </TouchableOpacity>
           </HStack>
         </Box>
       </Modal>

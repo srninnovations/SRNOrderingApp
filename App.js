@@ -11,6 +11,7 @@ const App = () => {
     contact: '',
     name: '',
     postcode: '',
+    deliveryNotes: '',
   };
 
   const customerReducer = (state, action) => {

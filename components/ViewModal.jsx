@@ -101,12 +101,11 @@ export default function ViewModal({order}) {
 
   return (
     <>
-      <Button
-        onPress={() => setModalShow(true)}
-        size="lg"
-        colorScheme={'lightBlue'}>
-        View
-      </Button>
+      <TouchableOpacity
+        className="p-3 rounded bg-custom-primary"
+        onPress={() => setModalShow(true)}>
+        <Text className="text-white my-auto font-semibold uppercase">View</Text>
+      </TouchableOpacity>
       <Modal
         isVisible={modalShow}
         onBackButtonPress={() => setModalShow(false)}
@@ -323,12 +322,16 @@ export default function ViewModal({order}) {
             <TouchableOpacity
               onPress={() => setModalShow(false)}
               className="bg-custom-grey w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center text-xl">Close</Text>
+              <Text className="text-white text-center uppercase text-xl">
+                Close
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setShowPrintOptions(true)}
               className="bg-custom-primary w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center text-xl">Print</Text>
+              <Text className="text-white text-center uppercase text-xl">
+                Print
+              </Text>
             </TouchableOpacity>
           </HStack>
         </Box>

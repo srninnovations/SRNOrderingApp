@@ -1,5 +1,5 @@
 import {Box, Button, HStack, Heading} from 'native-base';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
 
 export const OrderPlacedConfirmation = ({newOrder, show, edit}) => {
@@ -29,12 +29,20 @@ export const OrderPlacedConfirmation = ({newOrder, show, edit}) => {
               px="5"
               pt="2"
               pb={'4'}>
-              <Button size={'lg'} colorScheme={'cyan'} onPress={newOrder}>
-                NEW ORDER
-              </Button>
-              <Button size={'lg'} colorScheme={'amber'} onPress={edit}>
-                EDIT ORDER
-              </Button>
+              <TouchableOpacity
+                className="py-3 w-28 my-2 rounded bg-cyan-500"
+                onPress={newOrder}>
+                <Text className="text-white my-auto text-center font-semibold uppercase">
+                  New Order
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="py-3 w-28 my-2 rounded bg-amber-500"
+                onPress={edit}>
+                <Text className="text-white my-auto text-center font-semibold uppercase">
+                  Edit Order
+                </Text>
+              </TouchableOpacity>
             </HStack>
           </View>
         </Box>

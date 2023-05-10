@@ -8,14 +8,12 @@ import {
   SafeAreaView,
   TextInput,
 } from 'react-native';
-import {StyledComponent} from 'nativewind';
 import Modal from 'react-native-modal';
 import React, {useState, useContext, useEffect, useRef, useMemo} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
 import Header from '../components/Header';
 import StorageUtils from '../utils/StorageUtils';
 import _ from 'lodash';
-// import {useNavigation} from '@react-navigation/native';
 
 import {
   getPrinter,
@@ -42,10 +40,11 @@ import {
 import uniqueID from '../utils/uniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import Ignore from '../utils/Ignore';
+import CustomItemModal from '../components/CustomItemModal';
 
 export default function Menu({route, navigation}) {
   Ignore();
-  const params = route.params;
+  const param = route.params;
   const initialHasSubCat = {
     isSubCategory: false,
     subCategories: [],
@@ -108,8 +107,6 @@ export default function Menu({route, navigation}) {
   const [customItemQuantity, setCustomItemQuantity] = useState(1);
   const [customItemPrice, setCustomItemPrice] = useState('0.00');
 
-  // const [context.customerState, setCustomerState] = useState(null);
-
   const [itemNoteText, setItemNoteText] = useState('');
 
   const [starterItems, setStarterItems] = useState(0);
@@ -120,9 +117,6 @@ export default function Menu({route, navigation}) {
   const [alcoholItems, setAlcoholItems] = useState(0);
   const [sundriesItems, setSundriesItems] = useState(0);
   const [sundayItems, setSundayItems] = useState(0);
-
-  // const [context.table, setTable] = useState('');
-  // const [context.people, setPeople] = useState('');
 
   const scrollViewRef = useRef();
 
@@ -222,12 +216,12 @@ export default function Menu({route, navigation}) {
     setLoading(true);
     newOrder(false);
     getAllDetails();
-  }, [params]);
+  }, [param]);
 
   const getAllDetails = async () => {
     await getDetails();
 
-    if (params && params.order_id) {
+    if (param && param.order_id) {
       await getOrder();
       setEditMode(true);
     } else {
@@ -250,7 +244,7 @@ export default function Menu({route, navigation}) {
     const client = await StorageUtils.getAsyncStorageData('client');
     const order = await ApiServiceUtils.getSpecificOrder({
       client_id: clientId.value,
-      order_id: params.order_id,
+      order_id: param.order_id,
     });
     setOrders(order.items);
     context.setOrderId(order.order_id);
@@ -651,7 +645,9 @@ export default function Menu({route, navigation}) {
         <View className="flex m-6">
           <View className="flex flex-row w-full">
             <View className="w-8/12">
-              <Text className="text-4xl font-semibold text-gray-800">Menu</Text>
+              <Text className="text-4xl font-semibold uppercase text-gray-800">
+                Menu
+              </Text>
             </View>
             <View className="flex w-4/12 justify-center items-center">
               {context.orderType == 'Dine In' && (
@@ -1423,19 +1419,15 @@ export default function Menu({route, navigation}) {
               setItemNoteText('');
             }}>
             <View>
-              <StyledComponent
-                component={View}
-                tw="bg-white w-[500px] max-w-[80%] rounded-lg shadow-lg">
+              <View className="bg-white w-[500px] max-w-[80%] rounded-lg shadow-lg">
                 <Stack
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
                   padding={4}>
-                  <StyledComponent
-                    component={Text}
-                    tw="text-2xl font-medium text-black">
+                  <Text className="text-2xl font-medium text-black">
                     Add notes for {notedItem && notedItem.name}
-                  </StyledComponent>
+                  </Text>
                   <TouchableOpacity
                     onPress={() => {
                       setItemNoteShow(false);
@@ -1445,9 +1437,8 @@ export default function Menu({route, navigation}) {
                   </TouchableOpacity>
                 </Stack>
                 <SafeAreaView>
-                  <StyledComponent
-                    component={TextInput}
-                    tw="border-[0.8px] border-custom-border-color m-4 pl-4 rounded"
+                  <TextInput
+                    className="border-[0.8px] border-custom-border-color m-4 pl-4 rounded"
                     onChangeText={text => setItemNoteText(text)}
                     placeholder="Hot, medium etc..."
                     placeholderTextColor={'grey'}
@@ -1459,190 +1450,43 @@ export default function Menu({route, navigation}) {
                   justifyContent="flex-end"
                   direction="row"
                   padding={4}>
-                  <StyledComponent
-                    component={Button}
-                    tw="w-1/2 rounded capitalize"
-                    title="Close"
-                    color="grey"
+                  <TouchableOpacity
                     onPress={() => {
                       setItemNoteShow(false);
                       setItemNoteText('');
                     }}
-                  />
-                  {/* change to TouchableOpacity */}
-                  <StyledComponent
-                    component={Button}
-                    tw="w-1/2 rounded capitalize m-2"
-                    title="Add to order"
+                    className="h-auto rounded  bg-custom-grey px-4 py-2">
+                    <Text className="text-white uppercase">Close</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
                     onPress={addItemNote}
-                  />
+                    className="h-auto rounded  bg-custom-primary px-4 py-2">
+                    <Text className="text-white uppercase">Add to order</Text>
+                  </TouchableOpacity>
                 </Stack>
-              </StyledComponent>
+              </View>
             </View>
           </Modal>
         </View>
         <View>
-          <Modal
-            isVisible={showCustModal}
-            animationType="fade"
-            className="flex-1 justify-center items-center"
-            onBackButtonPress={handleCustItemClose}>
-            <StyledComponent
-              component={View}
-              tw="bg-white min-w-[500px] max-w-[80%] rounded-lg shadow-lg">
-              <ScrollView>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  borderBottomWidth={1}
-                  borderBottomColor="rgb(206, 212, 218)"
-                  padding={4}>
-                  <StyledComponent
-                    component={Text}
-                    tw="text-2xl font-medium text-black">
-                    Add custom item - {customItemType}
-                  </StyledComponent>
-                  <TouchableOpacity onPress={handleCustItemClose}>
-                    <FeatherIcon name="x" size={40} color="#555" />
-                  </TouchableOpacity>
-                </Stack>
-                <StyledComponent component={View} tw="p-4">
-                  <StyledComponent
-                    text-xl
-                    tw="my-2 text-custom-dark text-xl"
-                    component={Text}>
-                    Type
-                  </StyledComponent>
-                  <Radio.Group
-                    name="FoodType"
-                    accessibilityLabel="Select type"
-                    value={customItemType}
-                    onChange={nextValue => {
-                      setCustomItemType(nextValue);
-                    }}>
-                    <Stack direction="row" alignItems="center" space={4}>
-                      <Radio value="Food" my={1}>
-                        Food
-                      </Radio>
-                      <Radio value="Drink" my={1}>
-                        Drink
-                      </Radio>
-                    </Stack>
-                  </Radio.Group>
-                  {customItemType == 'Food' && (
-                    <>
-                      <StyledComponent
-                        text-xl
-                        tw="my-2 text-custom-dark text-xl"
-                        component={Text}>
-                        Category
-                      </StyledComponent>
-                      <Radio.Group
-                        name="FoodCategory"
-                        accessibilityLabel="Select category"
-                        value={customItemCategory}
-                        onChange={nextValue => {
-                          setCustomItemCategory(nextValue);
-                        }}>
-                        <Stack direction="row" alignItems="center" space={4}>
-                          <Radio value="STARTERS" my={1}>
-                            Starter
-                          </Radio>
-                          <Radio value="ENGLISH DISHES" my={1}>
-                            Main
-                          </Radio>
-                          <Radio value="SUNDRIES" my={1}>
-                            Sundry
-                          </Radio>
-                        </Stack>
-                      </Radio.Group>
-                    </>
-                  )}
-                  <StyledComponent
-                    text-xl
-                    tw="my-2 text-black text-xl"
-                    component={Text}>
-                    Item
-                  </StyledComponent>
-                  <StyledComponent
-                    component={TextInput}
-                    multiline={true}
-                    numberOfLines={2}
-                    onChangeText={t => setCustomItem(t)}
-                    tw="border border-gray-300 p-3 rounded-md w-full"
-                    defaultValue={customItem.toString()}
-                    placeholder="Add Details"
-                    placeholderTextColor="grey"
-                  />
-                  <StyledComponent
-                    text-xl
-                    tw="my-2 text-black text-xl"
-                    component={Text}>
-                    Quantity
-                  </StyledComponent>
-                  <StyledComponent
-                    component={TextInput}
-                    keyboardType="numeric"
-                    maxLength={2}
-                    onChangeText={t => setCustomItemQuantity(t)}
-                    tw="border border-gray-300 p-3 rounded-md"
-                    placeholder="1,2,3 etc..."
-                    defaultValue={customItemQuantity.toString()}
-                    placeholderTextColor="grey"
-                  />
-                  <StyledComponent
-                    text-xl
-                    tw="my-2 text-black text-xl"
-                    component={Text}>
-                    Price
-                  </StyledComponent>
-                  <StyledComponent
-                    component={TextInput}
-                    keyboardType="numeric"
-                    tw="border border-gray-300 p-3 rounded-md"
-                    placeholder="Item Price"
-                    onChangeText={t => setCustomItemPrice(t)}
-                    onSubmitEditing={() => {
-                      setShowCustModal(false);
-                      addCustomItem();
-                      scrollToTop();
-                    }}
-                    defaultValue={customItemPrice.toString()}
-                    placeholderTextColor="grey"
-                  />
-                </StyledComponent>
-                <Stack
-                  marginY={4}
-                  marginRight={4}
-                  direction="row"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  space={4}>
-                  <StyledComponent
-                    component={Button}
-                    tw="w-1/2 rounded capitalize"
-                    title="Close"
-                    color="grey"
-                    onPress={handleCustItemClose}
-                  />
-                  <StyledComponent
-                    disabled={customItemQuantity == 0 || customItem == ''}
-                    onPress={() => {
-                      setShowCustModal(false);
-                      addCustomItem();
-                      scrollToTop();
-                    }}
-                    component={Button}
-                    tw="rounded capitalize"
-                    title="Add to order"
-                  />
-                </Stack>
-              </ScrollView>
-            </StyledComponent>
-
-            {/* </StyledComponent> */}
-          </Modal>
+          <CustomItemModal
+            {...{
+              showCustModal,
+              handleCustItemClose,
+              customItemType,
+              setCustomItemType,
+              setCustomItemCategory,
+              setCustomItem,
+              customItem,
+              setCustomItemQuantity,
+              customItemQuantity,
+              setCustomItemPrice,
+              setShowCustModal,
+              addCustomItem,
+              scrollToTop,
+              customItemPrice,
+            }}
+          />
         </View>
         <AddNotesModal
           show={show}

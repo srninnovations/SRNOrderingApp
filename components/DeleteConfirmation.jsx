@@ -10,9 +10,10 @@ import {
   VStack,
   WarningOutlineIcon,
 } from 'native-base';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import Modal from 'react-native-modal';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import {TouchableOpacity} from 'react-native';
 
 export const DeleteConfirmation = ({
   confirmDelete,
@@ -39,17 +40,20 @@ export const DeleteConfirmation = ({
   };
   return (
     <>
-      <Button onPress={showModal} size="lg" colorScheme={'danger'}>
+      <TouchableOpacity
+        className="p-2.5 bg-custom-danger rounded"
+        onPress={showModal}>
         <AntIcon name="delete" size={22} color="white" />
-      </Button>
+      </TouchableOpacity>
       <Modal
         isVisible={show}
         animationType="fade"
         className="flex-1 justify-center items-center"
-        backdropOpacity={0.35}
+        backdropOpacity={0.1}
         onBackButtonPress={hideModal}>
         <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
           <Heading
+            className="uppercase"
             borderBottomWidth={1}
             fontWeight={'semibold'}
             color={'gray.800'}
@@ -99,31 +103,37 @@ export const DeleteConfirmation = ({
                 leftIcon={<WarningOutlineIcon size="xs" />}>
                 Invalid pin!
               </FormControl.ErrorMessage>
-              <Button
-                onPress={validateCode}
-                my={'2'}
-                maxW={'24'}
-                size={'md'}
-                colorScheme={'lightBlue'}>
-                Unlock
-              </Button>
+              <TouchableOpacity
+                className="py-2 w-24 my-2 rounded bg-custom-primary"
+                onPress={validateCode}>
+                <Text className="text-white my-auto text-center font-semibold uppercase">
+                  Unlock
+                </Text>
+              </TouchableOpacity>
             </FormControl>
           )}
           <HStack justifyContent="flex-end" space="3" px="5" pt="2" pb={'4'}>
-            <Button
-              isDisabled={deleteLoad}
-              onPress={hideModal}
-              colorScheme={'gray'}>
-              Close
-            </Button>
+            <TouchableOpacity
+              disabled={deleteLoad}
+              className={`py-2 w-24 rounded ${
+                !deleteLoad ? 'bg-custom-grey' : 'bg-custom-grey/40'
+              } `}
+              onPress={hideModal}>
+              <Text className="text-white my-auto text-center font-semibold uppercase">
+                Close
+              </Text>
+            </TouchableOpacity>
             {validPin && (
-              <Button
-                isLoading={deleteLoad}
-                isLoadingText="Deleting"
-                onPress={confirmDelete}
-                colorScheme={'danger'}>
-                Delete
-              </Button>
+              <TouchableOpacity
+                disabled={deleteLoad}
+                className={`py-2 w-24 rounded uppercase ${
+                  !deleteLoad ? 'bg-custom-danger' : 'bg-custom-danger/40'
+                } `}
+                onPress={confirmDelete}>
+                <Text className="text-white my-auto text-center uppercase font-semibold ">
+                  {deleteLoad ? 'Deleting' : 'Delete'}
+                </Text>
+              </TouchableOpacity>
             )}
           </HStack>
         </Box>

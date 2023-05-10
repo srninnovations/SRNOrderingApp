@@ -1,9 +1,8 @@
-import {ScrollView, Text, View} from 'react-native';
-import {useContext, useEffect, useState} from 'react';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import Header from '../components/Header';
 import {
   Box,
-  Button,
   Center,
   Checkbox,
   HStack,
@@ -138,7 +137,6 @@ export default function History({navigation}) {
   const convertMillisToTime = millis => {
     const date = new Date(millis);
     const deviceTimeZone = RNLocalize.getTimeZone();
-    //if top return doesn't work then try the bottom one
     return moment(date).tz(deviceTimeZone).format('HH:mm');
     // return moment(date).tz('Europe/London').format('HH:mm');
   };
@@ -193,7 +191,7 @@ export default function History({navigation}) {
       <Header />
       <View className="px-20 bg-white min-h-screen">
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text className="text-3xl font-medium text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
+          <Text className="text-3xl font-medium uppercase text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
             History
           </Text>
           {allOrders.length > 0 && (
@@ -202,7 +200,7 @@ export default function History({navigation}) {
               space={10}
               className="px-3 mt-5">
               <Checkbox.Group accessibilityLabel="Filter history">
-                <Heading className="text-custom-dark text-xl">
+                <Heading className="text-custom-dark uppercase text-xl">
                   Filter by:
                 </Heading>
                 <VStack space={1} my={2}>
@@ -225,7 +223,7 @@ export default function History({navigation}) {
                 </VStack>
               </Checkbox.Group>
               <VStack>
-                <Heading className="text-custom-dark text-xl mb-2">
+                <Heading className="text-custom-dark uppercase text-xl mb-2">
                   Find by:
                 </Heading>
                 <Input
@@ -259,7 +257,7 @@ export default function History({navigation}) {
               {filterByIdFound ? (
                 <Text className="m-2 text-green-400">Found order</Text>
               ) : (
-                <Text className="my-4 text-black text-xl">
+                <Text className="my-4 text-black uppercase text-xl">
                   Orders: {orders.length}
                 </Text>
               )}
@@ -277,7 +275,7 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-semibold text-xl">
+                    <Text className="text-black uppercase font-semibold text-xl">
                       Order type
                     </Text>
                   </Box>
@@ -289,7 +287,7 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-semibold text-xl">
+                    <Text className="text-black uppercase font-semibold text-xl">
                       Order time
                     </Text>
                   </Box>
@@ -301,7 +299,7 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-semibold text-xl">
+                    <Text className="text-black uppercase font-semibold text-xl">
                       Order id
                     </Text>
                   </Box>
@@ -313,12 +311,12 @@ export default function History({navigation}) {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black font-semibold text-xl">
+                    <Text className="text-black uppercase font-semibold text-xl">
                       Served by
                     </Text>
                   </Box>
                   <Center h="10" borderColor="gray.400" maxW={'1/5'} w="full">
-                    <Text className="text-black font-semibold text-xl">
+                    <Text className="text-black uppercase font-semibold text-xl">
                       Action
                     </Text>
                   </Center>
@@ -394,16 +392,15 @@ export default function History({navigation}) {
                         justifyContent="center"
                         alignItems="center">
                         <ViewModal order={order} />
-                        <Button
+                        <TouchableOpacity
+                          className="p-2.5 bg-gray-600 rounded"
                           onPress={() =>
                             navigation.navigate('Menu', {
                               order_id: order.order_id,
                             })
-                          }
-                          size="lg"
-                          colorScheme={'muted'}>
+                          }>
                           <AntIcon name="edit" size={22} color="white" />
-                        </Button>
+                        </TouchableOpacity>
                         <DeleteConfirmation
                           order={deleteOrder}
                           show={show}

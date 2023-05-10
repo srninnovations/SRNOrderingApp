@@ -1,4 +1,5 @@
-#TODO
+########TODO##########
+#Printing option in view modal from history page
 
 #Ability to edit customer details maybe from history view modal
 #Ability to go back from table selection or delivery or collection - while on menu
