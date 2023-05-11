@@ -10,8 +10,8 @@
 #Print retry on error or failure
 
 #DONE
-#Menu page - Recipt divider by main, starters, etc categories
 #Change all buttons to touchable
+#Menu page - Recipt divider by main, starters, etc categories
 #Printing option in view modal from history page
 #Bring in changes from order-id-styling-and-receipt-priority branch from web app
 #Make toast bigger
