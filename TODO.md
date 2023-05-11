@@ -1,9 +1,12 @@
 ########TODO##########
+#option to REMOVE DISCOUNT
+#speed up adding items to order from MENU
+#Change font for restaurant title
+#Menu page - Popular curry dishes on sub category select ability to go back
 
 #Ability to edit customer details maybe from history view modal
 #Ability to go back from table selection or delivery or collection - while on menu
 #Include order time on receipt (i think currently order time changes when you update it, it would be good to keep the original time)
-#Menu page - Popular curry dishes on sub category select ability to go back
 #Print retry on error or failure
 
 #DONE
