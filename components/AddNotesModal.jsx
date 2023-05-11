@@ -44,6 +44,7 @@ export default function AddNotesModal({
               color="trueGray.500"
               bgColor="trueGray.50"
               focusOutlineColor="lightBlue.400"
+              className="text-black text-xl"
               defaultValue={notes.length > 0 ? notes : ''}
               onChangeText={text => context.setNotes(text)}
               onSubmitEditing={handleSave}
@@ -56,14 +57,18 @@ export default function AddNotesModal({
             justifyContent="flex-end">
             <TouchableOpacity
               onPress={handleClose}
-              className="h-auto rounded  bg-custom-grey px-4 py-2">
-              <Text className="text-white uppercase font-semibold">Close</Text>
+              className="flex justify-center h-10 w-32 rounded bg-custom-grey">
+              <Text className="text-white uppercase text-xl text-center">
+                Close
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleSave}
-              className="h-auto rounded  bg-custom-primary px-4 py-2">
-              <Text className="text-white uppercase font-semibold">Save</Text>
+              className="flex justify-center w-32 h-10 rounded bg-custom-primary">
+              <Text className="text-white text-center uppercase text-xl">
+                Save
+              </Text>
             </TouchableOpacity>
           </Stack>
         </View>
