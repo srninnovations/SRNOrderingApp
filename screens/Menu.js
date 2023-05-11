@@ -105,7 +105,7 @@ export default function Menu({route, navigation}) {
   const [customItemCategory, setCustomItemCategory] = useState('STARTERS');
   const [customItem, setCustomItem] = useState('');
   const [customItemQuantity, setCustomItemQuantity] = useState(1);
-  const [customItemPrice, setCustomItemPrice] = useState('0.00');
+  const [customItemPrice, setCustomItemPrice] = useState('');
 
   const [itemNoteText, setItemNoteText] = useState('');
 
@@ -606,14 +606,14 @@ export default function Menu({route, navigation}) {
     }
   };
 
-  const addCustomItem = () => {
+  const addCustomItem = async () => {
     const addItem = {
       name: customItem,
       price: Number(parseFloat(customItemPrice).toFixed(2)),
       quantity: customItemQuantity,
       category: customItemType == 'Food' ? customItemCategory : 'ALCOHOL',
     };
-    setOrders(oldState => [...oldState, addItem]);
+    await setOrders(oldState => [...oldState, addItem]);
 
     let prevPrice = total;
 
@@ -622,7 +622,7 @@ export default function Menu({route, navigation}) {
     //   customItemType == "Food"
     //     ? Number(addItem.price)
     //     : Number(addItem.price) * Number(addItem.quantity);
-    setTotal(prevPrice + price);
+    await setTotal(prevPrice + price);
   };
 
   const updateInDB = async () => {
@@ -845,14 +845,14 @@ export default function Menu({route, navigation}) {
                   setCustomItemType('Food');
                   setCustomItemCategory('STARTERS');
                 }}>
-                <Text className="text-center text-black m-2 font-medium text-xl">
+                <Text className="text-center text-black m-2 font-medium text-xl uppercase">
                   Add Custom Item
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 className="my-2 h-14 bg-custom-amber rounded-sm justify-center"
                 onPress={handleShow}>
-                <Text className="text-center text-black m-2 font-medium text-xl">
+                <Text className="text-center text-black m-2 font-medium text-xl uppercase">
                   Add Notes
                 </Text>
               </TouchableOpacity>
@@ -1617,6 +1617,7 @@ export default function Menu({route, navigation}) {
           <CustomItemModal
             {...{
               showCustModal,
+              customItemCategory,
               handleCustItemClose,
               customItemType,
               setCustomItemType,

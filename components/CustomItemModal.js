@@ -11,24 +11,31 @@ import {Radio, Stack} from 'native-base';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 export default function CustomItemModal({
+  scrollToTop,
   showCustModal,
   handleCustItemClose,
+  addCustomItem,
   customItemType,
-  setCustomItemType,
   customItemCategory,
-  setCustomItem,
   customItem,
+  customItemQuantity,
+  customItemPrice,
+  setCustomItemType,
+  setCustomItem,
   setCustomItemCategory,
   setCustomItemQuantity,
-  customItemQuantity,
   setCustomItemPrice,
   setShowCustModal,
-  addCustomItem,
-  scrollToTop,
-  customItemPrice,
 }) {
   const quantityRef = useRef(null);
   const priceRef = useRef(null);
+
+  const addToOrder = () => {
+    setShowCustModal(false);
+    addCustomItem();
+    scrollToTop();
+  };
+
   return (
     <Modal
       isVisible={showCustModal}
@@ -62,10 +69,10 @@ export default function CustomItemModal({
               }}>
               <Stack direction="row" alignItems="center" space={4}>
                 <Radio value="Food" my={1}>
-                  Food
+                  <Text className="text-black text-xl">Food</Text>
                 </Radio>
                 <Radio value="Drink" my={1}>
-                  Drink
+                  <Text className="text-black text-xl">Drink</Text>
                 </Radio>
               </Stack>
             </Radio.Group>
@@ -81,25 +88,26 @@ export default function CustomItemModal({
                   }}>
                   <Stack direction="row" alignItems="center" space={4}>
                     <Radio value="STARTERS" my={1}>
-                      Starter
+                      <Text className="text-black text-xl">Starter</Text>
                     </Radio>
                     <Radio value="ENGLISH DISHES" my={1}>
-                      Main
+                      <Text className="text-black text-xl">Main</Text>
                     </Radio>
                     <Radio value="SUNDRIES" my={1}>
-                      Sundry
+                      <Text className="text-black text-xl">Sundry</Text>
                     </Radio>
                   </Stack>
                 </Radio.Group>
               </>
             )}
-            <Text className="my-2 text-black text-xl">Item</Text>
+            <Text className="my-2 mt-3 text-black text-xl">Item</Text>
             <TextInput
+              size="lg"
               onChangeText={t => setCustomItem(t)}
-              className="w-full border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
+              className="text-xl w-full border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
               onSubmitEditing={() => quantityRef.current.focus()}
               defaultValue={customItem.toString()}
-              placeholder="Add Details"
+              placeholder="Enter name"
               placeholderTextColor="grey"
               returnKeyType="next"
             />
@@ -109,9 +117,9 @@ export default function CustomItemModal({
               keyboardType="numeric"
               maxLength={2}
               onChangeText={t => setCustomItemQuantity(t)}
-              className="border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
+              className="text-xl border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
               onSubmitEditing={() => priceRef.current.focus()}
-              placeholder="1,2,3 etc..."
+              placeholder="Enter quantity"
               defaultValue={customItemQuantity.toString()}
               placeholderTextColor="grey"
               returnKeyType="next"
@@ -120,15 +128,21 @@ export default function CustomItemModal({
             <TextInput
               ref={priceRef}
               keyboardType="numeric"
-              className="border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
-              placeholder="Item Price"
+              className="text-xl border border-gray-300 p-3 rounded-md focus:border-custom-secondary"
+              placeholder="Enter price"
               onChangeText={t => setCustomItemPrice(t)}
               onSubmitEditing={() => {
-                setShowCustModal(false);
-                addCustomItem();
-                scrollToTop();
+                if (
+                  customItemQuantity != 0 &&
+                  customItem != '' &&
+                  customItemPrice &&
+                  customItemCategory != ''
+                ) {
+                  addToOrder();
+                }
               }}
-              defaultValue={customItemPrice.toString()}
+              value={customItemPrice.toString()}
+              // defaultValue={customItemPrice.toString()}
               placeholderTextColor="grey"
             />
           </View>
@@ -141,22 +155,30 @@ export default function CustomItemModal({
             space={4}>
             <TouchableOpacity
               onPress={handleCustItemClose}
-              className="h-auto rounded  bg-custom-grey px-4 py-2">
-              <Text className="text-white uppercase font-semibold">Close</Text>
+              className="flex justify-center rounded  bg-custom-grey px-4 py-2">
+              <Text className="text-white text-center text-xl uppercase">
+                Close
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={customItemQuantity === 0 || customItem === ''}
+              disabled={
+                customItemQuantity == 0 ||
+                customItem == '' ||
+                !customItemPrice ||
+                customItemCategory == ''
+              }
               onPress={() => {
-                setShowCustModal(false);
-                addCustomItem();
-                scrollToTop();
+                addToOrder();
               }}
-              className={`h-auto rounded  bg-custom-grey px-4 py-2 ${
-                customItemQuantity === 0 || customItem === ''
+              className={`flex rounded justify-center px-4 py-2 ${
+                customItemQuantity == 0 ||
+                customItem == '' ||
+                !customItemPrice ||
+                customItemCategory == ''
                   ? 'bg-custom-primary/50'
                   : 'bg-custom-primary'
               }`}>
-              <Text className="text-white uppercase font-semibold">
+              <Text className="text-white text-center text-xl uppercase">
                 Add to order
               </Text>
             </TouchableOpacity>

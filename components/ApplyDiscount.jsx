@@ -182,7 +182,9 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
             <TouchableOpacity
               onPress={hide}
               className="bg-custom-grey w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center text-xl">Close</Text>
+              <Text className="text-white text-center text-xl uppercase">
+                Close
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               disabled={error != null || pinIsValid == false || amount == 0}
@@ -194,7 +196,9 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
                   ? 'opacity-60'
                   : ''
               }`}>
-              <Text className="text-white text-center text-xl">Apply</Text>
+              <Text className="text-white text-center text-xl uppercase">
+                Apply
+              </Text>
             </TouchableOpacity>
           </HStack>
         </Box>
