@@ -72,6 +72,7 @@ export default function ViewModal({order}) {
 
   const printKitcken = async () => {
     const orderDetails = {
+      orderNotes: order.notes,
       orderType: order.orderType,
       customerDetails: order.customer,
     };
@@ -215,8 +216,8 @@ export default function ViewModal({order}) {
             <VStack minH="1/3">
               {order.notes && order.notes.length > 0 && (
                 <>
-                  <Text className="text-gray-800 mx-5 border-b pb-3 border-custom-border-color">
-                    <Text className="font-bold text-xl">Notes</Text>:{' '}
+                  <Text className="text-gray-800 mx-5 border-b pb-3 text-xl border-custom-border-color">
+                    <Text className="font-bold text-xl">Notes:</Text>{' '}
                     {order.notes}
                   </Text>
                 </>

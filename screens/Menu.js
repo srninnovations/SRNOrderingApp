@@ -690,6 +690,7 @@ export default function Menu({route, navigation}) {
     const orderDetails = {
       orderId: context.orderId,
       orderDate: Date.now(),
+      orderNotes: savedNotes,
       orderType: context.orderType,
       customerDetails: context.customerState,
     };
@@ -698,8 +699,11 @@ export default function Menu({route, navigation}) {
   };
 
   const printKitcken = async () => {
+    console.log('saved', savedNotes);
+    console.log('context', context.notes);
     const orderDetails = {
       orderType: context.orderType,
+      orderNotes: context.notes,
       customerDetails: context.customerState,
     };
 
@@ -838,6 +842,7 @@ export default function Menu({route, navigation}) {
                   </TouchableOpacity>
                 );
               })}
+              <Divider my="6" />
               <TouchableOpacity
                 className="my-2 h-14 bg-custom-amber rounded-sm justify-center"
                 onPress={() => {
@@ -1395,7 +1400,19 @@ export default function Menu({route, navigation}) {
                           );
                       })}
                     </View>
-                    {alcoholItems > 0 && <Divider mt="6" />}
+
+                    {savedNotes.length > 0 && (
+                      <>
+                        <Divider my="2" />
+                        <Text className="text-black font-bold text-xl my-2">
+                          Notes:{' '}
+                          <Text className="font-normal">{savedNotes}</Text>
+                        </Text>
+                      </>
+                    )}
+
+                    {alcoholItems > 0 && <Divider mt="5" />}
+
                     <View className="mt-4 flex w-full h-full">
                       <View className="flex w-full h-full">
                         <View className="flex flex-row w-full">
@@ -1485,12 +1502,6 @@ export default function Menu({route, navigation}) {
                           </View>
                         </View>
 
-                        {savedNotes.length > 0 && (
-                          <Text className="text-black font-bold text-xl mb-6">
-                            Notes:{' '}
-                            <Text className="font-normal">{savedNotes}</Text>
-                          </Text>
-                        )}
                         <TouchableOpacity
                           className="bg-custom-amber py-2 px-4 rounded my-4"
                           onPress={addDiscount}>

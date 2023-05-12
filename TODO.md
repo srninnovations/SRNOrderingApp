@@ -10,6 +10,7 @@
 #Print retry on error or failure
 
 #DONE
+#Includes delivery/order notes on printed receipt
 #Change all buttons to touchable
 #Menu page - Recipt divider by main, starters, etc categories
 #Printing option in view modal from history page
