@@ -226,6 +226,7 @@ export default function Menu({route, navigation}) {
       setEditMode(true);
     } else {
       context.setOrderId(uniqueID());
+      context.setOriginalTime(0);
     }
     setLoading(false);
   };
@@ -248,6 +249,7 @@ export default function Menu({route, navigation}) {
     });
     setOrders(order.items);
     context.setOrderId(order.order_id);
+    context.setOriginalTime(order.orderDate);
     order.notes && setSavedNotes(order.notes);
     Object.keys(order.customer).forEach(info => {
       context.dispatch({
@@ -634,7 +636,8 @@ export default function Menu({route, navigation}) {
         customer: context.customerState,
         people: context.people,
         items: orders,
-        orderDate: Date.now(),
+        orderDate:
+          context.originalTime > 0 ? context.originalTime : Number(Date.now()),
         orderType: context.orderType,
         subTotal,
         notes: context.notes,
@@ -654,7 +657,6 @@ export default function Menu({route, navigation}) {
         client_id: clientId.value,
       },
     };
-
     await ApiServiceUtils.updateHistory(params);
 
     const body = {
@@ -689,7 +691,7 @@ export default function Menu({route, navigation}) {
 
     const orderDetails = {
       orderId: context.orderId,
-      orderDate: Date.now(),
+      orderDate: context.originalTime > 0 ? context.originalTime : Date.now(),
       orderNotes: savedNotes,
       orderType: context.orderType,
       customerDetails: context.customerState,
@@ -724,7 +726,7 @@ export default function Menu({route, navigation}) {
 
     const orderDetails = {
       orderId: context.orderId,
-      orderDate: Date.now(),
+      orderDate: context.originalTime > 0 ? context.originalTime : Date.now(),
       orderType: context.orderType,
       customerDetails: context.customerState,
     };
@@ -740,6 +742,7 @@ export default function Menu({route, navigation}) {
 
   const newOrder = (shouldNavigate = true) => {
     context.setOrderId(0);
+    context.setOriginalTime(0);
     shouldNavigate && context.dispatch({type: 'RESET'});
     shouldNavigate && navigation.navigate('Dashboard');
   };
@@ -751,6 +754,10 @@ export default function Menu({route, navigation}) {
   const applyDiscount = discountAmount => {
     setTotal(total - discountAmount);
     setDiscount(discountAmount);
+  };
+  const removeDiscount = discountAmount => {
+    setTotal(total + discountAmount);
+    setDiscount(0);
   };
 
   const scrollToTop = () => {
@@ -783,7 +790,6 @@ export default function Menu({route, navigation}) {
           kitchenRecipt={() => printKitcken()}
           customerReceipt={() => printCustomer()}
         />
-
         <ApplyDiscount
           show={showDiscountModal}
           hide={() => setShowDiscountModal(false)}
@@ -868,6 +874,19 @@ export default function Menu({route, navigation}) {
             <View
               className="w-5/12 mt-3 p-4 h-full bg-white rounded-lg"
               style={[styles.elevation]}>
+              {hasSubCat.isSubCategory && (
+                <View className="w-1/4">
+                  <TouchableOpacity
+                    onPress={() => {
+                      findMenuItem(selectedMenu);
+                      setHasSubCat(initialHasSubCat);
+                    }}
+                    className=" bg-black rounded flex flex-row justify-center py-2 items-center">
+                    <FeatherIcon name="chevron-left" size={22} color="#fff" />
+                    <Text className="text-center text-white">Back</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
               {menuItems.map((s, index) => {
                 return (
                   <React.Fragment key={`${index}-${s.name}`}>
@@ -1509,6 +1528,15 @@ export default function Menu({route, navigation}) {
                             APPLY DISCOUNT
                           </Text>
                         </TouchableOpacity>
+                        {discount > 0 && (
+                          <TouchableOpacity
+                            onPress={() => removeDiscount(discount)}
+                            className="flex justify-center py-2 rounded bg-custom-danger">
+                            <Text className="text-white uppercase text-center text-lg">
+                              Remove Discount
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                         {!editMode ? (
                           <TouchableOpacity
                             className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
@@ -1522,7 +1550,8 @@ export default function Menu({route, navigation}) {
                             <TouchableOpacity
                               className="bg-custom-primary py-2 px-4 rounded my-4 h-14 flex justify-center"
                               onPress={async () => {
-                                await updateInDB(), setOrderUpdated(true);
+                                await updateInDB();
+                                setOrderUpdated(true);
                               }}>
                               <Text className="text-white text-center font-bold text-lg">
                                 UPDATE ORDER

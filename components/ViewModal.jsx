@@ -1,5 +1,5 @@
 import {Text, ScrollView, TouchableOpacity, View} from 'react-native';
-import {useEffect, useReducer, useState} from 'react';
+import {useContext, useEffect, useReducer, useState} from 'react';
 import Modal from 'react-native-modal';
 import {Box, Button, Divider, HStack, Heading, VStack} from 'native-base';
 import {PrintingOptions} from './PrintingOptions';
@@ -7,6 +7,8 @@ import {
   printNewKitckenReceipt,
   printNewCustomerReceipt,
 } from '../utils/PrinterService';
+import {useNavigation} from '@react-navigation/native';
+import GlobalContext from '../utils/GlobalContext.';
 
 const initialState = {
   starterItems: 0,
@@ -41,6 +43,10 @@ const orderMenuReducer = (state = initialState, action) => {
   }
 };
 export default function ViewModal({order}) {
+  const context = useContext(GlobalContext);
+
+  const navigation = useNavigation();
+
   const [orderState, dispatch] = useReducer(orderMenuReducer, initialState);
 
   const [modalShow, setModalShow] = useState(false);
@@ -98,6 +104,17 @@ export default function ViewModal({order}) {
     };
 
     await printNewCustomerReceipt(order.items, totals, orderDetails);
+  };
+  const handleEditCustomer = () => {
+    // unfinished
+    /*
+    context.setOrderType(order.orderType);
+    navigation.navigate('Selection', {
+      order_id: order.order_id,
+      editMode: true,
+    });
+    */
+    return;
   };
 
   return (
@@ -213,11 +230,12 @@ export default function ViewModal({order}) {
           </VStack>
 
           <HStack justifyContent={'center'}>
-            <VStack minH="1/3">
+            <VStack>
+              {/* <ScrollView> */}
               {order.notes && order.notes.length > 0 && (
                 <>
-                  <Text className="text-gray-800 mx-5 border-b pb-3 text-xl border-custom-border-color">
-                    <Text className="font-bold text-xl">Notes:</Text>{' '}
+                  <Text className="text-gray-800 mx-5 border-b pb-3 border-custom-border-color">
+                    <Text className="font-bold text-xl">Notes</Text>:
                     {order.notes}
                   </Text>
                 </>
@@ -317,6 +335,7 @@ export default function ViewModal({order}) {
                   £{order.total.toFixed(2)}
                 </Text>
               </HStack>
+              {/* </ScrollView> */}
             </VStack>
           </HStack>
           <HStack space="2" justifyContent="flex-end" mx="5" my="7">
@@ -334,6 +353,13 @@ export default function ViewModal({order}) {
                 Print
               </Text>
             </TouchableOpacity>
+            {/* <TouchableOpacity
+              onPress={handleEditCustomer}
+              className="bg-gray-700 w-32 h-10 flex justify-center rounded">
+              <Text className="text-white text-center uppercase">
+                Edit Customer Details
+              </Text>
+            </TouchableOpacity> */}
           </HStack>
         </Box>
       </Modal>
