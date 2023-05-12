@@ -32,6 +32,7 @@ const App = () => {
   const [people, setPeople] = useState(0);
   const [tableNumbers, setTableNumbers] = useState(0);
   const [orderId, setOrderId] = useState(0);
+  const [originalTime, setOriginalTime] = useState(0);
   const [notes, setNotes] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
   const [customerState, dispatch] = useReducer(
@@ -64,6 +65,8 @@ const App = () => {
               customerState,
               orderId,
               setOrderId,
+              originalTime,
+              setOriginalTime,
               dispatch,
               notes,
               setNotes,
