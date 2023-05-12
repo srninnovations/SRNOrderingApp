@@ -192,6 +192,12 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
       }
     });
 
+    if (orderDetails.orderNotes) {
+      printing.text('Notes: ' + orderDetails.orderNotes);
+      printing.newline();
+      printing.newline();
+    }
+
     if (orderDetails.orderType == 'Delivery') {
       printing.newline().newline();
       printing.align('center');
@@ -203,6 +209,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
       printing.line(orderDetails.customerDetails.address2);
       printing.line(orderDetails.customerDetails.postcode);
       printing.line(orderDetails.customerDetails.contact);
+      printing.line(orderDetails.customerDetails.deliveryNotes);
       printing.newline().newline();
       printing.cut();
     } else if (orderDetails.orderType == 'Collection') {
@@ -416,6 +423,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       printing.line(orderDetails.customerDetails.address2);
       printing.line(orderDetails.customerDetails.postcode);
       printing.line(orderDetails.customerDetails.contact);
+      printing.line(orderDetails.customerDetails.deliveryNotes);
     }
 
     if (orderDetails.orderType == 'Collection') {
@@ -552,6 +560,12 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
     }
   });
 
+  if (orderDetails.orderNotes) {
+    printing.text('Notes: ' + orderDetails.orderNotes);
+    printing.newline();
+    printing.newline();
+  }
+
   if (orderDetails.orderType == 'Delivery') {
     printing.newline().newline();
     printing.align('center');
@@ -563,6 +577,7 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
     printing.line(orderDetails.customerDetails.address2);
     printing.line(orderDetails.customerDetails.postcode);
     printing.line(orderDetails.customerDetails.contact);
+    printing.line(orderDetails.customerDetails.deliveryNotes);
     printing.newline().newline();
     printing.cut();
   } else if (orderDetails.orderType == 'Collection') {
@@ -764,6 +779,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     printing.line(orderDetails.customerDetails.address2);
     printing.line(orderDetails.customerDetails.postcode);
     printing.line(orderDetails.customerDetails.contact);
+    printing.line(orderDetails.customerDetails.deliveryNotes);
   }
 
   if (orderDetails.orderType == 'Collection') {
