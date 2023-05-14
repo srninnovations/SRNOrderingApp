@@ -377,7 +377,9 @@ export default function Menu({route, navigation}) {
         newOrders[itemIndex].quantity = 1;
         setOrders(newOrders);
       } else {
-        orders[itemIndex].quantity += 1;
+        let existOrders = [...orders];
+        existOrders[itemIndex].quantity += 1;
+        setOrders(existOrders);
       }
     } else {
       // Create a new order if it does not exist
