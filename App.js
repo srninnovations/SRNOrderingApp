@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './navigations/AuthNavigator';
 import GlobalContext from './utils/GlobalContext.';
 import {NativeBaseProvider} from 'native-base';
+import {StatusBar} from 'react-native';
 import Ignore from './utils/Ignore';
 const App = () => {
   const initialCustomer = {
@@ -74,6 +75,7 @@ const App = () => {
               setDeliveryNotes,
             }}>
             <AuthNavigator />
+            <StatusBar hidden />
           </GlobalContext.Provider>
         </NativeBaseProvider>
       </NavigationContainer>

@@ -33,7 +33,6 @@ export default function Login({navigation}) {
     if (keychainGetResult.success) {
       const client = await StorageUtils.getAsyncStorageData('client');
       const clientId = await StorageUtils.getAsyncStorageData('clientId');
-
       await setDetails(client.value);
       //   console.log('client', client.value);
       //   console.log('clientId', clientId.value);

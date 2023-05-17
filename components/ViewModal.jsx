@@ -42,7 +42,7 @@ const orderMenuReducer = (state = initialState, action) => {
       return state;
   }
 };
-export default function ViewModal({order}) {
+export default function ViewModal({order, showEditModal}) {
   const context = useContext(GlobalContext);
 
   const navigation = useNavigation();
@@ -106,14 +106,17 @@ export default function ViewModal({order}) {
     await printNewCustomerReceipt(order.items, totals, orderDetails);
   };
   const handleEditCustomer = () => {
-    // unfinished
-    /*
-    context.setOrderType(order.orderType);
-    navigation.navigate('Selection', {
-      order_id: order.order_id,
-      editMode: true,
+    setModalShow(false);
+    Object.keys(order.customer).forEach(info => {
+      context.dispatch({
+        type: 'UPDATE_CUSTOMER',
+        field: info,
+        payload: order.customer[info],
+      });
     });
-    */
+    context.setOrderId(order.order_id);
+    context.setOrderType(order.orderType);
+    showEditModal();
     return;
   };
 
@@ -353,13 +356,15 @@ export default function ViewModal({order}) {
                 Print
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              onPress={handleEditCustomer}
-              className="bg-gray-700 w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center uppercase">
-                Edit Customer Details
-              </Text>
-            </TouchableOpacity> */}
+            {order.orderType.toUpperCase() !== 'DINE IN' && (
+              <TouchableOpacity
+                onPress={handleEditCustomer}
+                className="bg-gray-700 w-32 h-10 flex justify-center rounded">
+                <Text className="text-white text-center uppercase">
+                  Edit Customer
+                </Text>
+              </TouchableOpacity>
+            )}
           </HStack>
         </Box>
       </Modal>

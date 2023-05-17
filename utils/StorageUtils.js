@@ -78,6 +78,16 @@ const removeAsyncStorageData = async key => {
     return {success: false, error};
   }
 };
+const removeAllData = async () => {
+  try {
+    await AsyncStorage.clear();
+    await removeKeychainData('token');
+    return {success: true};
+  } catch (error) {
+    console.log(error);
+    return {success: false, error};
+  }
+};
 
 export default {
   saveKeychainData,
@@ -86,4 +96,5 @@ export default {
   saveAsyncStorageData,
   getAsyncStorageData,
   removeAsyncStorageData,
+  removeAllData,
 };

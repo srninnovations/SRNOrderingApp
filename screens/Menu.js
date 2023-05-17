@@ -377,7 +377,9 @@ export default function Menu({route, navigation}) {
         newOrders[itemIndex].quantity = 1;
         setOrders(newOrders);
       } else {
-        orders[itemIndex].quantity += 1;
+        let existOrders = [...orders];
+        existOrders[itemIndex].quantity += 1;
+        setOrders(existOrders);
       }
     } else {
       // Create a new order if it does not exist
@@ -413,6 +415,7 @@ export default function Menu({route, navigation}) {
 
     // Always update the total price
     setTotal(prevTotal => prevTotal + item.price);
+    // setSubTotal(prevSubTotal => prevSubTotal + item.price);
   };
 
   const addItemNote = () => {
@@ -701,8 +704,6 @@ export default function Menu({route, navigation}) {
   };
 
   const printKitcken = async () => {
-    console.log('saved', savedNotes);
-    console.log('context', context.notes);
     const orderDetails = {
       orderType: context.orderType,
       orderNotes: context.notes,

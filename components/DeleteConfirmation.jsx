@@ -12,7 +12,6 @@ import {
 } from 'native-base';
 import React, {useState} from 'react';
 import Modal from 'react-native-modal';
-import AntIcon from 'react-native-vector-icons/AntDesign';
 import {TouchableOpacity} from 'react-native';
 
 export const DeleteConfirmation = ({
@@ -40,16 +39,11 @@ export const DeleteConfirmation = ({
   };
   return (
     <>
-      <TouchableOpacity
-        className="p-2.5 bg-custom-danger rounded"
-        onPress={showModal}>
-        <AntIcon name="delete" size={22} color="white" />
-      </TouchableOpacity>
       <Modal
         isVisible={show}
         animationType="fade"
         className="flex-1 justify-center items-center"
-        backdropOpacity={0.1}
+        backdropOpacity={0.7}
         onBackButtonPress={hideModal}>
         <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
           <Heading
