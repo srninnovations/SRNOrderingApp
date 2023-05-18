@@ -90,7 +90,7 @@ const getMenu = async client => {
 const getOrders = async client => {
   const tokenString = await StorageUtils.getKeychainData('token');
   const token = JSON.parse(tokenString.value);
-  const response = await fetch(apiUrl + '/orders?client=' + client, {
+  const response = await fetch(apiUrl + '/allorders?client=' + client, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

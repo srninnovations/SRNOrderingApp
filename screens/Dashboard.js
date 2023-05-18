@@ -6,9 +6,11 @@ import {useNavigation} from '@react-navigation/native';
 import StorageUtils from '../utils/StorageUtils';
 
 import GlobalContext from '../utils/GlobalContext.';
+import {useToast} from 'native-base';
 
 export default function Dashboard() {
   const navigation = useNavigation();
+  const toast = useToast();
 
   const {staff, setStaff, setOrderType} = useContext(GlobalContext);
 
@@ -29,6 +31,7 @@ export default function Dashboard() {
 
   const selectStaff = async person => {
     setStaff(person);
+    toast.isActive('staff') && toast.close('staff');
     await StorageUtils.saveAsyncStorageData('staff', person);
   };
   const selectOrderType = async orderType => {

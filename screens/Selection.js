@@ -38,7 +38,6 @@ export default function Selection({navigation}) {
 
   const [show, setShow] = useState(false);
   const [selectorShow, setSelectorShow] = useState(false);
-
   // const [customerState, setCustomerState] = useState({
   //   name: '',
   //   address1: '',
@@ -233,10 +232,6 @@ export default function Selection({navigation}) {
 
   const updateCustomerState = object => {
     const {name, value} = object;
-    // setCustomerState(prevState => ({
-    //   ...prevState,
-    //   [name]: value,
-    // }));
     context.dispatch({type: 'UPDATE_CUSTOMER', field: name, payload: value});
   };
 
@@ -275,14 +270,14 @@ export default function Selection({navigation}) {
       if (orderType == 'Delivery') {
         toast.show({
           render: () => (
-            <CustomToast title="Please fill out all required fields:\n\nAddress 1, Postcode, Contact Number" />
+            <CustomToast title="Please fill in all required fields: Address 1, Postcode, Contact Number" />
           ),
         });
       }
       if (orderType == 'Collection') {
         toast.show({
           render: () => (
-            <CustomToast title="Please fill out all required fields:\n\nName, Contact Number" />
+            <CustomToast title="Please fill in all required fields: Name, Contact Number" />
           ),
         });
       }
@@ -536,6 +531,7 @@ export default function Selection({navigation}) {
                     Clear
                   </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   className="px-5 py-2.5 w-32 rounded bg-custom-primary"
                   onPress={takeOrder}>
@@ -593,6 +589,7 @@ export default function Selection({navigation}) {
                     Clear
                   </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   className="px-5 py-2.5 w-32 rounded bg-custom-primary"
                   onPress={takeOrder}>

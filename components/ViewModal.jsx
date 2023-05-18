@@ -42,7 +42,7 @@ const orderMenuReducer = (state = initialState, action) => {
       return state;
   }
 };
-export default function ViewModal({order}) {
+export default function ViewModal({order, showEditModal}) {
   const context = useContext(GlobalContext);
 
   const navigation = useNavigation();
@@ -106,14 +106,17 @@ export default function ViewModal({order}) {
     await printNewCustomerReceipt(order.items, totals, orderDetails);
   };
   const handleEditCustomer = () => {
-    // unfinished
-    /*
-    context.setOrderType(order.orderType);
-    navigation.navigate('Selection', {
-      order_id: order.order_id,
-      editMode: true,
+    setModalShow(false);
+    Object.keys(order.customer).forEach(info => {
+      context.dispatch({
+        type: 'UPDATE_CUSTOMER',
+        field: info,
+        payload: order.customer[info],
+      });
     });
-    */
+    context.setOrderId(order.order_id);
+    context.setOrderType(order.orderType);
+    showEditModal();
     return;
   };
 
@@ -128,7 +131,7 @@ export default function ViewModal({order}) {
         isVisible={modalShow}
         onBackButtonPress={() => setModalShow(false)}
         className="flex-1 justify-center items-center">
-        <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
+        <Box width={'full'} maxW={'lg'} bgColor={'white'} borderRadius={'md'}>
           <Heading fontWeight={'medium'} mx={'5'} mt={'5'}>
             Order Details
           </Heading>
@@ -340,26 +343,28 @@ export default function ViewModal({order}) {
           </HStack>
           <HStack space="2" justifyContent="flex-end" mx="5" my="7">
             <TouchableOpacity
-              onPress={() => setModalShow(false)}
-              className="bg-custom-grey w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center uppercase text-xl">
-                Close
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               onPress={() => setShowPrintOptions(true)}
               className="bg-custom-primary w-32 h-10 flex justify-center rounded">
               <Text className="text-white text-center uppercase text-xl">
                 Print
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              onPress={handleEditCustomer}
-              className="bg-gray-700 w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center uppercase">
-                Edit Customer Details
+            {order.orderType.toUpperCase() !== 'DINE IN' && (
+              <TouchableOpacity
+                onPress={handleEditCustomer}
+                className="bg-gray-700 px-4 h-10 flex justify-center rounded">
+                <Text className="text-white text-center uppercase text-xl">
+                  Edit Details
+                </Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => setModalShow(false)}
+              className="bg-custom-grey w-32 h-10 flex justify-center rounded ">
+              <Text className="text-white text-center uppercase text-xl">
+                Close
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </HStack>
         </Box>
       </Modal>

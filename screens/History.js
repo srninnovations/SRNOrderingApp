@@ -24,34 +24,25 @@ import DeleteAllConfirm from '../components/DeleteAllConfirm';
 import * as RNLocalize from 'react-native-localize';
 import moment from 'moment-timezone';
 import CustomToast from '../components/CustomToast';
+import EditCustomer from '../components/EditCustomer';
 
 export default function History({navigation}) {
   Ignore();
   const toast = useToast();
   const context = useContext(GlobalContext);
 
-  const [client, setClient] = useState('');
-  const [clientId, setClientId] = useState('');
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [show, setShow] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [filterDineIn, setFilterDineIn] = useState(false);
   const [filterDelivery, setFilterDelivery] = useState(false);
   const [filterCollection, setFilterCollection] = useState(false);
   const [filterByIdFound, setFilterByIdFound] = useState(false);
-  const [deleteOrder, setDeleteOrder] = useState({});
+  const [selectedOrder, setSelectedOrder] = useState({});
   const [deleteLoad, setDeleteLoad] = useState(false);
-
-  const getClient = async () => {
-    const res = await StorageUtils.getAsyncStorageData('client');
-    setClient(res.value);
-  };
-  const getClientId = async () => {
-    const res = await StorageUtils.getAsyncStorageData('clientId');
-    setClientId(res.value);
-  };
 
   useEffect(() => {
     if (context.staff == '') {
@@ -59,17 +50,12 @@ export default function History({navigation}) {
       if (!toast.isActive('staff'))
         toast.show({
           id: 'staff',
-          render: () => <CustomToast title="Select a staff to continue." />,
+          render: () => <CustomToast title="Select a staff to view history" />,
         });
     } else {
-      getClient();
-      getClientId();
+      setLoading(true);
+      getHistoryData();
     }
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    getHistoryData();
   }, []);
 
   useEffect(() => {
@@ -93,18 +79,25 @@ export default function History({navigation}) {
   }, [filterCollection, filterDelivery, filterDineIn]);
 
   const getHistoryData = async () => {
-    const history = await ApiServiceUtils.getOrders(client);
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    if (clientId.value) {
+      const history = await ApiServiceUtils.getOrders(clientId.value);
+      if (history) {
+        const sorted = history.sort(
+          (a, b) =>
+            new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
+        );
 
-    if (history) {
-      const sorted = history.sort(
-        (a, b) =>
-          new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
-      );
-
-      setOrders(sorted);
-      setAllOrders(sorted);
-      await StorageUtils.saveAsyncStorageData('history', sorted);
-    }
+        setOrders(sorted);
+        setAllOrders(sorted);
+        await StorageUtils.saveAsyncStorageData('history', sorted);
+      }
+    } else
+      toast.show({
+        render: () => (
+          <CustomToast title="Unexpected error occurred while getting history, please log out and try again. If the issue persists please contact us." />
+        ),
+      });
     setLoading(false);
   };
 
@@ -121,12 +114,12 @@ export default function History({navigation}) {
     }
   };
   const showModal = order => {
-    setDeleteOrder(order);
+    setSelectedOrder(order);
     setShow(true);
   };
 
   const hideModal = () => {
-    clearTimeout(setTimeout(() => setDeleteOrder({}), 500));
+    clearTimeout(setTimeout(() => setSelectedOrder({}), 500));
     setShow(false);
   };
 
@@ -143,9 +136,11 @@ export default function History({navigation}) {
 
   const confirmDelete = async order => {
     setDeleteLoad(true);
+    const client = await StorageUtils.getAsyncStorageData('client');
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
     const res = await ApiServiceUtils.deleteHistory({
-      client,
-      client_id: clientId,
+      client: client.value,
+      client_id: clientId.value,
       order_id: order.order_id,
     });
 
@@ -158,15 +153,18 @@ export default function History({navigation}) {
         toast.show({
           id: 'delete',
           render: () => <CustomToast title={'Deleted Successfully!'} />,
+          duration: 3000,
         });
     }
   };
 
   const confirmDeleteAll = async () => {
+    const client = await StorageUtils.getAsyncStorageData('client');
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
     setDeleteLoad(true);
     const res = await ApiServiceUtils.deleteAllHistory({
-      client,
-      client_id: clientId,
+      client: client.value,
+      client_id: clientId.value,
     });
 
     if (res === 200) {
@@ -177,6 +175,7 @@ export default function History({navigation}) {
         toast.show({
           id: 'delete-all',
           render: () => <CustomToast title="Cleared all orders!" />,
+          duration: 3000,
         });
     }
   };
@@ -239,7 +238,7 @@ export default function History({navigation}) {
               </VStack>
               {orders.length > 0 && (
                 <DeleteAllConfirm
-                  order={deleteOrder}
+                  order={selectedOrder}
                   show={showAll}
                   deleteLoad={deleteLoad}
                   showModal={() => setShowAll(true)}
@@ -391,7 +390,12 @@ export default function History({navigation}) {
                         space={2}
                         justifyContent="center"
                         alignItems="center">
-                        <ViewModal order={order} />
+                        <ViewModal
+                          showEditModal={() => {
+                            setShowEdit(true);
+                          }}
+                          order={order}
+                        />
                         <TouchableOpacity
                           className="p-2.5 bg-gray-600 rounded"
                           onPress={() =>
@@ -401,27 +405,41 @@ export default function History({navigation}) {
                           }>
                           <AntIcon name="edit" size={22} color="white" />
                         </TouchableOpacity>
-                        <DeleteConfirmation
-                          order={deleteOrder}
-                          show={show}
-                          showModal={() => showModal(order)}
-                          hideModal={hideModal}
-                          deleteLoad={deleteLoad}
-                          confirmDelete={async () => {
-                            await confirmDelete(deleteOrder);
-                            setDeleteLoad(false);
-                          }}
-                        />
+                        <TouchableOpacity
+                          className="p-2.5 bg-custom-danger rounded"
+                          onPress={() => showModal(order)}>
+                          <AntIcon name="delete" size={22} color="white" />
+                        </TouchableOpacity>
                       </Stack>
                     </Center>
                   </HStack>
                 ))}
               </VStack>
+              <DeleteConfirmation
+                order={selectedOrder}
+                show={show}
+                hideModal={hideModal}
+                deleteLoad={deleteLoad}
+                confirmDelete={async () => {
+                  await confirmDelete(selectedOrder);
+                  setDeleteLoad(false);
+                }}
+              />
+              <EditCustomer
+                {...{
+                  show: showEdit,
+                  handleClose: () => setShowEdit(false),
+                  refetch: () => {
+                    setLoading(true);
+                    getHistoryData();
+                  },
+                }}
+              />
             </>
           ) : (
             <View className="h-[30vh] w-full flex-1 justify-center items-center">
-              <Text className="text-4xl text-center text-gray-500">
-                No orders Found!
+              <Text className="text-3xl text-center text-gray-500">
+                No orders found
               </Text>
             </View>
           )}

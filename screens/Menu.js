@@ -703,8 +703,6 @@ export default function Menu({route, navigation}) {
   };
 
   const printKitcken = async () => {
-    console.log('saved', savedNotes);
-    console.log('context', context.notes);
     const orderDetails = {
       orderType: context.orderType,
       orderNotes: context.notes,
