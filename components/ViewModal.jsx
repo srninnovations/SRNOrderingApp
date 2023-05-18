@@ -131,7 +131,7 @@ export default function ViewModal({order, showEditModal}) {
         isVisible={modalShow}
         onBackButtonPress={() => setModalShow(false)}
         className="flex-1 justify-center items-center">
-        <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
+        <Box width={'full'} maxW={'lg'} bgColor={'white'} borderRadius={'md'}>
           <Heading fontWeight={'medium'} mx={'5'} mt={'5'}>
             Order Details
           </Heading>
@@ -343,13 +343,6 @@ export default function ViewModal({order, showEditModal}) {
           </HStack>
           <HStack space="2" justifyContent="flex-end" mx="5" my="7">
             <TouchableOpacity
-              onPress={() => setModalShow(false)}
-              className="bg-custom-grey w-32 h-10 flex justify-center rounded">
-              <Text className="text-white text-center uppercase text-xl">
-                Close
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               onPress={() => setShowPrintOptions(true)}
               className="bg-custom-primary w-32 h-10 flex justify-center rounded">
               <Text className="text-white text-center uppercase text-xl">
@@ -359,12 +352,19 @@ export default function ViewModal({order, showEditModal}) {
             {order.orderType.toUpperCase() !== 'DINE IN' && (
               <TouchableOpacity
                 onPress={handleEditCustomer}
-                className="bg-gray-700 w-32 h-10 flex justify-center rounded">
-                <Text className="text-white text-center uppercase">
-                  Edit Customer
+                className="bg-gray-700 px-4 h-10 flex justify-center rounded">
+                <Text className="text-white text-center uppercase text-xl">
+                  Edit Details
                 </Text>
               </TouchableOpacity>
             )}
+            <TouchableOpacity
+              onPress={() => setModalShow(false)}
+              className="bg-custom-grey w-32 h-10 flex justify-center rounded ">
+              <Text className="text-white text-center uppercase text-xl">
+                Close
+              </Text>
+            </TouchableOpacity>
           </HStack>
         </Box>
       </Modal>

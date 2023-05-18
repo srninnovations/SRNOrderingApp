@@ -50,14 +50,12 @@ export default function History({navigation}) {
       if (!toast.isActive('staff'))
         toast.show({
           id: 'staff',
-          render: () => <CustomToast title="Select a staff to continue." />,
+          render: () => <CustomToast title="Select a staff to view history" />,
         });
+    } else {
+      setLoading(true);
+      getHistoryData();
     }
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    getHistoryData();
   }, []);
 
   useEffect(() => {
@@ -82,17 +80,24 @@ export default function History({navigation}) {
 
   const getHistoryData = async () => {
     const clientId = await StorageUtils.getAsyncStorageData('clientId');
-    const history = await ApiServiceUtils.getOrders(clientId.value);
-    if (history) {
-      const sorted = history.sort(
-        (a, b) =>
-          new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
-      );
+    if (clientId.value) {
+      const history = await ApiServiceUtils.getOrders(clientId.value);
+      if (history) {
+        const sorted = history.sort(
+          (a, b) =>
+            new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime(),
+        );
 
-      setOrders(sorted);
-      setAllOrders(sorted);
-      await StorageUtils.saveAsyncStorageData('history', sorted);
-    }
+        setOrders(sorted);
+        setAllOrders(sorted);
+        await StorageUtils.saveAsyncStorageData('history', sorted);
+      }
+    } else
+      toast.show({
+        render: () => (
+          <CustomToast title="Unexpected error occurred while getting history, please log out and try again. If the issue persists please contact us." />
+        ),
+      });
     setLoading(false);
   };
 
@@ -148,6 +153,7 @@ export default function History({navigation}) {
         toast.show({
           id: 'delete',
           render: () => <CustomToast title={'Deleted Successfully!'} />,
+          duration: 3000,
         });
     }
   };
@@ -169,6 +175,7 @@ export default function History({navigation}) {
         toast.show({
           id: 'delete-all',
           render: () => <CustomToast title="Cleared all orders!" />,
+          duration: 3000,
         });
     }
   };
@@ -431,8 +438,8 @@ export default function History({navigation}) {
             </>
           ) : (
             <View className="h-[30vh] w-full flex-1 justify-center items-center">
-              <Text className="text-4xl text-center text-gray-500">
-                No orders Found!
+              <Text className="text-3xl text-center text-gray-500">
+                No orders found
               </Text>
             </View>
           )}

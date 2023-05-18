@@ -71,6 +71,7 @@ const EditCustomer = ({show, handleClose, refetch, next}) => {
         toast.show({
           id: 'edit-customer',
           render: () => <CustomToast title={'Your changes were saved.'} />,
+          duration: 3000,
         });
       refetch();
       handleClose();
@@ -80,11 +81,14 @@ const EditCustomer = ({show, handleClose, refetch, next}) => {
           id: 'edit-customer',
           render: () => (
             <CustomToast
-              title={'Your changes could not be made. Reason: ' + res.error}
+              title={
+                'Unexpected error occurred while getting history, please log out and try again. If the issue persists please contact us'
+              }
             />
           ),
         });
     }
+    context.setOrderId(0);
     setLoading(false);
   };
 
@@ -92,13 +96,6 @@ const EditCustomer = ({show, handleClose, refetch, next}) => {
     setLoading(true);
     await editCustomerDetails();
   };
-  // const handleEditOrder = async () => {
-  //   setLoading(true);
-  //   await editCustomerDetails();
-  //   navigation.navigate('Menu', {
-  //     order_id: context.orderId,
-  //   });
-  // };
 
   return (
     <>
@@ -133,207 +130,220 @@ const EditCustomer = ({show, handleClose, refetch, next}) => {
             </TouchableOpacity>
           </Stack>
 
-          <View className="flex">
-            <HStack
-              className="justify-center m-4 flex flex-col gap-4"
-              space="3"
-              px="5"
-              pt="2"
-              pb={'4'}>
-              {context.orderType == 'Delivery' && (
-                <View className="flex justify-center w-full m-2 align-middle items-center mb-10">
-                  <View className="text-center">
-                    <Text className="text-3xl font-semibold uppercase mb-8">
-                      Delivery Order
-                    </Text>
+          <ScrollView>
+            <View className="flex">
+              <HStack
+                className="justify-center m-4 flex flex-col gap-4"
+                space="3"
+                px="5"
+                pt="2"
+                pb={'4'}>
+                {context.orderType == 'Delivery' && (
+                  <View className="flex justify-center w-full m-2 align-middle items-center mb-10">
+                    <VStack space={6} mt={6}>
+                      <HStack space={6}>
+                        <Box>
+                          <FormControl className="w-96 mb-3">
+                            <Text className="text-xl uppercase mb-3">
+                              Address 1
+                            </Text>
+                            <Input
+                              ref={address1Ref}
+                              size="lg"
+                              className="bg-white"
+                              name="address1"
+                              value={context.customerState.address1}
+                              onChangeText={value =>
+                                updateCustomerState({name: 'address1', value})
+                              }
+                              onSubmitEditing={() =>
+                                address2Ref.current?.focus()
+                              }
+                              returnKeyType="next"
+                            />
+                          </FormControl>
+                          <FormControl className="w-96 mb-3">
+                            <Text className="text-xl uppercase mb-3">
+                              Address 2
+                            </Text>
+                            <Input
+                              ref={address2Ref}
+                              size="lg"
+                              className="bg-white"
+                              name="address2"
+                              value={context.customerState.address2}
+                              onChangeText={value =>
+                                updateCustomerState({name: 'address2', value})
+                              }
+                              onSubmitEditing={() =>
+                                postcodeRef.current?.focus()
+                              }
+                              returnKeyType="next"
+                            />
+                          </FormControl>
+                          <FormControl className="w-96 mb-3">
+                            <Text className="text-xl uppercase mb-3">
+                              Postcode
+                            </Text>
+                            <Input
+                              ref={postcodeRef}
+                              size="lg"
+                              className="bg-white"
+                              name="postcode"
+                              value={context.customerState.postcode}
+                              onChangeText={value =>
+                                updateCustomerState({name: 'postcode', value})
+                              }
+                              onSubmitEditing={() =>
+                                contactRef.current?.focus()
+                              }
+                              returnKeyType="next"
+                            />
+                          </FormControl>
+                        </Box>
+                        <Box>
+                          <FormControl className="w-96 mb-3">
+                            <Text className="text-xl uppercase mb-3">
+                              Contact Number
+                            </Text>
+                            <Input
+                              ref={contactRef}
+                              size="lg"
+                              className="bg-white"
+                              keyboardType="number-pad"
+                              name="contact"
+                              value={context.customerState.contact}
+                              onChangeText={value =>
+                                updateCustomerState({name: 'contact', value})
+                              }
+                              onSubmitEditing={() =>
+                                deliveryNotesRef.current?.focus()
+                              }
+                              returnKeyType="next"
+                            />
+                          </FormControl>
+                          <FormControl className="w-96">
+                            <Text className="text-xl uppercase mb-3">
+                              Delivery Notes
+                            </Text>
+                            <TextArea
+                              ref={deliveryNotesRef}
+                              size={'lg'}
+                              className="bg-white"
+                              h={20}
+                              placeholder="Notes.."
+                              name="deliveryNotes"
+                              value={context.customerState.deliveryNotes}
+                              onChangeText={value =>
+                                updateCustomerState({
+                                  name: 'deliveryNotes',
+                                  value,
+                                })
+                              }
+                            />
+                          </FormControl>
+                        </Box>
+                      </HStack>
+                      <HStack mt={6} space={4}>
+                        <TouchableOpacity
+                          disabled={loading}
+                          className={`px-5 py-2.5 w-32 rounded ${
+                            !loading
+                              ? 'bg-custom-warning'
+                              : 'bg-custom-warning/50'
+                          }`}
+                          onPress={clear}>
+                          <Text className="tracking-wide text-white my-auto font-semibold uppercase text-center">
+                            Clear
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          className={`px-5 py-1 w-36 rounded  ${
+                            loading
+                              ? 'bg-custom-primary/50'
+                              : 'bg-custom-primary'
+                          }`}
+                          disabled={loading}
+                          onPress={handleSaveDetails}>
+                          <Text className="text-white my-auto font-semibold uppercase text-center">
+                            {!loading ? 'Save' : 'Saving...'}
+                          </Text>
+                        </TouchableOpacity>
+                      </HStack>
+                    </VStack>
                   </View>
+                )}
 
-                  <VStack space={6} mt={6}>
-                    <HStack space={6}>
-                      <Box>
-                        <FormControl className="w-96 mb-3">
-                          <Text className="text-xl uppercase mb-3">
-                            Address 1
-                          </Text>
-                          <Input
-                            ref={address1Ref}
-                            size="lg"
-                            className="bg-white"
-                            name="address1"
-                            value={context.customerState.address1}
-                            onChangeText={value =>
-                              updateCustomerState({name: 'address1', value})
-                            }
-                            onSubmitEditing={() => address2Ref.current?.focus()}
-                            returnKeyType="next"
-                          />
-                        </FormControl>
-                        <FormControl className="w-96 mb-3">
-                          <Text className="text-xl uppercase mb-3">
-                            Address 2
-                          </Text>
-                          <Input
-                            ref={address2Ref}
-                            size="lg"
-                            className="bg-white"
-                            name="address2"
-                            value={context.customerState.address2}
-                            onChangeText={value =>
-                              updateCustomerState({name: 'address2', value})
-                            }
-                            onSubmitEditing={() => postcodeRef.current?.focus()}
-                            returnKeyType="next"
-                          />
-                        </FormControl>
-                        <FormControl className="w-96 mb-3">
-                          <Text className="text-xl uppercase mb-3">
-                            Postcode
-                          </Text>
-                          <Input
-                            ref={postcodeRef}
-                            size="lg"
-                            className="bg-white"
-                            name="postcode"
-                            value={context.customerState.postcode}
-                            onChangeText={value =>
-                              updateCustomerState({name: 'postcode', value})
-                            }
-                            onSubmitEditing={() => contactRef.current?.focus()}
-                            returnKeyType="next"
-                          />
-                        </FormControl>
-                      </Box>
-                      <Box>
-                        <FormControl className="w-96 mb-3">
-                          <Text className="text-xl uppercase mb-3">
-                            Contact Number
-                          </Text>
-                          <Input
-                            ref={contactRef}
-                            size="lg"
-                            className="bg-white"
-                            keyboardType="number-pad"
-                            name="contact"
-                            value={context.customerState.contact}
-                            onChangeText={value =>
-                              updateCustomerState({name: 'contact', value})
-                            }
-                            onSubmitEditing={() =>
-                              deliveryNotesRef.current?.focus()
-                            }
-                            returnKeyType="next"
-                          />
-                        </FormControl>
-                        <FormControl className="w-96">
-                          <Text className="text-xl uppercase mb-3">
-                            Delivery Notes
-                          </Text>
-                          <TextArea
-                            ref={deliveryNotesRef}
-                            size={'lg'}
-                            className="bg-white"
-                            h={20}
-                            placeholder="Notes.."
-                            name="deliveryNotes"
-                            value={context.customerState.deliveryNotes}
-                            onChangeText={value =>
-                              updateCustomerState({
-                                name: 'deliveryNotes',
-                                value,
-                              })
-                            }
-                          />
-                        </FormControl>
-                      </Box>
-                    </HStack>
-                    <HStack mt={6} space={4}>
-                      <TouchableOpacity
-                        className="px-5 py-2.5 w-32 rounded bg-custom-warning"
-                        onPress={clear}>
-                        <Text className="tracking-wide text-white my-auto font-semibold uppercase text-center">
-                          Clear
+                {context.orderType == 'Collection' && (
+                  <View className="flex flex-row flex-wrap gap-2 justify-center align-middle w-full m-2">
+                    <View className="text-center">
+                      <FormControl className="w-96">
+                        <Text className="text-xl uppercase mb-3">Name</Text>
+                        <Input
+                          ref={nameRef}
+                          size="lg"
+                          className="bg-white"
+                          name="name"
+                          value={context.customerState.name}
+                          onChangeText={value =>
+                            updateCustomerState({name: 'name', value})
+                          }
+                          onSubmitEditing={() => contactRef.current?.focus()}
+                          returnKeyType="next"
+                        />
+                      </FormControl>
+                      <FormControl className="w-96">
+                        <Text className="text-xl uppercase mb-3">
+                          Contact Number
                         </Text>
-                      </TouchableOpacity>
+                        <Input
+                          ref={contactRef}
+                          size="lg"
+                          className="bg-white"
+                          keyboardType="number-pad"
+                          name="contact"
+                          value={context.customerState.contact}
+                          onChangeText={value =>
+                            updateCustomerState({name: 'contact', value})
+                          }
+                          onSubmitEditing={handleSaveDetails}
+                          returnKeyType="done"
+                        />
+                      </FormControl>
+                      <HStack mt={6} space={4}>
+                        <TouchableOpacity
+                          disabled={loading}
+                          className={`px-5 py-2.5 w-32 rounded ${
+                            !loading
+                              ? 'bg-custom-warning'
+                              : 'bg-custom-warning/50'
+                          }`}
+                          onPress={clear}>
+                          <Text className="tracking-wide text-white my-auto font-semibold uppercase text-center">
+                            Clear
+                          </Text>
+                        </TouchableOpacity>
 
-                      <TouchableOpacity
-                        className={`px-5 py-1 w-36 rounded  ${
-                          loading ? 'bg-custom-primary/50' : 'bg-custom-primary'
-                        }`}
-                        disabled={loading}
-                        onPress={handleSaveDetails}>
-                        <Text className="text-white my-auto font-semibold uppercase text-center">
-                          {!loading ? 'Save Details' : 'Saving...'}
-                        </Text>
-                      </TouchableOpacity>
-                    </HStack>
-                  </VStack>
-                </View>
-              )}
-
-              {context.orderType == 'Collection' && (
-                <View className="flex flex-row flex-wrap gap-2 justify-center align-middle w-full m-2">
-                  <View className="text-center">
-                    <Text className="text-3xl font-semibold uppercase mb-8">
-                      Collection Order
-                    </Text>
-                    <FormControl className="w-96">
-                      <Text className="text-xl uppercase mb-3">Name</Text>
-                      <Input
-                        ref={nameRef}
-                        size="lg"
-                        className="bg-white"
-                        name="name"
-                        value={context.customerState.name}
-                        onChangeText={value =>
-                          updateCustomerState({name: 'name', value})
-                        }
-                        onSubmitEditing={() => contactRef.current?.focus()}
-                        returnKeyType="next"
-                      />
-                    </FormControl>
-                    <FormControl className="w-96">
-                      <Text className="text-xl uppercase mb-3">
-                        Contact Number
-                      </Text>
-                      <Input
-                        ref={contactRef}
-                        size="lg"
-                        className="bg-white"
-                        keyboardType="number-pad"
-                        name="contact"
-                        value={context.customerState.contact}
-                        onChangeText={value =>
-                          updateCustomerState({name: 'contact', value})
-                        }
-                        onSubmitEditing={handleSaveDetails}
-                        returnKeyType="done"
-                      />
-                    </FormControl>
-                    <HStack mt={6} space={4}>
-                      <TouchableOpacity
-                        className="px-5 py-2.5 w-32 rounded bg-custom-warning"
-                        onPress={clear}>
-                        <Text className="tracking-wide text-white my-auto font-semibold uppercase text-center">
-                          Clear
-                        </Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        className={`px-5 py-1 w-36 rounded  ${
-                          loading ? 'bg-custom-primary/50' : 'bg-custom-primary'
-                        }`}
-                        disabled={loading}
-                        onPress={handleSaveDetails}>
-                        <Text className="text-white my-auto font-semibold uppercase text-center">
-                          {!loading ? 'Save Details' : 'Saving...'}
-                        </Text>
-                      </TouchableOpacity>
-                    </HStack>
+                        <TouchableOpacity
+                          className={`px-5 py-1 w-36 rounded  ${
+                            loading
+                              ? 'bg-custom-primary/50'
+                              : 'bg-custom-primary'
+                          }`}
+                          disabled={loading}
+                          onPress={handleSaveDetails}>
+                          <Text className="text-white my-auto font-semibold uppercase text-center">
+                            {!loading ? 'Save' : 'Saving...'}
+                          </Text>
+                        </TouchableOpacity>
+                      </HStack>
+                    </View>
                   </View>
-                </View>
-              )}
-            </HStack>
-          </View>
+                )}
+              </HStack>
+            </View>
+          </ScrollView>
         </Box>
       </Modal>
     </>

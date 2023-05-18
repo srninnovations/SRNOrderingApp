@@ -415,7 +415,6 @@ export default function Menu({route, navigation}) {
 
     // Always update the total price
     setTotal(prevTotal => prevTotal + item.price);
-    // setSubTotal(prevSubTotal => prevSubTotal + item.price);
   };
 
   const addItemNote = () => {

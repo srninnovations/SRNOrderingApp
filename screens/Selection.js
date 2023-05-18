@@ -270,14 +270,14 @@ export default function Selection({navigation}) {
       if (orderType == 'Delivery') {
         toast.show({
           render: () => (
-            <CustomToast title="Please fill out all required fields:\n\nAddress 1, Postcode, Contact Number" />
+            <CustomToast title="Please fill in all required fields: Address 1, Postcode, Contact Number" />
           ),
         });
       }
       if (orderType == 'Collection') {
         toast.show({
           render: () => (
-            <CustomToast title="Please fill out all required fields:\n\nName, Contact Number" />
+            <CustomToast title="Please fill in all required fields: Name, Contact Number" />
           ),
         });
       }
