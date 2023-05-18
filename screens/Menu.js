@@ -875,13 +875,13 @@ export default function Menu({route, navigation}) {
               className="w-5/12 mt-3 p-4 h-full bg-white rounded-lg"
               style={[styles.elevation]}>
               {hasSubCat.isSubCategory && (
-                <View className="w-1/4">
+                <View className="w-1/4 mb-4">
                   <TouchableOpacity
                     onPress={() => {
                       findMenuItem(selectedMenu);
                       setHasSubCat(initialHasSubCat);
                     }}
-                    className=" bg-black rounded flex flex-row justify-center py-2 items-center">
+                    className=" bg-custom-primary rounded flex flex-row justify-center py-2 items-center">
                     <FeatherIcon name="chevron-left" size={22} color="#fff" />
                     <Text className="text-center text-white">Back</Text>
                   </TouchableOpacity>
@@ -1491,7 +1491,6 @@ export default function Menu({route, navigation}) {
                             </Text>
                           </View>
                         </View>
-
                         <View className="flex flex-row w-full">
                           <View className="w-1/3">
                             <Text className="text-black font-normal text-xl mb-1">
@@ -1507,7 +1506,6 @@ export default function Menu({route, navigation}) {
                             </Text>
                           </View>
                         </View>
-
                         <View className="flex flex-row w-full  mt-4">
                           <View className="w-1/3">
                             <Text className="text-black font-bold text-xl mb-1">
@@ -1521,17 +1519,26 @@ export default function Menu({route, navigation}) {
                           </View>
                         </View>
 
-                        <TouchableOpacity
-                          className="bg-custom-amber py-2 px-4 rounded my-4"
-                          onPress={addDiscount}>
-                          <Text className="text-black text-center font-bold text-lg">
-                            APPLY DISCOUNT
+                        {savedNotes.length > 0 && (
+                          <Text className="text-black font-bold text-xl mb-6">
+                            Notes:{' '}
+                            <Text className="font-normal">{savedNotes}</Text>
                           </Text>
-                        </TouchableOpacity>
+                        )}
+                        {discount == 0 && (
+                          <TouchableOpacity
+                            className="bg-custom-amber py-2 px-4 rounded my-4"
+                            onPress={addDiscount}>
+                            <Text className="text-black uppercase text-center font-bold text-lg">
+                              Apply Discount
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+
                         {discount > 0 && (
                           <TouchableOpacity
                             onPress={() => removeDiscount(discount)}
-                            className="flex justify-center py-2 rounded bg-custom-danger">
+                            className="flex justify-center py-2 px-4 my-4 rounded bg-custom-danger">
                             <Text className="text-white uppercase text-center text-lg">
                               Remove Discount
                             </Text>

@@ -288,7 +288,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '£' + (o.price * o.quantity).toFixed(2),
+            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
@@ -309,7 +309,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '£' + (o.price * o.quantity).toFixed(2),
+            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
@@ -321,7 +321,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '£' + (o.price * o.quantity).toFixed(2),
+            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
@@ -333,7 +333,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '£' + (o.price * o.quantity).toFixed(2),
+            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
@@ -345,7 +345,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '£' + (o.price * o.quantity).toFixed(2),
+            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
@@ -357,7 +357,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '£' + (o.price * o.quantity).toFixed(2),
+            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
@@ -369,7 +369,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '£' + (o.price * o.quantity).toFixed(2),
+            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
           })
           .newline();
       }
@@ -382,33 +382,33 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
       .size(1, 1)
       .textLine(20, {
         left: 'Drinks',
-        right: '£' + totals.drinks.toFixed(2),
+        right: '\u00A3' + totals.drinks.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Desserts',
-        right: '£' + totals.desserts.toFixed(2),
+        right: '\u00A3' + totals.desserts.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Hot drinks',
-        right: '£' + totals.hotDrinks.toFixed(2),
+        right: '\u00A3' + totals.hotDrinks.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Subtotal',
-        right: '£' + totals.subTotal.toFixed(2),
+        right: '\u00A3' + totals.subTotal.toFixed(2),
       })
       .newline()
       .textLine(20, {
         left: 'Discount',
-        right: '£' + totals.discount.toFixed(2),
+        right: '\u00A3' + totals.discount.toFixed(2),
       })
       .newline()
       .newline()
       .textLine(20, {
         left: 'Total',
-        right: '£' + totals.total.toFixed(2),
+        right: '\u00A3' + totals.total.toFixed(2),
       });
 
     // customer details
@@ -643,7 +643,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '£' + (o.price * o.quantity).toFixed(2),
+          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
@@ -664,7 +664,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '£' + (o.price * o.quantity).toFixed(2),
+          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
@@ -676,7 +676,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '£' + (o.price * o.quantity).toFixed(2),
+          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
@@ -688,7 +688,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '£' + (o.price * o.quantity).toFixed(2),
+          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
@@ -700,7 +700,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '£' + (o.price * o.quantity).toFixed(2),
+          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
@@ -712,7 +712,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '£' + (o.price * o.quantity).toFixed(2),
+          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
@@ -724,7 +724,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '£' + (o.price * o.quantity).toFixed(2),
+          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
         })
         .newline();
     }
@@ -738,33 +738,33 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
     .size(1, 1)
     .textLine(20, {
       left: 'Drinks',
-      right: '£' + totals.drinks.toFixed(2),
+      right: '\u00A3' + totals.drinks.toFixed(2),
     })
     .newline()
     .textLine(20, {
       left: 'Desserts',
-      right: '£' + totals.desserts.toFixed(2),
+      right: '\u00A3' + totals.desserts.toFixed(2),
     })
     .newline()
     .textLine(20, {
       left: 'Hot drinks',
-      right: '£' + totals.hotDrinks.toFixed(2),
+      right: '\u00A3' + totals.hotDrinks.toFixed(2),
     })
     .newline()
     .textLine(20, {
       left: 'Subtotal',
-      right: '£' + totals.subTotal.toFixed(2),
+      right: '\u00A3' + totals.subTotal.toFixed(2),
     })
     .newline()
     .textLine(20, {
       left: 'Discount',
-      right: '£' + totals.discount.toFixed(2),
+      right: '\u00A3' + totals.discount.toFixed(2),
     })
     .newline()
     .newline()
     .textLine(20, {
       left: 'Total',
-      right: '£' + totals.total.toFixed(2),
+      right: '\u00A3' + totals.total.toFixed(2),
     });
 
   // customer details
