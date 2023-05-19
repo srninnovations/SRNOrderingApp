@@ -1,4 +1,5 @@
 ########TODO##########
+#edit all the customer details in one place for addresses
 #Change font for restaurant title
 #Ability to edit customer details maybe from history view modal
 #Ability to go back from table selection or delivery or collection - while on menu
