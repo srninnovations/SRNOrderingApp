@@ -321,7 +321,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
         printing
           .textLine(32, {
             left: o.quantity + ' ' + o.name.substring(0, 23),
-            right: '\u00A3' + (o.price * o.quantity).toFixed(2),
+            right: '', //show no price no sunday menu items
           })
           .newline();
       }
@@ -676,7 +676,7 @@ const printCustomerReceipt = async (printing, orders, totals, orderDetails) => {
       printing
         .textLine(32, {
           left: o.quantity + ' ' + o.name.substring(0, 23),
-          right: '\u00A3' + (o.price * o.quantity).toFixed(2),
+          right: '', //show no price for sunday menu items
         })
         .newline();
     }
