@@ -238,6 +238,10 @@ export default function History({navigation}) {
               </VStack>
               {orders.length > 0 && (
                 <DeleteAllConfirm
+                  heading={'Are you sure you want to delete all orders?'}
+                  message={
+                    'This will delete all order types and clear all tables.'
+                  }
                   order={selectedOrder}
                   show={showAll}
                   deleteLoad={deleteLoad}
