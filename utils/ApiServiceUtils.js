@@ -248,6 +248,28 @@ export const addCustomer = async body => {
   return false;
 };
 
+export const deleteCustomer = async (client, address) => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+  const response = await fetch(
+    `${apiUrl}/customer?client=${client}&address=${address}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': token,
+      },
+    },
+  );
+  if (
+    response.Attributes &&
+    response.Attributes.addresses &&
+    response.Attributes.addresses.length > 0
+  )
+    return true;
+  else return false;
+};
+
 export default {
   getStaff,
   getOrderTypes,
@@ -262,4 +284,5 @@ export default {
   updateActiveTables,
   getCustomers,
   addCustomer,
+  deleteCustomer,
 };
