@@ -13,6 +13,7 @@ import {
 import React, {useState} from 'react';
 import Modal from 'react-native-modal';
 import {TouchableOpacity} from 'react-native';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 export default function DeleteAllConfirm({
   confirmDelete,
@@ -41,9 +42,10 @@ export default function DeleteAllConfirm({
   return (
     <>
       <TouchableOpacity
-        className="px-5 h-10 rounded bg-custom-danger"
+        className="px-5 h-12 rounded bg-custom-danger flex flex-row items-center justify-center"
         onPress={showModal}>
-        <Text className="text-white my-auto font-semibold uppercase">
+        <AntIcon name="delete" size={22} color="white" />
+        <Text className="text-white my-auto font-semibold uppercase ml-3">
           Delete All
         </Text>
       </TouchableOpacity>
