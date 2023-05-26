@@ -38,7 +38,6 @@ const EditCustomerHistory = ({show, handleClose, refetch, next}) => {
       field: object.name,
       payload: object.value,
     });
-  console.log(context.customerState);
 
   const clear = () => {
     context.dispatch({type: 'RESET'});

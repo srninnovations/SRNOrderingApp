@@ -224,7 +224,7 @@ export const getCustomers = async body => {
       'auth-token': token,
     },
   });
-
+  console.log(token);
   return await response.json();
 };
 
@@ -261,13 +261,15 @@ export const deleteCustomer = async (client, address) => {
       },
     },
   );
+  const data = await response.json();
+  console.log(data);
   if (
-    response.Attributes &&
-    response.Attributes.addresses &&
-    response.Attributes.addresses.length > 0
+    data.Attributes &&
+    data.Attributes.addresses &&
+    data.Attributes.addresses.length > 0
   )
-    return true;
-  else return false;
+    return data.Attributes.addresses;
+  else return data;
 };
 
 export default {

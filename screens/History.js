@@ -24,7 +24,7 @@ import DeleteAllConfirm from '../components/DeleteAllConfirm';
 import * as RNLocalize from 'react-native-localize';
 import moment from 'moment-timezone';
 import CustomToast from '../components/CustomToast';
-import EditCustomer from '../components/EditCustomer';
+import EditCustomerHistory from '../components/EditCustomerHistory';
 
 export default function History({navigation}) {
   Ignore();
@@ -429,7 +429,7 @@ export default function History({navigation}) {
                   setDeleteLoad(false);
                 }}
               />
-              <EditCustomer
+              <EditCustomerHistory
                 {...{
                   show: showEdit,
                   handleClose: () => setShowEdit(false),
