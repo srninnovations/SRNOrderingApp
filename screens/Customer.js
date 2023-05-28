@@ -294,6 +294,7 @@ const Customer = ({navigation}) => {
           },
           selectedAddress,
           handleDelete,
+          refetch: fetchData,
         }}
       />
     </>

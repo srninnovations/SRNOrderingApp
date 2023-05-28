@@ -27,18 +27,19 @@ export default function AddressDeleteConfirmation({
   const confirmDelete = async () => {
     setLoading(true);
     const res = await handleDelete(selectedAddress);
-    if (res && Array.isArray(res)) {
-      !toast.isActive('edit-customer') &&
+
+    if (res) {
+      !toast.isActive('delete-customer') &&
         toast.show({
-          id: 'edit-customer',
-          render: () => <CustomToast title={'Your changes were saved.'} />,
+          id: 'delete-customer',
+          render: () => <CustomToast title={'Address deleted.'} />,
           duration: 3000,
         });
       refetch();
     } else {
-      !toast.isActive('edit-customer') &&
+      !toast.isActive('delete-customer') &&
         toast.show({
-          id: 'edit-customer',
+          id: 'delete-customer',
           render: () => (
             <CustomToast
               title={
