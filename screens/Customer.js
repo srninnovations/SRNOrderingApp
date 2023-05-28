@@ -98,7 +98,7 @@ const Customer = ({navigation}) => {
       <View className="px-20 bg-white min-h-screen">
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text className="text-3xl font-medium uppercase text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
-            Manage Customers
+            Manage Customer Addresses
           </Text>
           {addresses.length > 0 && (
             <HStack justifyContent="flex-end" space={10} className="mt-5">
@@ -206,7 +206,7 @@ const Customer = ({navigation}) => {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black text-lg">
+                    <Text className="text-black text-lg capitalize">
                       {address.Address1}
                     </Text>
                   </Box>
@@ -218,7 +218,7 @@ const Customer = ({navigation}) => {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black text-lg">
+                    <Text className="text-black text-lg capitalize">
                       {address.Address2}
                     </Text>
                   </Box>
