@@ -224,7 +224,7 @@ export const getCustomers = async body => {
       'auth-token': token,
     },
   });
-  console.log(token);
+
   return await response.json();
 };
 
@@ -247,6 +247,23 @@ export const addCustomer = async body => {
 
   return false;
 };
+export const editCustomer = async body => {
+  const tokenString = await StorageUtils.getKeychainData('token');
+  const token = JSON.parse(tokenString.value);
+
+  const response = await fetch(apiUrl + '/editcustomer', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'auth-token': token,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const data = await response.json();
+  if (data.addresses) return data.addresses;
+  else return data;
+};
 
 export const deleteCustomer = async (client, address) => {
   const tokenString = await StorageUtils.getKeychainData('token');
@@ -262,7 +279,6 @@ export const deleteCustomer = async (client, address) => {
     },
   );
   const data = await response.json();
-  console.log(data);
   if (
     data.Attributes &&
     data.Attributes.addresses &&
@@ -286,5 +302,6 @@ export default {
   updateActiveTables,
   getCustomers,
   addCustomer,
+  editCustomer,
   deleteCustomer,
 };

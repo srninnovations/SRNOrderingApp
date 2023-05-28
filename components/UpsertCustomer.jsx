@@ -56,7 +56,7 @@ export default function UpsertCustomer({
       payload: object.value,
     });
 
-  const upsertDetails = async () => {
+  const insertDetails = async () => {
     setLoading(true);
     const clientId = await StorageUtils.getAsyncStorageData('clientId');
     const client = await StorageUtils.getAsyncStorageData('client');
@@ -79,8 +79,29 @@ export default function UpsertCustomer({
     return await ApiServiceUtils.addCustomer(body);
   };
 
+  const updateDetails = async () => {
+    setLoading(true);
+    const clientId = await StorageUtils.getAsyncStorageData('clientId');
+    const client = await StorageUtils.getAsyncStorageData('client');
+
+    const body = {
+      client: {
+        client: client.value,
+        client_id: clientId.value,
+      },
+      address: {
+        Address1: context.customerState.address1.toUpperCase(),
+        Address2: context.customerState.address2.toUpperCase(),
+        address_id: Number(context.customerState.address_id),
+        Postcode: context.customerState.postcode,
+        Contact: context.customerState.contact,
+      },
+    };
+    return await ApiServiceUtils.editCustomer(body);
+  };
+
   const handleSaveDetails = async () => {
-    const res = await upsertDetails();
+    const res = isUpdating ? await updateDetails() : await insertDetails();
     if (res) {
       !toast.isActive('edit-customer') &&
         toast.show({
