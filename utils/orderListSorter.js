@@ -1,4 +1,4 @@
-export default function (item, orderListLength) {
+export default function OrderListSorter(item, orderListLength) {
   let sortOrder = 0;
   const key = item.name;
 
@@ -15,6 +15,9 @@ export default function (item, orderListLength) {
     case item.category !== 'SUNDAY MENU' && /Nan/.test(key):
       sortOrder = 2;
       break;
+    case item.category === 'SUNDAY MENU' && /Starter/.test(key):
+      sortOrder = 2;
+      break;
     case item.category === 'SUNDAY MENU' && /Main/.test(key):
       sortOrder = 3;
       break;
@@ -23,11 +26,6 @@ export default function (item, orderListLength) {
       break;
     case item.category === 'SUNDAY MENU' && /Nan/.test(key):
       sortOrder = 5;
-      break;
-    case item.category === 'SUNDAY MENU' &&
-      /Starter/.test(key) &&
-      !/Pappadom/.test(key):
-      sortOrder = 2;
       break;
     default:
       sortOrder = orderListLength + 3;

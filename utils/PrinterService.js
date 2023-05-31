@@ -3,6 +3,7 @@ import EscPosPrinter, {
 } from 'react-native-esc-pos-printer';
 import moment from 'moment-timezone';
 import * as RNLocalize from 'react-native-localize';
+import OrderListSorter from './OrderListSorter';
 
 export const getPrinter = async () => {
   try {
@@ -24,29 +25,9 @@ export const printReceiptsOnPlaceOrder = async (
   totals,
   orderDetails,
 ) => {
-  const sortReadyArr = orders.map(item => {
-    const key = item.name;
-
-    switch (true) {
-      case /Pappadom/.test(key):
-        item.sortOrder = 1;
-        break;
-      case /Chutneys/.test(key):
-        item.sortOrder = 2;
-        break;
-      case /Rice/.test(key):
-        item.sortOrder = 1;
-        break;
-      case /Nan/.test(key):
-        item.sortOrder = 2;
-        break;
-
-      default:
-        item.sortOrder = orders.length + 3;
-    }
-    return item;
-  });
+  const sortReadyArr = orders.map(item => OrderListSorter(item, orders.length));
   const sortedOrders = sortReadyArr.sort((a, b) => a.sortOrder - b.sortOrder);
+
   try {
     await EscPosPrinter.init({
       target: 'TCP:192.168.1.125',
@@ -81,29 +62,9 @@ export const printReceiptsOnPlaceOrder = async (
 };
 
 export const printNewKitckenReceipt = async (orders, orderDetails) => {
-  const sortReadyArr = orders.map(item => {
-    const key = item.name;
-
-    switch (true) {
-      case /Pappadom/.test(key):
-        item.sortOrder = 1;
-        break;
-      case /Chutneys/.test(key):
-        item.sortOrder = 2;
-        break;
-      case /Rice/.test(key):
-        item.sortOrder = 1;
-        break;
-      case /Nan/.test(key):
-        item.sortOrder = 2;
-        break;
-
-      default:
-        item.sortOrder = orders.length + 3;
-    }
-    return item;
-  });
+  const sortReadyArr = orders.map(item => OrderListSorter(item, orders.length));
   const sortedOrders = sortReadyArr.sort((a, b) => a.sortOrder - b.sortOrder);
+
   try {
     await EscPosPrinter.init({
       target: 'TCP:192.168.1.125',
@@ -457,28 +418,7 @@ export const printNewCustomerReceipt = async (orders, totals, orderDetails) => {
 };
 
 const printKitchenReceipt = async (printing, orders, orderDetails) => {
-  const sortReadyArr = orders.map(item => {
-    const key = item.name;
-
-    switch (true) {
-      case /Pappadom/.test(key):
-        item.sortOrder = 1;
-        break;
-      case /Chutneys/.test(key):
-        item.sortOrder = 2;
-        break;
-      case /Rice/.test(key):
-        item.sortOrder = 1;
-        break;
-      case /Nan/.test(key):
-        item.sortOrder = 2;
-        break;
-
-      default:
-        item.sortOrder = orders.length + 3;
-    }
-    return item;
-  });
+  const sortReadyArr = orders.map(item => OrderListSorter(item, orders.length));
   const sortedOrders = sortReadyArr.sort((a, b) => a.sortOrder - b.sortOrder);
   // Print order items
   printing.newline();

@@ -37,11 +37,11 @@ import {
   TextArea,
   useToast,
 } from 'native-base';
-import uniqueID from '../utils/uniqueId';
+import UniqueID from '../utils/UniqueId';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import Ignore from '../utils/Ignore';
 import CustomItemModal from '../components/CustomItemModal';
-import orderListSorter from '../utils/orderListSorter';
+import OrderListSorter from '../utils/OrderListSorter';
 
 export default function Menu({route, navigation}) {
   Ignore();
@@ -226,7 +226,7 @@ export default function Menu({route, navigation}) {
       await getOrder();
       setEditMode(true);
     } else {
-      context.setOrderId(uniqueID());
+      context.setOrderId(UniqueID());
       context.setOriginalTime(0);
     }
     setLoading(false);
@@ -384,7 +384,7 @@ export default function Menu({route, navigation}) {
       }
     } else {
       // Create a new order if it does not exist
-      const addItem = orderListSorter(item, orders.length);
+      const addItem = OrderListSorter(item, orders.length);
       setOrders(oldOrders => [...oldOrders, addItem]);
     }
 
@@ -437,7 +437,7 @@ export default function Menu({route, navigation}) {
   // };
 
   const addToOrderWithNotes = item => {
-    const addItem = orderListSorter(item, orders.length);
+    const addItem = OrderListSorter(item, orders.length);
     setOrders(oldState => [...oldState, addItem]);
     setTotal(prevPrice => prevPrice + item.price);
   };
