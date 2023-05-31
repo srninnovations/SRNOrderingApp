@@ -1,4 +1,4 @@
-package com.srnorderingapp;
+package com.srninnovations.ordering;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

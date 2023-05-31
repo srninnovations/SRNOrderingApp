@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.srnorderingapp"
+    namespace "com.srninnovations.ordering"
     defaultConfig {
-        applicationId "com.srnorderingapp"
+        applicationId "com.srninnovations.ordering"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
