@@ -37,10 +37,11 @@ import {
   TextArea,
   useToast,
 } from 'native-base';
-import uniqueID from '../utils/uniqueId';
+import UniqueID from '../utils/UniqueIdUtils';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import Ignore from '../utils/Ignore';
 import CustomItemModal from '../components/CustomItemModal';
+import OrderListSorter from '../utils/OrderListSorterUtils';
 
 export default function Menu({route, navigation}) {
   Ignore();
@@ -225,7 +226,7 @@ export default function Menu({route, navigation}) {
       await getOrder();
       setEditMode(true);
     } else {
-      context.setOrderId(uniqueID());
+      context.setOrderId(UniqueID());
       context.setOriginalTime(0);
     }
     setLoading(false);
@@ -383,33 +384,7 @@ export default function Menu({route, navigation}) {
       }
     } else {
       // Create a new order if it does not exist
-      let sortOrder = 0;
-      const key = item.name;
-
-      switch (true) {
-        case /Pappadom/.test(key):
-          sortOrder = 1;
-          break;
-        case /Chutneys/.test(key):
-          sortOrder = 2;
-          break;
-        case /Rice/.test(key):
-          sortOrder = 1;
-          break;
-        case /Nan/.test(key):
-          sortOrder = 2;
-          break;
-        default:
-          sortOrder = orders.length + 3;
-      }
-
-      const addItem = {
-        name: item.name,
-        price: item.price,
-        quantity: 1,
-        category: item.category,
-        sortOrder,
-      };
+      const addItem = OrderListSorter(item, orders.length);
       setOrders(oldOrders => [...oldOrders, addItem]);
     }
 
@@ -462,35 +437,7 @@ export default function Menu({route, navigation}) {
   // };
 
   const addToOrderWithNotes = item => {
-    let sortOrder = 0;
-    const key = item.name;
-
-    switch (true) {
-      case /Pappadom/.test(key):
-        sortOrder = 1;
-        break;
-      case /Chutneys/.test(key):
-        sortOrder = 2;
-        break;
-      case /Rice/.test(key):
-        sortOrder = 1;
-        break;
-      case /Nan/.test(key):
-        sortOrder = 2;
-        break;
-      default:
-        sortOrder = orders.length + 3;
-    }
-
-    const addItem = {
-      name: item.name,
-      price: item.price,
-      quantity: 1,
-      category: item.category,
-      notes: item.notes,
-      sortOrder,
-    };
-
+    const addItem = OrderListSorter(item, orders.length);
     setOrders(oldState => [...oldState, addItem]);
     setTotal(prevPrice => prevPrice + item.price);
   };
@@ -1104,55 +1051,57 @@ export default function Menu({route, navigation}) {
                           Sundays
                         </Heading>
                       )}
-                      {orders.map((o, index) => {
-                        if (o.category === 'SUNDAY MENU')
-                          return (
-                            <View key={`${index}-${o.name}`} className="my-1">
-                              <View className="flex flex-row w-full">
-                                <View className="flex w-2/3">
-                                  <Text className="text-xl text-black">
-                                    {o.quantity} x {o.name}
-                                  </Text>
-                                  <Text>{o.notes && `- ${o.notes}`}</Text>
-                                </View>
-                                <View className="flex flex-row space-x-1">
-                                  <View>
-                                    <TouchableOpacity
-                                      className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
-                                      onPress={
-                                        o.notes
-                                          ? () => removeOrderWithNotes(o)
-                                          : () => removeItem(o)
-                                      }>
-                                      <Text className="text-center text-xl text-white">
-                                        <Icon
-                                          name="minus"
-                                          size={16}
-                                          color="#fefefe"
-                                        />
-                                      </Text>
-                                    </TouchableOpacity>
+                      {orders
+                        .sort((a, b) => a.sortOrder - b.sortOrder)
+                        .map((o, index) => {
+                          if (o.category === 'SUNDAY MENU')
+                            return (
+                              <View key={`${index}-${o.name}`} className="my-1">
+                                <View className="flex flex-row w-full">
+                                  <View className="flex w-2/3">
+                                    <Text className="text-xl text-black">
+                                      {o.quantity} x {o.name}
+                                    </Text>
+                                    <Text>{o.notes && `- ${o.notes}`}</Text>
                                   </View>
-                                  <View>
-                                    <TouchableOpacity
-                                      className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
-                                      onPress={() =>
-                                        increaseQuantity(o, index)
-                                      }>
-                                      <Text className="text-center text-xl text-white">
-                                        <Icon
-                                          name="plus"
-                                          size={16}
-                                          color="#fefefe"
-                                        />
-                                      </Text>
-                                    </TouchableOpacity>
+                                  <View className="flex flex-row space-x-1">
+                                    <View>
+                                      <TouchableOpacity
+                                        className="w-12 h-10 bg-custom-danger flex justify-center rounded-md"
+                                        onPress={
+                                          o.notes
+                                            ? () => removeOrderWithNotes(o)
+                                            : () => removeItem(o)
+                                        }>
+                                        <Text className="text-center text-xl text-white">
+                                          <Icon
+                                            name="minus"
+                                            size={16}
+                                            color="#fefefe"
+                                          />
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                    <View>
+                                      <TouchableOpacity
+                                        className="w-12 h-10 bg-custom-secondary flex justify-center rounded-md"
+                                        onPress={() =>
+                                          increaseQuantity(o, index)
+                                        }>
+                                        <Text className="text-center text-xl text-white">
+                                          <Icon
+                                            name="plus"
+                                            size={16}
+                                            color="#fefefe"
+                                          />
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
                                   </View>
                                 </View>
                               </View>
-                            </View>
-                          );
-                      })}
+                            );
+                        })}
 
                       {sundayItems > 0 && <Divider my="2" />}
                       {sideDishes > 0 && (
