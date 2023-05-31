@@ -147,7 +147,9 @@ export default function UpsertCustomer({
                 <HStack space={6}>
                   <Box>
                     <FormControl className="w-96 mb-3">
-                      <Text className="text-xl uppercase mb-3">Address 1</Text>
+                      <Text className="text-xl uppercase mb-3 text-black">
+                        Address 1
+                      </Text>
                       <Input
                         ref={address1Ref}
                         size="lg"
@@ -162,7 +164,9 @@ export default function UpsertCustomer({
                       />
                     </FormControl>
                     <FormControl className="w-96 mb-3">
-                      <Text className="text-xl uppercase mb-3">Address 2</Text>
+                      <Text className="text-xl uppercase mb-3 text-black">
+                        Address 2
+                      </Text>
                       <Input
                         ref={address2Ref}
                         size="lg"
@@ -177,7 +181,9 @@ export default function UpsertCustomer({
                       />
                     </FormControl>
                     <FormControl className="w-96 mb-3">
-                      <Text className="text-xl uppercase mb-3">Postcode</Text>
+                      <Text className="text-xl uppercase mb-3 text-black">
+                        Postcode
+                      </Text>
                       <Input
                         ref={postcodeRef}
                         size="lg"
@@ -194,7 +200,7 @@ export default function UpsertCustomer({
                   </Box>
                   <Box>
                     <FormControl className="w-96 mb-3">
-                      <Text className="text-xl uppercase mb-3">
+                      <Text className="text-xl uppercase mb-3 text-black">
                         Contact Number
                       </Text>
                       <Input
