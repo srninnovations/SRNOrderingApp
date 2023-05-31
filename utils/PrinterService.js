@@ -3,7 +3,7 @@ import EscPosPrinter, {
 } from 'react-native-esc-pos-printer';
 import moment from 'moment-timezone';
 import * as RNLocalize from 'react-native-localize';
-import OrderListSorter from './OrderListSorter';
+import OrderListSorter from './OrderListSorterUtils';
 
 export const getPrinter = async () => {
   try {

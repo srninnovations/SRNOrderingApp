@@ -37,11 +37,11 @@ import {
   TextArea,
   useToast,
 } from 'native-base';
-import UniqueID from '../utils/UniqueId';
+import UniqueID from '../utils/UniqueIdUtils';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import Ignore from '../utils/Ignore';
 import CustomItemModal from '../components/CustomItemModal';
-import OrderListSorter from '../utils/OrderListSorter';
+import OrderListSorter from '../utils/OrderListSorterUtils';
 
 export default function Menu({route, navigation}) {
   Ignore();
