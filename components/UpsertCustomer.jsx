@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   AlertDialog,
   Box,
@@ -29,7 +29,21 @@ export default function UpsertCustomer({
   const context = useContext(GlobalContext);
 
   const [loading, setLoading] = useState(false);
-
+  const [invalid, setInvalid] = useState(true);
+  useEffect(() => {
+    if (
+      context.customerState &&
+      context.customerState.address1.length > 0 &&
+      context.customerState.contact.toString().length > 0 &&
+      context.customerState.postcode.length > 0
+    )
+      setInvalid(false);
+    else setInvalid(true);
+  }, [
+    context.customerState.address1,
+    context.customerState.contact,
+    context.customerState.postcode,
+  ]);
   const cancelRef = useRef();
   const address1Ref = useRef(null);
   const address2Ref = useRef(null);
@@ -42,6 +56,7 @@ export default function UpsertCustomer({
     address2Ref?.current?.clear();
     postcodeRef?.current?.clear();
     contactRef?.current?.clear();
+    setInvalid(true);
   };
 
   const onClose = () => {
@@ -227,9 +242,11 @@ export default function UpsertCustomer({
 
                   <TouchableOpacity
                     className={`px-5 py-1 w-36 rounded  ${
-                      loading ? 'bg-custom-primary/50' : 'bg-custom-primary'
+                      loading || invalid
+                        ? 'bg-custom-primary/50'
+                        : 'bg-custom-primary'
                     }`}
-                    disabled={loading}
+                    disabled={loading || invalid}
                     onPress={handleSaveDetails}>
                     <Text className="text-white text-lg my-auto font-semibold uppercase text-center">
                       {!loading ? 'Save' : 'Saving...'}
