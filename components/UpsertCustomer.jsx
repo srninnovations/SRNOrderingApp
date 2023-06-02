@@ -116,6 +116,14 @@ export default function UpsertCustomer({
   };
 
   const handleSaveDetails = async () => {
+    if (
+      context.customerState.address1 == '' ||
+      context.customerState.postcode == '' ||
+      context.customerState.contact == ''
+    ) {
+      return;
+    }
+
     const res = isUpdating ? await updateDetails() : await insertDetails();
     if (res) {
       !toast.isActive('edit-customer') &&
