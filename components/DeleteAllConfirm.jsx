@@ -13,6 +13,7 @@ import {
 import React, {useState} from 'react';
 import Modal from 'react-native-modal';
 import {TouchableOpacity} from 'react-native';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 export default function DeleteAllConfirm({
   confirmDelete,
@@ -20,6 +21,8 @@ export default function DeleteAllConfirm({
   showModal,
   hideModal,
   deleteLoad,
+  heading,
+  message,
 }) {
   const [validPin, setValidPin] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
@@ -39,9 +42,10 @@ export default function DeleteAllConfirm({
   return (
     <>
       <TouchableOpacity
-        className="px-5 h-10 rounded bg-custom-danger"
+        className="px-5 h-12 rounded bg-custom-danger flex flex-row items-center justify-center"
         onPress={showModal}>
-        <Text className="text-white my-auto font-semibold uppercase">
+        <AntIcon name="delete" size={22} color="white" />
+        <Text className="text-white my-auto font-semibold uppercase ml-3">
           Delete All
         </Text>
       </TouchableOpacity>
@@ -67,13 +71,9 @@ export default function DeleteAllConfirm({
                 <VStack flexShrink={1} space={2}>
                   <HStack alignItems="center" space={1}>
                     <Alert.Icon />
-                    <Text className="text-gray-800 font-medium">
-                      Are you sure you want to delete all orders?
-                    </Text>
+                    <Text className="text-gray-800 font-medium">{heading}</Text>
                   </HStack>
-                  <Text className="text-gray-800  font-medium">
-                    This will delete all order types and clear all tables.
-                  </Text>
+                  <Text className="text-gray-800  font-medium">{message}</Text>
                 </VStack>
               </HStack>
               <Text className="font-bold text-lg text-red-900 mt-2">

@@ -155,7 +155,9 @@ export default function Login({navigation}) {
           <>
             <View className="w-80 h-12 items-center justify-center">
               <ActivityIndicator size={40} color="#3498db" />
-              <Text className="font-semibold text-lg">Logging in...</Text>
+              <Text className="font-semibold text-lg text-black">
+                Logging in...
+              </Text>
             </View>
           </>
         )}
