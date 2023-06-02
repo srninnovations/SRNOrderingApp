@@ -17,7 +17,7 @@ import GlobalContext from '../utils/GlobalContext.';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import StorageUtils from '../utils/StorageUtils';
 import CustomToast from './CustomToast';
-import uniqueID from '../utils/uniqueId';
+import UniqueID from '../utils/UniqueIdUtils';
 
 export default function UpsertCustomer({
   showModal,
@@ -85,7 +85,7 @@ export default function UpsertCustomer({
         {
           Address1: context.customerState.address1.toUpperCase(),
           Address2: context.customerState.address2.toUpperCase(),
-          address_id: uniqueID(),
+          address_id: UniqueID(),
           Postcode: context.customerState.postcode,
           Contact: context.customerState.contact,
         },
