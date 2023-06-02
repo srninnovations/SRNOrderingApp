@@ -206,7 +206,7 @@ const Customer = ({navigation}) => {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black text-lg capitalize">
+                    <Text className="text-black text-lg uppercase">
                       {address.Address1}
                     </Text>
                   </Box>
@@ -218,7 +218,7 @@ const Customer = ({navigation}) => {
                     borderColor="gray.400"
                     maxW={'1/5'}
                     w="full">
-                    <Text className="text-black text-lg capitalize">
+                    <Text className="text-black text-lg uppercase">
                       {address.Address2}
                     </Text>
                   </Box>

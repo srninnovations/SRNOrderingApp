@@ -76,7 +76,7 @@ export default function AddressDeleteConfirmation({
                       Are you sure you want to delete this selected address,
                     </Text>
                   </HStack>
-                  <Text className="pl-4 text-xl">
+                  <Text className="pl-4 text-xl text-black">
                     Address:{' '}
                     {selectedAddress
                       ? selectedAddress.Address1 +
@@ -84,10 +84,10 @@ export default function AddressDeleteConfirmation({
                         selectedAddress.Address2
                       : ''}
                   </Text>
-                  <Text className="pl-4 text-xl">
+                  <Text className="pl-4 text-xl text-black">
                     Contact : {selectedAddress ? selectedAddress.Contact : ''}
                   </Text>
-                  <Text className="pl-4 text-xl">
+                  <Text className="pl-4 text-xl text-black">
                     Postcode : {selectedAddress ? selectedAddress.Postcode : ''}
                   </Text>
                 </VStack>
