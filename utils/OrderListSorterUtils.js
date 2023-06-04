@@ -18,13 +18,13 @@ export default function OrderListSorter(item, orderListLength) {
     case item.category === 'SUNDAY MENU' && /Starter/.test(key):
       sortOrder = 2;
       break;
-    case item.category === 'SUNDAY MENU' && /Main/.test(key):
+    case item.category === 'SUNDAY MENU' && /\(M\)/.test(key):
       sortOrder = 3;
       break;
-    case item.category === 'SUNDAY MENU' && /Rice/.test(key):
+    case item.category === 'SUNDAY MENU' && /\(R\)/.test(key):
       sortOrder = 4;
       break;
-    case item.category === 'SUNDAY MENU' && /Nan/.test(key):
+    case item.category === 'SUNDAY MENU' && /\(N\)/.test(key):
       sortOrder = 5;
       break;
     default:
