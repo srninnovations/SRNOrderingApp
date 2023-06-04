@@ -165,11 +165,11 @@ export default function UpsertCustomer({
             </Text>
           </AlertDialog.Header>
           <AlertDialog.Body>
-            <View className="flex justify-center w-full align-middle items-center mb-10">
+            <View className="flex justify-center w-full p-10 align-middle items-center mb-10">
               <VStack mt={6}>
                 <HStack space={6}>
                   <Box>
-                    <FormControl className="w-96 mb-3">
+                    <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
                         Address 1
                       </Text>
@@ -186,7 +186,7 @@ export default function UpsertCustomer({
                         returnKeyType="next"
                       />
                     </FormControl>
-                    <FormControl className="w-96 mb-3">
+                    <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
                         Address 2
                       </Text>
@@ -203,7 +203,7 @@ export default function UpsertCustomer({
                         returnKeyType="next"
                       />
                     </FormControl>
-                    <FormControl className="w-96 mb-3">
+                    <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
                         Postcode
                       </Text>
@@ -222,7 +222,7 @@ export default function UpsertCustomer({
                     </FormControl>
                   </Box>
                   <Box>
-                    <FormControl className="w-96 mb-3">
+                    <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
                         Contact Number
                       </Text>
