@@ -340,16 +340,27 @@ export default function History({navigation}) {
                       maxW={'1/5'}
                       w="full">
                       <Text className="text-black text-lg">
-                        {order.orderType}
-                        {order.orderType == 'COLLECTION' && (
-                          <Text className="ml-2 text-xl">
-                            ({order.customer.name})
+                        {order.orderType}{' '}
+                        {order.orderType.toUpperCase() == 'COLLECTION' && (
+                          <Text className="ml-2 text-sm">
+                            {'\n'}
+                            {order.customer.name}
                           </Text>
                         )}
-                        {order.orderType == 'DINE IN' && (
-                          <Text className="px-2 text-lg">
-                            (Table {order.customer.name})
-                          </Text>
+                        {order.orderType.toUpperCase() == 'DINE IN' && (
+                          <>
+                            <Text className="px-2 text-sm">
+                              {'\n'}Table {order.customer.name}
+                            </Text>
+                          </>
+                        )}
+                        {order.orderType.toUpperCase() == 'DELIVERY' && (
+                          <>
+                            <Text className="px-2 text-sm">
+                              {'\n'}
+                              {order.customer.address1}
+                            </Text>
+                          </>
                         )}
                       </Text>
                     </Box>
