@@ -19,7 +19,13 @@ import StorageUtils from '../utils/StorageUtils';
 import CustomToast from './CustomToast';
 import UniqueID from '../utils/UniqueIdUtils';
 
-function UpsertCustomer({showModal, setShowModal, isUpdating, address}) {
+function UpsertCustomer({
+  showModal,
+  setShowModal,
+  isUpdating,
+  address,
+  onSave,
+}) {
   const toast = useToast();
   const context = useContext(GlobalContext);
 
@@ -131,7 +137,7 @@ function UpsertCustomer({showModal, setShowModal, isUpdating, address}) {
           render: () => <CustomToast title={'Your changes were saved.'} />,
           duration: 3000,
         });
-      onClose();
+      onSave();
     } else {
       !toast.isActive('edit-customer') &&
         toast.show({
@@ -144,8 +150,8 @@ function UpsertCustomer({showModal, setShowModal, isUpdating, address}) {
             />
           ),
         });
-      onClose();
     }
+    onClose();
     setLoading(false);
   };
 

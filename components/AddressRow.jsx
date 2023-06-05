@@ -9,7 +9,7 @@ import ApiServiceUtils from '../utils/ApiServiceUtils';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import React, {memo, useState, useContext, useEffect} from 'react';
 
-const AddressRow = ({address, idx}) => {
+const AddressRow = ({address, idx, updateAddresses}) => {
   const handleUpdateOpen = address => {
     setisUpdating(true);
     // Object.keys(address).forEach(key => {
@@ -124,6 +124,9 @@ const AddressRow = ({address, idx}) => {
           showModal,
           isUpdating,
           address,
+          onSave: () => {
+            updateAddresses();
+          },
         }}
       />
       <AddressDeleteConfirmation
@@ -132,6 +135,9 @@ const AddressRow = ({address, idx}) => {
           onClose: () => {
             setShowDeleteModal(false);
             setSelectedAddress({});
+          },
+          onSave: () => {
+            updateAddresses();
           },
           selectedAddress,
           handleDelete,

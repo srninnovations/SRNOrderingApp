@@ -164,7 +164,15 @@ const Customer = ({navigation}) => {
                 </Center>
               </HStack>
               {addresses.map((address, idx) => (
-                <AddressRow key={idx} address={address} />
+                <AddressRow
+                  key={idx}
+                  address={address}
+                  updateAddresses={() => {
+                    //maybe for now lets not show the loader and let it refresh in the background
+                    // setLoading(true);
+                    getCustomersAddresses();
+                  }}
+                />
               ))}
             </VStack>
           ) : (

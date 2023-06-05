@@ -17,6 +17,7 @@ export default function AddressDeleteConfirmation({
   onClose,
   selectedAddress,
   handleDelete,
+  onSave,
 }) {
   const toast = useToast();
   const cancelRef = useRef();
@@ -34,6 +35,7 @@ export default function AddressDeleteConfirmation({
           render: () => <CustomToast title={'Address deleted.'} />,
           duration: 3000,
         });
+      onSave();
     } else {
       !toast.isActive('delete-customer') &&
         toast.show({
