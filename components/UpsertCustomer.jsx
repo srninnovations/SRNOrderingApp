@@ -110,7 +110,7 @@ function UpsertCustomer({showModal, setShowModal, isUpdating, address}) {
       address: {
         Address1: address1.toUpperCase(),
         Address2: address2.toUpperCase(),
-        address_id: Number(context.customerState.address_id),
+        address_id: Number(address.address_id),
         Postcode: postcode,
         Contact: contact,
       },
