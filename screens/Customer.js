@@ -14,21 +14,18 @@ import {
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import React, {useState, useEffect, useContext} from 'react';
 import Header from '../components/Header';
-import DeleteAllConfirm from '../components/DeleteAllConfirm';
-import UpsertCustomer from '../components/UpsertCustomer';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import StorageUtils from '../utils/StorageUtils';
 import GlobalContext from '../utils/GlobalContext.';
-import AddressDeleteConfirmation from '../components/AddressDeleteConfirmation';
+import AddressRow from '../components/AddressRow';
+import UpsertCustomer from '../components/UpsertCustomer';
 
 const Customer = ({navigation}) => {
   const context = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [isUpdating, setisUpdating] = useState(false);
   const [addresses, setAddresses] = useState([]);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState({});
+  const [isUpdating, setisUpdating] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -60,31 +57,6 @@ const Customer = ({navigation}) => {
     setShowModal(true);
   };
 
-  const handleUpdateOpen = address => {
-    setisUpdating(true);
-    Object.keys(address).forEach(key => {
-      context.dispatch({
-        type: 'UPDATE_CUSTOMER',
-        field: key.toLowerCase(),
-        payload: address[key].toString(),
-      });
-    });
-    setShowModal(true);
-  };
-
-  const handleDeleteOpen = address => {
-    setSelectedAddress(address);
-    setShowDeleteModal(true);
-  };
-
-  const handleDelete = async address => {
-    const clientId = await StorageUtils.getAsyncStorageData('clientId');
-    const client = await StorageUtils.getAsyncStorageData('client');
-    return await ApiServiceUtils.deleteCustomer(
-      JSON.stringify({client_id: clientId.value, client: client.value}),
-      JSON.stringify(address),
-    );
-  };
   if (loading)
     return (
       <View className="h-screen w-full flex-1 justify-center items-center">
@@ -192,80 +164,15 @@ const Customer = ({navigation}) => {
                 </Center>
               </HStack>
               {addresses.map((address, idx) => (
-                <HStack
+                <AddressRow
                   key={idx}
-                  justifyContent="center"
-                  borderColor="gray.400"
-                  borderWidth="1"
-                  color="gray.800">
-                  <Box
-                    justifyContent="center"
-                    pl={2}
-                    h="16"
-                    borderRightWidth={'1'}
-                    borderColor="gray.400"
-                    maxW={'1/5'}
-                    w="full">
-                    <Text className="text-black text-lg uppercase">
-                      {address.Address1}
-                    </Text>
-                  </Box>
-                  <Box
-                    justifyContent="center"
-                    pl={2}
-                    borderRightWidth={'1'}
-                    h="16"
-                    borderColor="gray.400"
-                    maxW={'1/5'}
-                    w="full">
-                    <Text className="text-black text-lg uppercase">
-                      {address.Address2}
-                    </Text>
-                  </Box>
-                  <Box
-                    justifyContent="center"
-                    pl={2}
-                    borderRightWidth={'1'}
-                    h="16"
-                    borderColor="gray.400"
-                    maxW={'1/5'}
-                    w="full">
-                    <Text className="text-black text-lg">
-                      {address.Contact}
-                    </Text>
-                  </Box>
-                  <Box
-                    justifyContent="center"
-                    pl={2}
-                    borderRightWidth={'1'}
-                    h="16"
-                    borderColor="gray.400"
-                    maxW={'1/5'}
-                    w="full">
-                    <Text className="text-black text-lg uppercase">
-                      {address.Postcode}
-                    </Text>
-                  </Box>
-                  <Center h="16" borderColor="gray.400" maxW={'1/5'} w="full">
-                    <Stack
-                      direction="row"
-                      flex={1}
-                      space={2}
-                      justifyContent="center"
-                      alignItems="center">
-                      <TouchableOpacity
-                        className="p-2.5 bg-gray-600 rounded"
-                        onPress={() => handleUpdateOpen(address)}>
-                        <AntIcon name="edit" size={22} color="white" />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        className="p-2.5 bg-custom-danger rounded"
-                        onPress={() => handleDeleteOpen(address)}>
-                        <AntIcon name="delete" size={22} color="white" />
-                      </TouchableOpacity>
-                    </Stack>
-                  </Center>
-                </HStack>
+                  address={address}
+                  updateAddresses={() => {
+                    //maybe for now lets not show the loader and let it refresh in the background
+                    // setLoading(true);
+                    getCustomersAddresses();
+                  }}
+                />
               ))}
             </VStack>
           ) : (
@@ -276,27 +183,15 @@ const Customer = ({navigation}) => {
             </View>
           )}
         </ScrollView>
+        <UpsertCustomer
+          {...{
+            setShowModal,
+            showModal,
+            isUpdating,
+            refetch: fetchData,
+          }}
+        />
       </View>
-      <UpsertCustomer
-        {...{
-          setShowModal,
-          showModal,
-          isUpdating,
-          refetch: fetchData,
-        }}
-      />
-      <AddressDeleteConfirmation
-        {...{
-          showDeleteModal,
-          onClose: () => {
-            setShowDeleteModal(false);
-            setSelectedAddress({});
-          },
-          selectedAddress,
-          handleDelete,
-          refetch: fetchData,
-        }}
-      />
     </>
   );
 };

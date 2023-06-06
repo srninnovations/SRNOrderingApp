@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState, memo} from 'react';
 import {
   AlertDialog,
   Box,
@@ -19,31 +19,40 @@ import StorageUtils from '../utils/StorageUtils';
 import CustomToast from './CustomToast';
 import UniqueID from '../utils/UniqueIdUtils';
 
-export default function UpsertCustomer({
+function UpsertCustomer({
   showModal,
   setShowModal,
   isUpdating,
-  refetch,
+  address,
+  onSave,
 }) {
   const toast = useToast();
   const context = useContext(GlobalContext);
 
   const [loading, setLoading] = useState(false);
   const [invalid, setInvalid] = useState(true);
+
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [contact, setContact] = useState('');
+  const [postcode, setPostcode] = useState('');
+
+  useEffect(() => {
+    setAddress1(address?.Address1);
+    setAddress2(address?.Address2);
+    setContact(address?.Contact);
+    setPostcode(address?.Postcode);
+  }, []);
+
   useEffect(() => {
     if (
-      context.customerState &&
-      context.customerState.address1.length > 0 &&
-      context.customerState.contact.toString().length > 0 &&
-      context.customerState.postcode.length > 0
+      address1?.length > 0 &&
+      contact?.toString().length > 0 &&
+      postcode?.length > 0
     )
       setInvalid(false);
     else setInvalid(true);
-  }, [
-    context.customerState.address1,
-    context.customerState.contact,
-    context.customerState.postcode,
-  ]);
+  }, [address1, contact, postcode]);
   const cancelRef = useRef();
   const address1Ref = useRef(null);
   const address2Ref = useRef(null);
@@ -64,12 +73,12 @@ export default function UpsertCustomer({
     clear();
   };
 
-  const updateCustomerState = object =>
-    context.dispatch({
-      type: 'UPDATE_CUSTOMER',
-      field: object.name,
-      payload: object.value,
-    });
+  // const updateCustomerState = object =>
+  //   context.dispatch({
+  //     type: 'UPDATE_CUSTOMER',
+  //     field: object.name,
+  //     payload: object.value,
+  //   });
 
   const insertDetails = async () => {
     setLoading(true);
@@ -83,11 +92,11 @@ export default function UpsertCustomer({
       },
       address: [
         {
-          Address1: context.customerState.address1.toUpperCase(),
-          Address2: context.customerState.address2.toUpperCase(),
+          Address1: address1.toUpperCase(),
+          Address2: address2.toUpperCase(),
           address_id: UniqueID(),
-          Postcode: context.customerState.postcode,
-          Contact: context.customerState.contact,
+          Postcode: postcode,
+          Contact: contact,
         },
       ],
     };
@@ -105,22 +114,18 @@ export default function UpsertCustomer({
         client_id: clientId.value,
       },
       address: {
-        Address1: context.customerState.address1.toUpperCase(),
-        Address2: context.customerState.address2.toUpperCase(),
-        address_id: Number(context.customerState.address_id),
-        Postcode: context.customerState.postcode,
-        Contact: context.customerState.contact,
+        Address1: address1.toUpperCase(),
+        Address2: address2.toUpperCase(),
+        address_id: Number(address.address_id),
+        Postcode: postcode,
+        Contact: contact,
       },
     };
     return await ApiServiceUtils.editCustomer(body);
   };
 
   const handleSaveDetails = async () => {
-    if (
-      context.customerState.address1 == '' ||
-      context.customerState.postcode == '' ||
-      context.customerState.contact == ''
-    ) {
+    if (address1 == '' || postcode == '' || contact == '') {
       return;
     }
 
@@ -132,8 +137,7 @@ export default function UpsertCustomer({
           render: () => <CustomToast title={'Your changes were saved.'} />,
           duration: 3000,
         });
-      onClose();
-      refetch();
+      onSave();
     } else {
       !toast.isActive('edit-customer') &&
         toast.show({
@@ -146,8 +150,8 @@ export default function UpsertCustomer({
             />
           ),
         });
-      onClose();
     }
+    onClose();
     setLoading(false);
   };
 
@@ -165,8 +169,8 @@ export default function UpsertCustomer({
             </Text>
           </AlertDialog.Header>
           <AlertDialog.Body>
-            <View className="flex justify-center w-full p-10 align-middle items-center mb-10">
-              <VStack mt={6}>
+            <View className="flex justify-center w-full px-10 align-middle items-center my-5">
+              <VStack mt={1}>
                 <HStack space={6}>
                   <Box>
                     <FormControl className="w-72 mb-3">
@@ -178,10 +182,8 @@ export default function UpsertCustomer({
                         size="lg"
                         className="bg-white"
                         name="address1"
-                        value={context.customerState.address1}
-                        onChangeText={value =>
-                          updateCustomerState({name: 'address1', value})
-                        }
+                        value={address1}
+                        onChangeText={value => setAddress1(value)}
                         onSubmitEditing={() => address2Ref.current?.focus()}
                         returnKeyType="next"
                       />
@@ -195,10 +197,8 @@ export default function UpsertCustomer({
                         size="lg"
                         className="bg-white"
                         name="address2"
-                        value={context.customerState.address2}
-                        onChangeText={value =>
-                          updateCustomerState({name: 'address2', value})
-                        }
+                        value={address2}
+                        onChangeText={value => setAddress2(value)}
                         onSubmitEditing={() => postcodeRef.current?.focus()}
                         returnKeyType="next"
                       />
@@ -212,10 +212,8 @@ export default function UpsertCustomer({
                         size="lg"
                         className="bg-white"
                         name="postcode"
-                        value={context.customerState.postcode}
-                        onChangeText={value =>
-                          updateCustomerState({name: 'postcode', value})
-                        }
+                        value={postcode}
+                        onChangeText={value => setPostcode(value)}
                         onSubmitEditing={() => contactRef.current?.focus()}
                         returnKeyType="next"
                       />
@@ -232,10 +230,8 @@ export default function UpsertCustomer({
                         className="bg-white"
                         keyboardType="number-pad"
                         name="contact"
-                        value={context.customerState.contact}
-                        onChangeText={value =>
-                          updateCustomerState({name: 'contact', value})
-                        }
+                        value={contact}
+                        onChangeText={value => setContact(value)}
                         onSubmitEditing={handleSaveDetails}
                         returnKeyType="done"
                       />
@@ -288,3 +284,5 @@ export default function UpsertCustomer({
     </Center>
   );
 }
+
+export default memo(UpsertCustomer);
