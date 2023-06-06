@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {Text, View, Image, TextInput, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import FA5Icon from 'react-native-vector-icons/FontAwesome5';
 
 import StorageUtils from '../utils/StorageUtils';
 
@@ -26,7 +27,7 @@ export default function Header() {
       console.log(allClear.error);
     }
   };
-
+  // console.log(navigation.);
   return (
     <>
       <View className="flex flex-row justify-between w-screen p-1 h-14 bg-custom-primary">
@@ -44,6 +45,14 @@ export default function Header() {
             <Text className="text-white font-medium text-lg">
               {' '}
               <Icon name="history" size={30} color="#fefefe" />
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="rounded-sm w-32 h-12 items-center justify-center"
+            onPress={() => navigation.navigate('Customer')}>
+            <Text className="text-white font-medium text-lg">
+              {' '}
+              <FA5Icon name="users-cog" size={28} color="#fefefe" />
             </Text>
           </TouchableOpacity>
         </View>

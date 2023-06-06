@@ -18,9 +18,9 @@ import Modal from 'react-native-modal';
 import React, {useRef, useContext, useState} from 'react';
 import GlobalContext from '../utils/GlobalContext.';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import CustomToast from '../components/CustomToast';
+import CustomToast from './CustomToast';
 
-const EditCustomer = ({show, handleClose, refetch, next}) => {
+const EditCustomerHistory = ({show, handleClose, refetch, next}) => {
   const toast = useToast();
   const context = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,6 @@ const EditCustomer = ({show, handleClose, refetch, next}) => {
       field: object.name,
       payload: object.value,
     });
-  console.log(context.customerState);
 
   const clear = () => {
     context.dispatch({type: 'RESET'});
@@ -350,4 +349,4 @@ const EditCustomer = ({show, handleClose, refetch, next}) => {
   );
 };
 
-export default EditCustomer;
+export default EditCustomerHistory;

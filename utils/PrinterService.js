@@ -83,8 +83,21 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
     // Print starter items
     printing.align('left');
     printing.size(2, 2);
+
     sortedOrders.forEach(o => {
       if (o.category == 'STARTERS' || o.category == 'SIGNATURE STARTERS') {
+        printing.line(o.quantity + ' ' + o.name);
+        if (o.notes) {
+          printing.line('- ' + o.notes).newline();
+        } else {
+          printing.newline();
+        }
+      }
+    });
+
+    // Print Sunday Menu starter items
+    sortedOrders.forEach((o, index) => {
+      if (o.category === 'SUNDAY MENU' && o.name.includes('Starter')) {
         printing.line(o.quantity + ' ' + o.name);
         if (o.notes) {
           printing.line('- ' + o.notes).newline();
@@ -119,7 +132,7 @@ export const printNewKitckenReceipt = async (orders, orderDetails) => {
 
     // Print Sunday Menu items
     sortedOrders.forEach((o, index) => {
-      if (o.category === 'SUNDAY MENU') {
+      if (o.category === 'SUNDAY MENU' && !o.name.includes('Starter')) {
         printing.line(o.quantity + ' ' + o.name);
         if (o.notes) {
           printing.line('- ' + o.notes).newline();
@@ -440,6 +453,18 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
     }
   });
 
+  // Print Sunday Menu starter items
+  sortedOrders.forEach((o, index) => {
+    if (o.category === 'SUNDAY MENU' && o.name.includes('Starter')) {
+      printing.line(o.quantity + ' ' + o.name);
+      if (o.notes) {
+        printing.line('- ' + o.notes).newline();
+      } else {
+        printing.newline();
+      }
+    }
+  });
+
   printing.line('------------------------');
   printing.newline();
 
@@ -466,7 +491,7 @@ const printKitchenReceipt = async (printing, orders, orderDetails) => {
 
   // Print Sunday Menu items
   sortedOrders.forEach((o, index) => {
-    if (o.category === 'SUNDAY MENU') {
+    if (o.category === 'SUNDAY MENU' && !o.name.includes('Starter')) {
       printing.line(o.quantity + ' ' + o.name);
       if (o.notes) {
         printing.line('- ' + o.notes).newline();
