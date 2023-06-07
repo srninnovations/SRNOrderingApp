@@ -48,7 +48,7 @@ export default function Header() {
           </TouchableOpacity>
           <TouchableOpacity
             className="rounded-sm w-32 h-12 items-center justify-center"
-            onPress={() => openPrivateScreen('History')}>
+            onPress={() => navigation.navigate('History')}>
             <Text className="text-white font-medium text-lg">
               {' '}
               <Icon name="history" size={30} color="#fefefe" />
