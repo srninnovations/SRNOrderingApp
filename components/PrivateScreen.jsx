@@ -39,14 +39,14 @@ const PrivateScreen = ({navigation, screenName, show, hideModal}) => {
         onBackButtonPress={hideModal}>
         <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
           <Heading
-            className="uppercase"
+            className="capitalize"
             borderBottomWidth={1}
             fontWeight={'semibold'}
             color={'gray.800'}
             borderColor={'gray.400'}
             px={5}
             py={4}>
-            {screenName}
+            {screenName} - Authorize Access
           </Heading>
           <FormControl isInvalid={incorrect} maxW={'2/3'} p={'5'}>
             <Input
