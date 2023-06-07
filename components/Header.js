@@ -55,6 +55,14 @@ export default function Header() {
               <FA5Icon name="users-cog" size={28} color="#fefefe" />
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            className="rounded-sm w-32 h-12 items-center justify-center"
+            onPress={() => navigation.navigate('Sales')}>
+            <Text className="text-white font-medium text-lg">
+              {' '}
+              <FA5Icon name="pound-sign" size={28} color="#fefefe" />
+            </Text>
+          </TouchableOpacity>
         </View>
         <View className="">
           <TouchableOpacity
