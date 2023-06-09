@@ -12,14 +12,8 @@ import React, {memo, useState, useContext, useEffect} from 'react';
 const AddressRow = ({address, idx, updateAddresses}) => {
   const handleUpdateOpen = address => {
     setisUpdating(true);
-    // Object.keys(address).forEach(key => {
-    //   context.dispatch({
-    //     type: 'UPDATE_CUSTOMER',
-    //     field: key.toLowerCase(),
-    //     payload: address[key].toString(),
-    //   });
-    // });
     setShowModal(true);
+    setSelectedAddress(address);
   };
 
   const context = useContext(GlobalContext);
@@ -124,8 +118,8 @@ const AddressRow = ({address, idx, updateAddresses}) => {
           showModal,
           isUpdating,
           address,
-          onSave: () => {
-            updateAddresses();
+          onSave: async () => {
+            await updateAddresses();
           },
         }}
       />
@@ -136,8 +130,8 @@ const AddressRow = ({address, idx, updateAddresses}) => {
             setShowDeleteModal(false);
             setSelectedAddress({});
           },
-          onSave: () => {
-            updateAddresses();
+          onSave: async () => {
+            await updateAddresses();
           },
           selectedAddress,
           handleDelete,

@@ -43,7 +43,11 @@ const Customer = ({navigation}) => {
     };
 
     const data = await ApiServiceUtils.getCustomers(params);
-    if (data.length) setAddresses(data);
+    if (data.length) {
+      setAddresses(data);
+    } else {
+      setAddresses([]);
+    }
     setLoading(false);
   };
 
@@ -72,7 +76,16 @@ const Customer = ({navigation}) => {
           <Text className="text-3xl font-medium uppercase text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
             Manage Customer Addresses
           </Text>
-          <HStack justifyContent="flex-end" space={10} className="mt-5">
+          <HStack justifyContent="space-between" space={10} className="mt-5">
+            <TouchableOpacity
+              className="px-3 h-12 bg-custom-secondary flex flex-row rounded justify-center items-center"
+              onPress={() => {
+                setLoading(true);
+                getCustomersAddresses();
+              }}>
+              <AntIcon className="" name="sync" size={15} color="white" />
+              <Text className="text-white ml-2 uppercase">Refresh</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               className="px-3 h-12 bg-custom-primary flex flex-row rounded justify-center items-center"
               onPress={handleAddOpen}>
