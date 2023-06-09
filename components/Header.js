@@ -56,7 +56,7 @@ export default function Header() {
           </TouchableOpacity>
           <TouchableOpacity
             className="rounded-sm w-32 h-12 items-center justify-center"
-            onPress={() => openPrivateScreen('Customer')}>
+            onPress={() => openPrivateScreen('Customers')}>
             <Text className="text-white font-medium text-lg">
               {' '}
               <FA5Icon name="users-cog" size={28} color="#fefefe" />

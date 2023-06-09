@@ -37,7 +37,7 @@ const PrivateScreen = ({navigation, screenName, show, hideModal}) => {
         className="flex-1 justify-center items-center"
         backdropOpacity={0.7}
         onBackButtonPress={hideModal}>
-        <Box width={'full'} maxW={'md'} bgColor={'white'} borderRadius={'md'}>
+        <Box width={'full'} maxW={'lg'} bgColor={'white'} borderRadius={'md'}>
           <Heading
             className="capitalize"
             borderBottomWidth={1}
@@ -50,6 +50,7 @@ const PrivateScreen = ({navigation, screenName, show, hideModal}) => {
           </Heading>
           <FormControl isInvalid={incorrect} maxW={'2/3'} p={'5'}>
             <Input
+              className="text-2xl"
               keyboardType="number-pad"
               secureTextEntry={true}
               type="password"
