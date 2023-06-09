@@ -287,6 +287,7 @@ export default function Selection({navigation}) {
     postcodeRef?.current?.clear();
     contactRef?.current?.clear();
     deliveryNotesRef?.current?.clear();
+    setSearchResults([]);
     // address1Ref?.current?.focus();
   };
   const editOrder = async () => {
