@@ -72,14 +72,16 @@ const Customer = ({navigation}) => {
           <Text className="text-3xl font-medium uppercase text-center text-custom-dark py-5 border-b border-custom-border-color w-full">
             Manage Customer Addresses
           </Text>
+          <HStack justifyContent="flex-end" space={10} className="mt-5">
+            <TouchableOpacity
+              className="px-3 h-12 bg-custom-primary flex flex-row rounded justify-center items-center"
+              onPress={handleAddOpen}>
+              <AntIcon className="" name="plus" size={22} color="white" />
+              <Text className="text-white ml-3 uppercase">Add Customer</Text>
+            </TouchableOpacity>
+          </HStack>
           {addresses.length > 0 && (
             <HStack justifyContent="flex-end" space={10} className="mt-5">
-              <TouchableOpacity
-                className="px-3 h-12 bg-custom-primary flex flex-row rounded justify-center items-center"
-                onPress={handleAddOpen}>
-                <AntIcon className="" name="plus" size={22} color="white" />
-                <Text className="text-white ml-3 uppercase">Add Customer</Text>
-              </TouchableOpacity>
               {/* {true && (
                 <DeleteAllConfirm
                   heading="Are you sure you want to delete all customers?"
@@ -189,6 +191,9 @@ const Customer = ({navigation}) => {
             showModal,
             isUpdating,
             refetch: fetchData,
+            onSave: () => {
+              getCustomersAddresses();
+            },
           }}
         />
       </View>
