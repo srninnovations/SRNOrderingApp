@@ -1,3 +1,7 @@
+####MAJOR####
+#Add address search on customer management screen
+#Add pagination to speed now loading
+
 ########TODO##########
 #Change font for restaurant title
 #Ability to go back from table selection or delivery or collection - while on menu
