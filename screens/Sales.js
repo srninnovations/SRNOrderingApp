@@ -18,17 +18,8 @@ export default function Sales({navigation}) {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    if (context.staff == '') {
-      navigation.navigate('Dashboard');
-      if (!toast.isActive('staff'))
-        toast.show({
-          id: 'staff',
-          render: () => <CustomToast title="Select a staff to view history" />,
-        });
-    } else {
-      setLoading(true);
-      getHistoryData();
-    }
+    setLoading(true);
+    getHistoryData();
   }, []);
 
   const getHistoryData = async () => {
