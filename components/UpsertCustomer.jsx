@@ -40,7 +40,7 @@ function UpsertCustomer({
   useEffect(() => {
     setAddress1(address?.Address1);
     setAddress2(address?.Address2);
-    setContact(address?.Contact);
+    setContact(address?.Contact?.toString());
     setPostcode(address?.Postcode);
   }, []);
 
@@ -93,7 +93,7 @@ function UpsertCustomer({
       address: [
         {
           Address1: address1.toUpperCase(),
-          Address2: address2.toUpperCase(),
+          Address2: address2?.toUpperCase(),
           address_id: UniqueID(),
           Postcode: postcode,
           Contact: contact,
@@ -175,7 +175,7 @@ function UpsertCustomer({
                   <Box>
                     <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
-                        Address 1
+                        Address 1<Text className="text-red-500">*</Text>
                       </Text>
                       <Input
                         ref={address1Ref}
@@ -205,7 +205,7 @@ function UpsertCustomer({
                     </FormControl>
                     <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
-                        Postcode
+                        Postcode<Text className="text-red-500">*</Text>
                       </Text>
                       <Input
                         ref={postcodeRef}
@@ -222,7 +222,7 @@ function UpsertCustomer({
                   <Box>
                     <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
-                        Contact Number
+                        Contact Number<Text className="text-red-500">*</Text>
                       </Text>
                       <Input
                         ref={contactRef}
@@ -232,7 +232,7 @@ function UpsertCustomer({
                         name="contact"
                         value={contact}
                         onChangeText={value => setContact(value)}
-                        onSubmitEditing={handleSaveDetails}
+                        // onSubmitEditing={handleSaveDetails}
                         returnKeyType="done"
                       />
                     </FormControl>
