@@ -443,7 +443,7 @@ export default function Selection({navigation}) {
                         return (
                           <TouchableOpacity
                             key={index}
-                            className=" px-4 bg-white border-b border-gray-200"
+                            className="py-2 px-4 bg-white border-b border-gray-200"
                             onPress={() => {
                               autoFill(item);
                               setShowResults(false);
