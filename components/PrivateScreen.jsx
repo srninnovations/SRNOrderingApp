@@ -62,7 +62,7 @@ const PrivateScreen = ({navigation, screenName, show, hideModal}) => {
               onSubmitEditing={validateCode}
               invalidOutlineColor={'danger.400'}
               w={'2xs'}
-              isFocused={true}
+              autoFocus={true}
             />
             <FormControl.ErrorMessage
               leftIcon={<WarningOutlineIcon size="xs" />}>

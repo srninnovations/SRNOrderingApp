@@ -1,6 +1,6 @@
 import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 import React, {useMemo} from 'react';
-import {HStack} from 'native-base';
+import {Box, HStack} from 'native-base';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {DOTS, usePagination} from '../utils/PaginateUtils';
 
@@ -26,13 +26,17 @@ const Pagination = props => {
         } mr-4`}>
         <FeatherIcon name="chevron-left" size={35} color="#fff" />
       </TouchableOpacity>
-      {paginationRange.map(page => {
+      {paginationRange.map((page, idx) => {
         if (page === DOTS) {
-          return <Text className="text-black text-3xl">&#8230;</Text>;
+          return (
+            <Text key={idx} className="text-black text-3xl">
+              &#8230;
+            </Text>
+          );
         }
         return (
           <TouchableOpacity
-            key={page}
+            key={idx}
             onPress={() => props.onPageChange(Number(page))}
             className={`w-14 h-10 rounded-md items-center justify-center ${
               currentPage === page ? 'bg-custom-primary' : 'bg-custom-secondary'

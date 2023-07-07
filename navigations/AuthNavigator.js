@@ -9,6 +9,7 @@ import Home from '../screens/Home';
 import Menu from '../screens/Menu';
 import Customer from '../screens/Customer';
 import Sales from '../screens/Sales';
+import Manage from '../screens/Manage';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function AuthNavigator() {
       <Stack.Screen name="Dashboard" component={Dashboard} />
       <Stack.Screen name="Selection" component={Selection} />
       <Stack.Screen name="Menu" component={Menu} />
+      <Stack.Screen name="Manage" component={Manage} />
       <Stack.Screen name="Customers" component={Customer} />
       <Stack.Screen name="Sales" component={Sales} />
     </Stack.Navigator>

@@ -141,9 +141,9 @@ const Customer = ({navigation}) => {
               <AntIcon className="" name="sync" size={15} color="white" />
               <Text className="text-white ml-2 uppercase">Refresh</Text>
             </TouchableOpacity>
-            <VStack>
+            <HStack space={'3'} alignItems={'center'}>
               <Heading className="text-custom-dark uppercase text-xl mb-2">
-                Find by:
+                Search:
               </Heading>
               <Input
                 keyboardType="name-phone-pad"
@@ -156,7 +156,7 @@ const Customer = ({navigation}) => {
                 onChangeText={value => search(value)}
                 // onChangeText={text => filterByOrderId(parseInt(text))}
               />
-            </VStack>
+            </HStack>
             <TouchableOpacity
               className="px-3 h-12 bg-custom-primary flex flex-row rounded justify-center items-center"
               onPress={handleAddOpen}>
@@ -164,12 +164,6 @@ const Customer = ({navigation}) => {
               <Text className="text-white ml-3 uppercase">Add Customer</Text>
             </TouchableOpacity>
           </HStack>
-          <Pagination
-            itemsCount={addresses.length}
-            pageSize={10}
-            onPageChange={onPageChange}
-            currentPage={currentPage}
-          />
           {addresses.length > 0 && !showResults && (
             <Text className="my-4 text-black uppercase text-xl">
               Addresses: {addresses.length}
@@ -181,7 +175,7 @@ const Customer = ({navigation}) => {
             </Text>
           )}
           {addresses.length > 0 ? (
-            <VStack minH={'3/5'} pb="32">
+            <VStack minH={'3/5'}>
               <HStack
                 justifyContent="center"
                 borderColor="gray.400"
@@ -270,6 +264,14 @@ const Customer = ({navigation}) => {
               </Text>
             </View>
           )}
+          <View className="w-full h-20 pt-4 mb-32 text-black">
+            <Pagination
+              itemsCount={addresses.length}
+              pageSize={10}
+              onPageChange={onPageChange}
+              currentPage={currentPage}
+            />
+          </View>
         </ScrollView>
         <UpsertCustomer
           {...{
