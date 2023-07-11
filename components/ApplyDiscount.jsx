@@ -121,6 +121,7 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
                   onChangeText={text => setDiscountPin(text)}
                   value={discountPin}
                   maxLength={6}
+                  autoFocus={true}
                 />
               </FormControl>
               <Text className="text-custom-danger">{error}</Text>
@@ -168,6 +169,7 @@ export const ApplyDiscount = ({total, discount, show, hide}) => {
                         }
                       }}
                       returnKeyType="next"
+                      autoFocus={true}
                     />
                   </FormControl>
                   <Text className="text-custom-danger m-1 text-lg">

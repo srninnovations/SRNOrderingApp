@@ -19,13 +19,20 @@ import StorageUtils from '../utils/StorageUtils';
 import GlobalContext from '../utils/GlobalContext.';
 import AddressRow from '../components/AddressRow';
 import UpsertCustomer from '../components/UpsertCustomer';
+import Pagination from '../components/Pagination';
+import {paginate} from '../utils/PaginateUtils';
 
 const Customer = ({navigation}) => {
   const context = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState([]);
+  const [paginatedAddresses, setPaginatedAddresses] = useState([]);
   const [isUpdating, setisUpdating] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [searchAddress, setSearchAddress] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -45,6 +52,8 @@ const Customer = ({navigation}) => {
     const data = await ApiServiceUtils.getCustomers(params);
     if (data.length) {
       setAddresses(data);
+      setPaginatedAddresses(paginate(data, 10, 1));
+      setCurrentPage(1);
     } else {
       setAddresses([]);
     }
@@ -59,6 +68,52 @@ const Customer = ({navigation}) => {
   const handleAddOpen = () => {
     setisUpdating(false);
     setShowModal(true);
+  };
+
+  const onPageChange = page_number => {
+    setCurrentPage(page_number);
+    const pageAddresses = paginate(addresses, 10, page_number);
+    setPaginatedAddresses(pageAddresses);
+  };
+
+  const search = value => {
+    setSearchAddress(value);
+    if (value.length > 2) {
+      const entries = Object.entries(addresses);
+      const filtered = entries.filter(customer => {
+        const address1 = customer[1]['Address1'];
+        const addressLower = address1.toLowerCase();
+        const regValue = new RegExp(value);
+        if (regValue?.test(addressLower)) {
+          return true;
+        }
+        return false;
+      });
+
+      if (filtered[0]) {
+        const details = filtered[0][1];
+        const exists = searchResults.filter(res => {
+          if (res.Address1 == details.Address1) {
+            return res;
+          }
+        });
+
+        if (exists.length == 0) {
+          setSearchResults([
+            // with a new array
+            ...searchResults, // that contains all the old items
+            details, // and one new item at the end
+          ]);
+        }
+        setShowResults(true);
+      } else {
+        setShowResults(false);
+        setSearchResults([]);
+      }
+    } else {
+      setSearchResults([]);
+      setShowResults(false);
+    }
   };
 
   if (loading)
@@ -86,6 +141,22 @@ const Customer = ({navigation}) => {
               <AntIcon className="" name="sync" size={15} color="white" />
               <Text className="text-white ml-2 uppercase">Refresh</Text>
             </TouchableOpacity>
+            <HStack space={'3'} alignItems={'center'}>
+              <Heading className="text-custom-dark uppercase text-xl mb-2">
+                Search:
+              </Heading>
+              <Input
+                keyboardType="name-phone-pad"
+                size="lg"
+                placeholder="Address 1"
+                w="2xs"
+                h="10"
+                focusOutlineColor={'darkBlue.400'}
+                className="bg-gray-50"
+                onChangeText={value => search(value)}
+                // onChangeText={text => filterByOrderId(parseInt(text))}
+              />
+            </HStack>
             <TouchableOpacity
               className="px-3 h-12 bg-custom-primary flex flex-row rounded justify-center items-center"
               onPress={handleAddOpen}>
@@ -93,32 +164,18 @@ const Customer = ({navigation}) => {
               <Text className="text-white ml-3 uppercase">Add Customer</Text>
             </TouchableOpacity>
           </HStack>
-          {addresses.length > 0 && (
-            <HStack justifyContent="flex-end" space={10} className="mt-5">
-              {/* {true && (
-                <DeleteAllConfirm
-                  heading="Are you sure you want to delete all customers?"
-                  message="This will delete all addresses, contacts and postcodes."
-                  // order={selectedOrder}
-                  // show={true}
-                  // deleteLoad={deleteLoad}
-                  // showModal={() => setShowAll(true)}
-                  // hideModal={hideDeleteAllModal}
-                  // confirmDelete={async () => {
-                  //   await confirmDeleteAll();
-                  //   setDeleteLoad(false);
-                  // }}
-                />
-              )} */}
-            </HStack>
-          )}
-          {addresses.length > 0 && (
+          {addresses.length > 0 && !showResults && (
             <Text className="my-4 text-black uppercase text-xl">
               Addresses: {addresses.length}
             </Text>
           )}
+          {showResults && (
+            <Text className="my-4 text-green-500 uppercase text-xl">
+              Address Found!
+            </Text>
+          )}
           {addresses.length > 0 ? (
-            <VStack minH={'3/5'} pb="32">
+            <VStack minH={'3/5'}>
               <HStack
                 justifyContent="center"
                 borderColor="gray.400"
@@ -178,17 +235,27 @@ const Customer = ({navigation}) => {
                   </Text>
                 </Center>
               </HStack>
-              {addresses.map((address, idx) => (
-                <AddressRow
-                  key={idx}
-                  address={address}
-                  updateAddresses={() => {
-                    //maybe for now lets not show the loader and let it refresh in the background
-                    // setLoading(true);
-                    getCustomersAddresses();
-                  }}
-                />
-              ))}
+              {showResults
+                ? searchResults.map((address, idx) => (
+                    <AddressRow
+                      key={idx}
+                      address={address}
+                      updateAddresses={() => {
+                        getCustomersAddresses();
+                      }}
+                    />
+                  ))
+                : paginatedAddresses.map((address, idx) => (
+                    <AddressRow
+                      key={idx}
+                      address={address}
+                      updateAddresses={() => {
+                        //maybe for now lets not show the loader and let it refresh in the background
+                        // setLoading(true);
+                        getCustomersAddresses();
+                      }}
+                    />
+                  ))}
             </VStack>
           ) : (
             <View className="h-[30vh] flex-1 justify-center items-center">
@@ -197,6 +264,14 @@ const Customer = ({navigation}) => {
               </Text>
             </View>
           )}
+          <View className="w-full h-20 pt-4 mb-32 text-black">
+            <Pagination
+              itemsCount={addresses.length}
+              pageSize={10}
+              onPageChange={onPageChange}
+              currentPage={currentPage}
+            />
+          </View>
         </ScrollView>
         <UpsertCustomer
           {...{
