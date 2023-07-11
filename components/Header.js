@@ -8,12 +8,15 @@ import StorageUtils from '../utils/StorageUtils';
 import {useNavigation} from '@react-navigation/native';
 import LogOutConfirmation from './LogOutConfirmation';
 import GlobalContext from '../utils/GlobalContext.';
+import PrivateScreen from './PrivateScreen';
 
 export default function Header() {
   const navigation = useNavigation();
   const {setStaff, setOrderType} = useContext(GlobalContext);
 
   const [showLogOut, setShowLogOut] = useState(false);
+  const [show, setShow] = useState(false);
+  const [screenName, setScreenName] = useState('');
 
   const signOut = async () => {
     const allClear = await StorageUtils.removeAllData();
@@ -26,6 +29,10 @@ export default function Header() {
       // Data could not be removed, handle the error
       console.log(allClear.error);
     }
+  };
+  const openPrivateScreen = screenName => {
+    setShow(true);
+    setScreenName(screenName);
   };
   // console.log(navigation.);
   return (
@@ -49,10 +56,18 @@ export default function Header() {
           </TouchableOpacity>
           <TouchableOpacity
             className="rounded-sm w-32 h-12 items-center justify-center"
-            onPress={() => navigation.navigate('Customer')}>
+            onPress={() => openPrivateScreen('Manage')}>
             <Text className="text-white font-medium text-lg">
               {' '}
               <FA5Icon name="users-cog" size={28} color="#fefefe" />
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="rounded-sm w-32 h-12 items-center justify-center"
+            onPress={() => openPrivateScreen('Sales')}>
+            <Text className="text-white font-medium text-lg">
+              {' '}
+              <FA5Icon name="pound-sign" size={28} color="#fefefe" />
             </Text>
           </TouchableOpacity>
         </View>
@@ -68,6 +83,17 @@ export default function Header() {
         </View>
       </View>
       <LogOutConfirmation {...{setShowLogOut, showLogOut, signOut}} />
+      <PrivateScreen
+        {...{
+          navigation,
+          screenName,
+          show,
+          hideModal: () => {
+            setShow(false);
+            setScreenName('');
+          },
+        }}
+      />
     </>
   );
 }

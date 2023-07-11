@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import ApiServiceUtils from '../utils/ApiServiceUtils';
 import {SelectionConfirmation} from '../components/SelectionConfirmation';
 import PeopleSelector from '../components/PeopleSelector';
+import {TouchableWithoutFeedback} from 'react-native';
 
 import {
   Spinner,
@@ -39,14 +40,6 @@ export default function Selection({navigation}) {
 
   const [show, setShow] = useState(false);
   const [selectorShow, setSelectorShow] = useState(false);
-  // const [customerState, setCustomerState] = useState({
-  //   name: '',
-  //   address1: '',
-  //   address2: '',
-  //   postcode: '',
-  //   contact: '',
-  //   deliveryNotes: '',
-  // });
   const toast = useToast();
 
   const scrollViewRef = useRef();
@@ -294,6 +287,7 @@ export default function Selection({navigation}) {
     postcodeRef?.current?.clear();
     contactRef?.current?.clear();
     deliveryNotesRef?.current?.clear();
+    setSearchResults([]);
     // address1Ref?.current?.focus();
   };
   const editOrder = async () => {
@@ -417,53 +411,53 @@ export default function Selection({navigation}) {
               </Text>
             </View>
 
-            <FormControl className="w-96">
-              <Input
-                size="lg"
-                placeholder="Search.."
-                className="bg-white"
-                onSubmitEditing={() => address1Ref.current?.focus()}
-                returnKeyType="next"
-                value={searchAddress}
-                onChangeText={e => search(e)}
-              />
-            </FormControl>
-            {showResults && (
-              <View className="relative">
-                {searchResults.map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      className="py-2 px-4 bg-white border-b border-gray-200"
-                      onPress={() => {
-                        setShowResults(false);
-                        autoFill(item);
-                      }}>
-                      <Text className="text-gray-700 text-xl">
-                        {item.Address1}, {item.Address2}, {item.Postcode}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            )}
-
             <VStack space={6} mt={6}>
-              <FormControl className="w-96">
-                <Text className="text-xl uppercase mb-3">Address 1</Text>
-                <Input
-                  ref={address1Ref}
-                  size="lg"
-                  className="bg-white"
-                  name="address1"
-                  value={context.customerState.address1}
-                  onChangeText={value =>
-                    updateCustomerState({name: 'address1', value})
-                  }
-                  onSubmitEditing={() => address2Ref.current?.focus()}
-                  returnKeyType="next"
-                />
-              </FormControl>
+              <TouchableWithoutFeedback onPress={() => setShowResults(false)}>
+                <View>
+                  <FormControl className="w-96">
+                    <Text className="text-xl uppercase">Address 1</Text>
+                    <Input
+                      ref={address1Ref}
+                      size="lg"
+                      className="bg-white"
+                      name="address1"
+                      value={context.customerState.address1}
+                      onChangeText={value => {
+                        search(value);
+                        updateCustomerState({name: 'address1', value});
+                      }}
+                      onSubmitEditing={() => address2Ref.current?.focus()}
+                      returnKeyType="next"
+                      onFocus={() => setShowResults(true)}
+                      onBlur={() => {
+                        // Add a small delay to the onBlur event handler
+                        setTimeout(() => {
+                          setShowResults(false);
+                        }, 3000);
+                      }}
+                    />
+                  </FormControl>
+                  {showResults && (
+                    <View className="relative w-96" style={{top: 0}}>
+                      {searchResults.map((item, index) => {
+                        return (
+                          <TouchableOpacity
+                            key={index}
+                            className="py-2 px-4 bg-white border-b border-gray-200"
+                            onPress={() => {
+                              autoFill(item);
+                              setShowResults(false);
+                            }}>
+                            <Text className="text-gray-700 text-xl">
+                              {item.Address1}, {item.Address2}, {item.Postcode}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  )}
+                </View>
+              </TouchableWithoutFeedback>
               <FormControl className="w-96">
                 <Text className="text-xl uppercase mb-3">Address 2</Text>
                 <Input

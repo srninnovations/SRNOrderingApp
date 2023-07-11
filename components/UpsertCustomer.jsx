@@ -32,17 +32,27 @@ function UpsertCustomer({
   const [loading, setLoading] = useState(false);
   const [invalid, setInvalid] = useState(true);
 
+  const [addressId, setAddressId] = useState('');
   const [address1, setAddress1] = useState('');
   const [address2, setAddress2] = useState('');
   const [contact, setContact] = useState('');
   const [postcode, setPostcode] = useState('');
 
   useEffect(() => {
-    setAddress1(address?.Address1);
-    setAddress2(address?.Address2);
-    setContact(address?.Contact);
-    setPostcode(address?.Postcode);
-  }, []);
+    if (isUpdating) {
+      setAddressId(address?.address_id);
+      setAddress1(address?.Address1);
+      setAddress2(address?.Address2);
+      setContact(address?.Contact?.toString());
+      setPostcode(address?.Postcode);
+    } else {
+      setAddressId(UniqueID());
+      setAddress1('');
+      setAddress2('');
+      setContact('');
+      setPostcode('');
+    }
+  }, [showModal]);
 
   useEffect(() => {
     if (
@@ -52,7 +62,7 @@ function UpsertCustomer({
     )
       setInvalid(false);
     else setInvalid(true);
-  }, [address1, contact, postcode]);
+  }, [address1, address2, contact, postcode]);
   const cancelRef = useRef();
   const address1Ref = useRef(null);
   const address2Ref = useRef(null);
@@ -73,13 +83,6 @@ function UpsertCustomer({
     clear();
   };
 
-  // const updateCustomerState = object =>
-  //   context.dispatch({
-  //     type: 'UPDATE_CUSTOMER',
-  //     field: object.name,
-  //     payload: object.value,
-  //   });
-
   const insertDetails = async () => {
     setLoading(true);
     const clientId = await StorageUtils.getAsyncStorageData('clientId');
@@ -93,8 +96,8 @@ function UpsertCustomer({
       address: [
         {
           Address1: address1.toUpperCase(),
-          Address2: address2.toUpperCase(),
-          address_id: UniqueID(),
+          Address2: address2?.toUpperCase(),
+          address_id: Number(addressId),
           Postcode: postcode,
           Contact: contact,
         },
@@ -115,8 +118,8 @@ function UpsertCustomer({
       },
       address: {
         Address1: address1.toUpperCase(),
-        Address2: address2.toUpperCase(),
-        address_id: Number(address.address_id),
+        Address2: address2?.toUpperCase(),
+        address_id: Number(addressId),
         Postcode: postcode,
         Contact: contact,
       },
@@ -175,7 +178,7 @@ function UpsertCustomer({
                   <Box>
                     <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
-                        Address 1
+                        Address 1<Text className="text-red-500">*</Text>
                       </Text>
                       <Input
                         ref={address1Ref}
@@ -205,7 +208,7 @@ function UpsertCustomer({
                     </FormControl>
                     <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
-                        Postcode
+                        Postcode<Text className="text-red-500">*</Text>
                       </Text>
                       <Input
                         ref={postcodeRef}
@@ -222,7 +225,7 @@ function UpsertCustomer({
                   <Box>
                     <FormControl className="w-72 mb-3">
                       <Text className="text-xl uppercase mb-3 text-black">
-                        Contact Number
+                        Contact Number<Text className="text-red-500">*</Text>
                       </Text>
                       <Input
                         ref={contactRef}
@@ -232,7 +235,7 @@ function UpsertCustomer({
                         name="contact"
                         value={contact}
                         onChangeText={value => setContact(value)}
-                        onSubmitEditing={handleSaveDetails}
+                        // onSubmitEditing={handleSaveDetails}
                         returnKeyType="done"
                       />
                     </FormControl>

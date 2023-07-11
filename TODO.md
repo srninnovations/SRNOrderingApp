@@ -6,6 +6,8 @@
 #backend customer validation
 
 #DONE
+#Add address search on customer management screen
+#Add pagination to speed now loading
 #Ability to edit customer details maybe from history view modal
 #edit all the customer details in one place for addresses
 #speed up adding items to order from MENU
